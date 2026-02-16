@@ -1,0 +1,243 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <SDL2/SDL.h>
+
+#include "gb_runtime.h"
+#include "gb_cpu.h"
+#include "gb_ppu.h"
+#include "gb_apu.h"
+#include "gb_input.h"
+#include "win32_menu.h"
+#include "save_system.h"
+#include "config.h"
+
+/* Forward declarations for transpiled game code */
+extern void bank_00_entry(void);
+
+/* Frame timing */
+#define TARGET_FPS  59.7275
+#define FRAME_TIME  (1000.0 / TARGET_FPS)
+
+static SDL_Window *window = NULL;
+static SDL_Renderer *renderer = NULL;
+static SDL_Texture *texture = NULL;
+static SDL_AudioDeviceID audio_device = 0;
+static bool running = true;
+static bool paused = false;
+
+static void cleanup(void) {
+    if (audio_device) SDL_CloseAudioDevice(audio_device);
+    if (texture)  SDL_DestroyTexture(texture);
+    if (renderer) SDL_DestroyRenderer(renderer);
+    if (window)   SDL_DestroyWindow(window);
+    input_close_controller();
+    SDL_Quit();
+}
+
+static void resize_window(int scale) {
+    config.scale = scale;
+    SDL_SetWindowSize(window, SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale);
+}
+
+static void toggle_fullscreen(void) {
+    config.fullscreen = !config.fullscreen;
+    SDL_SetWindowFullscreen(window,
+        config.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+}
+
+static void handle_menu_action(menu_action_t action) {
+    switch (action) {
+    case MENU_NEW_GAME:
+        clear_sram();
+        gb_init();
+        break;
+    case MENU_SAVE:
+        save_sram(SAVE_FILE_NAME);
+        break;
+    case MENU_LOAD:
+        load_sram(SAVE_FILE_NAME);
+        break;
+    case MENU_EXIT:
+        running = false;
+        break;
+    case MENU_CONTROLS:
+        config_show_controls_dialog(NULL);
+        break;
+    case MENU_SCALE2:
+        resize_window(2);
+        break;
+    case MENU_SCALE3:
+        resize_window(3);
+        break;
+    case MENU_SCALE4:
+        resize_window(4);
+        break;
+    case MENU_FULLSCREEN:
+        toggle_fullscreen();
+        break;
+    default:
+        break;
+    }
+}
+
+int main(int argc, char *argv[]) {
+    (void)argc; (void)argv;
+
+    /* Initialize config */
+    config_init();
+    config_load(CONFIG_FILE_NAME);
+
+    /* Initialize SDL */
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
+        fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    /* Create window */
+    int win_w = SCREEN_WIDTH * config.scale;
+    int win_h = SCREEN_HEIGHT * config.scale;
+    window = SDL_CreateWindow(
+        "The Legend of Zelda: Link's Awakening",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        win_w, win_h,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+    );
+    if (!window) {
+        fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
+        cleanup();
+        return 1;
+    }
+
+    renderer = SDL_CreateRenderer(window, -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!renderer) {
+        fprintf(stderr, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
+        cleanup();
+        return 1;
+    }
+
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); /* nearest-neighbor */
+
+    texture = SDL_CreateTexture(renderer,
+        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+        SCREEN_WIDTH, SCREEN_HEIGHT);
+    if (!texture) {
+        fprintf(stderr, "SDL_CreateTexture failed: %s\n", SDL_GetError());
+        cleanup();
+        return 1;
+    }
+
+    /* Initialize audio */
+    SDL_AudioSpec want, have;
+    memset(&want, 0, sizeof(want));
+    want.freq = APU_SAMPLE_RATE;
+    want.format = AUDIO_S16SYS;
+    want.channels = 2;
+    want.samples = APU_BUFFER_SIZE;
+    want.callback = apu_audio_callback;
+
+    audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
+    if (audio_device) {
+        SDL_PauseAudioDevice(audio_device, 0);
+    }
+
+    /* Attach Win32 menu bar */
+    menu_init(window);
+
+    /* Open first available controller */
+    for (int i = 0; i < SDL_NumJoysticks(); i++) {
+        if (SDL_IsGameController(i)) {
+            input_open_controller(i);
+            break;
+        }
+    }
+
+    /* Initialize GB runtime */
+    input_init();
+    config_apply_to_input();
+    gb_init();
+    load_sram(SAVE_FILE_NAME);
+
+    if (config.fullscreen) {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+
+    printf("Link's Awakening - Static Recompilation\n");
+    printf("Controls: Arrow Keys=D-pad, Z=A, X=B, Enter=Start, RShift=Select\n");
+
+    /* Main loop */
+    Uint32 frame_start;
+    while (running) {
+        frame_start = SDL_GetTicks();
+
+        /* Poll events */
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+            case SDL_QUIT:
+                running = false;
+                break;
+            case SDL_CONTROLLERDEVICEADDED:
+                if (!input.controller) {
+                    input_open_controller(event.cdevice.which);
+                }
+                break;
+            case SDL_CONTROLLERDEVICEREMOVED:
+                input_close_controller();
+                break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    running = false;
+                }
+                if (event.key.keysym.sym == SDLK_F11) {
+                    toggle_fullscreen();
+                }
+                if (event.key.keysym.sym == SDLK_p) {
+                    paused = !paused;
+                }
+                break;
+            }
+        }
+
+        /* Handle menu actions */
+        menu_action_t action = menu_poll_action();
+        if (action != MENU_NONE) {
+            handle_menu_action(action);
+        }
+
+        if (!paused) {
+            /* Update input */
+            const uint8_t *keyboard = SDL_GetKeyboardState(NULL);
+            input_update(keyboard);
+            input_update_controller();
+
+            /* Run one frame of game logic */
+            gb.frame_ready = false;
+            bank_00_entry();
+
+            /* Render frame to texture */
+            SDL_UpdateTexture(texture, NULL, ppu.framebuffer,
+                              SCREEN_WIDTH * sizeof(uint32_t));
+        }
+
+        /* Present */
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
+
+        /* Frame timing (if vsync isn't handling it) */
+        Uint32 frame_elapsed = SDL_GetTicks() - frame_start;
+        if (frame_elapsed < (Uint32)FRAME_TIME) {
+            SDL_Delay((Uint32)FRAME_TIME - frame_elapsed);
+        }
+    }
+
+    /* Save before exit */
+    save_sram(SAVE_FILE_NAME);
+    config_save(CONFIG_FILE_NAME);
+
+    cleanup();
+    return 0;
+}

@@ -1,0 +1,38 @@
+# Build artifacts
+build/
+*.o
+*.exe
+*.dll
+
+# ROM files (must be supplied by user)
+*.gb
+*.gbc
+
+# Save data and config
+*.sav
+zelda_la.ini
+
+# Auto-generated game files (recreated by tools/)
+game/bank_*.c
+game/rom_data.c
+game/rom_data.h
+game/game_labels.h
+game/wram_defs.h
+
+# Cloned disassembly repo
+disasm/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editor/IDE files
+.vscode/
+*.swp
+
+# Claude Code
+.claude/
+
+# Test artifacts
+test.c
+test.o
