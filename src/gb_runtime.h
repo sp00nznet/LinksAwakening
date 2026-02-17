@@ -55,13 +55,13 @@ typedef struct {
 
 /* Memory map sizes */
 #define ROM_BANK_SIZE   0x4000  /* 16KB */
-#define VRAM_SIZE       0x2000  /* 8KB */
-#define WRAM_SIZE       0x2000  /* 8KB */
+#define VRAM_SIZE       0x4000  /* 16KB (GBC: 2 banks) */
+#define WRAM_SIZE       0x8000  /* 32KB (GBC: 8 banks) */
 #define OAM_SIZE        0xA0    /* 160 bytes */
 #define HRAM_SIZE       0x7F    /* 127 bytes */
-#define SRAM_SIZE       0x2000  /* 8KB */
+#define SRAM_SIZE       0x8000  /* 32KB (DX uses 4 banks) */
 #define IO_SIZE         0x80    /* 128 bytes */
-#define NUM_ROM_BANKS   32
+#define NUM_ROM_BANKS   64
 
 /* IO register addresses (offset from $FF00) */
 #define IO_JOYP     0x00
@@ -121,6 +121,11 @@ typedef struct {
     uint8_t hram[HRAM_SIZE];
     uint8_t sram[SRAM_SIZE];
     uint8_t io[IO_SIZE];
+
+    /* GBC banking */
+    uint8_t vram_bank;                      /* 0 or 1 */
+    uint8_t wram_bank;                      /* 1-7 (0 maps to 1) */
+    uint8_t sram_bank;                      /* 0-3 */
 
     /* Timer */
     uint16_t div_counter;

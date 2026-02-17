@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#define NUM_ROM_DATA_BANKS 64
+
+extern const int rom_is_gbc;
+
 extern const uint8_t rom_bank_00[16384];
 extern const uint8_t rom_bank_01[16384];
 extern const uint8_t rom_bank_02[16384];
@@ -35,7 +39,39 @@ extern const uint8_t rom_bank_1C[16384];
 extern const uint8_t rom_bank_1D[16384];
 extern const uint8_t rom_bank_1E[16384];
 extern const uint8_t rom_bank_1F[16384];
+extern const uint8_t rom_bank_20[16384];
+extern const uint8_t rom_bank_21[16384];
+extern const uint8_t rom_bank_22[16384];
+extern const uint8_t rom_bank_23[16384];
+extern const uint8_t rom_bank_24[16384];
+extern const uint8_t rom_bank_25[16384];
+extern const uint8_t rom_bank_26[16384];
+extern const uint8_t rom_bank_27[16384];
+extern const uint8_t rom_bank_28[16384];
+extern const uint8_t rom_bank_29[16384];
+extern const uint8_t rom_bank_2A[16384];
+extern const uint8_t rom_bank_2B[16384];
+extern const uint8_t rom_bank_2C[16384];
+extern const uint8_t rom_bank_2D[16384];
+extern const uint8_t rom_bank_2E[16384];
+extern const uint8_t rom_bank_2F[16384];
+extern const uint8_t rom_bank_30[16384];
+extern const uint8_t rom_bank_31[16384];
+extern const uint8_t rom_bank_32[16384];
+extern const uint8_t rom_bank_33[16384];
+extern const uint8_t rom_bank_34[16384];
+extern const uint8_t rom_bank_35[16384];
+extern const uint8_t rom_bank_36[16384];
+extern const uint8_t rom_bank_37[16384];
+extern const uint8_t rom_bank_38[16384];
+extern const uint8_t rom_bank_39[16384];
+extern const uint8_t rom_bank_3A[16384];
+extern const uint8_t rom_bank_3B[16384];
+extern const uint8_t rom_bank_3C[16384];
+extern const uint8_t rom_bank_3D[16384];
+extern const uint8_t rom_bank_3E[16384];
+extern const uint8_t rom_bank_3F[16384];
 
-extern const uint8_t *rom_bank_ptrs[32];
+extern const uint8_t *rom_bank_ptrs[64];
 
 #endif /* ROM_DATA_H */

@@ -12,21 +12,34 @@ gb_state_t gb;
 void gb_init(void) {
     memset(&gb, 0, sizeof(gb));
 
-    /* Post-boot register state (DMG) */
-    gb.regs.af = 0x01B0;
-    gb.regs.bc = 0x0013;
-    gb.regs.de = 0x00D8;
-    gb.regs.hl = 0x014D;
+    /* Set up ROM bank pointers */
+    gb.rom_bank0 = rom_bank_00;
+    for (int i = 0; i < NUM_ROM_DATA_BANKS; i++) {
+        gb.rom_banks[i] = rom_bank_ptrs[i];
+    }
+    /* Fill remaining slots with bank 0 as fallback */
+    for (int i = NUM_ROM_DATA_BANKS; i < NUM_ROM_BANKS; i++) {
+        gb.rom_banks[i] = rom_bank_00;
+    }
+    gb.current_rom_bank = 1;
+
+    /* Post-boot register state depends on ROM type */
+    if (rom_is_gbc) {
+        /* GBC boot: register A = 0x11 */
+        gb.regs.af = 0x11B0;
+        gb.regs.bc = 0x0000;
+        gb.regs.de = 0xFF56;
+        gb.regs.hl = 0x000D;
+    } else {
+        /* DMG boot: register A = 0x01 */
+        gb.regs.af = 0x01B0;
+        gb.regs.bc = 0x0013;
+        gb.regs.de = 0x00D8;
+        gb.regs.hl = 0x014D;
+    }
     gb.regs.sp = 0xFFFE;
     gb.regs.pc = 0x0100;
     gb.regs.ime = true;
-
-    /* Set up ROM bank pointers */
-    gb.rom_bank0 = rom_bank_00;
-    for (int i = 0; i < NUM_ROM_BANKS; i++) {
-        gb.rom_banks[i] = rom_bank_ptrs[i];
-    }
-    gb.current_rom_bank = 1;
 
     /* Initial IO register values */
     gb.io[IO_LCDC] = 0x91;
@@ -51,17 +64,26 @@ uint8_t gb_read(uint16_t addr) {
         /* Switchable ROM bank */
         return gb.rom_banks[gb.current_rom_bank][addr - 0x4000];
     } else if (addr < 0xA000) {
-        /* VRAM */
-        return gb.vram[addr - 0x8000];
+        /* VRAM (GBC: banked via FF4F) */
+        return gb.vram[(gb.vram_bank * 0x2000) + (addr - 0x8000)];
     } else if (addr < 0xC000) {
-        /* SRAM */
-        return gb.sram[addr - 0xA000];
-    } else if (addr < 0xE000) {
-        /* WRAM */
+        /* SRAM (MBC5: banked via 4000-5FFF writes) */
+        return gb.sram[(gb.sram_bank * 0x2000) + (addr - 0xA000)];
+    } else if (addr < 0xD000) {
+        /* WRAM bank 0 (always at C000-CFFF) */
         return gb.wram[addr - 0xC000];
+    } else if (addr < 0xE000) {
+        /* WRAM bank 1-7 (GBC: banked via FF70, at D000-DFFF) */
+        uint8_t bank = gb.wram_bank ? gb.wram_bank : 1;
+        return gb.wram[(bank * 0x1000) + (addr - 0xD000)];
     } else if (addr < 0xFE00) {
         /* Echo RAM -> WRAM mirror */
-        return gb.wram[addr - 0xE000];
+        if (addr < 0xF000)
+            return gb.wram[addr - 0xE000];
+        else {
+            uint8_t bank = gb.wram_bank ? gb.wram_bank : 1;
+            return gb.wram[(bank * 0x1000) + (addr - 0xF000)];
+        }
     } else if (addr < 0xFEA0) {
         /* OAM */
         return gb.oam[addr - 0xFE00];
@@ -76,6 +98,12 @@ uint8_t gb_read(uint16_t addr) {
         }
         if (reg == IO_LY) {
             return ppu_get_ly();
+        }
+        if (reg == 0x4F) {
+            return gb.vram_bank | 0xFE;  /* VBK */
+        }
+        if (reg == 0x70) {
+            return gb.wram_bank;  /* SVBK */
         }
         return gb.io[reg];
     } else if (addr < 0xFFFF) {
@@ -104,26 +132,37 @@ void gb_write(uint16_t addr, uint8_t val) {
             gb.current_rom_bank = gb.current_rom_bank % NUM_ROM_BANKS;
         return;
     } else if (addr < 0x6000) {
-        /* RAM bank (MBC5) - we only have 8KB SRAM */
+        /* SRAM bank select (MBC5) */
+        gb.sram_bank = val & 0x03;
         return;
     } else if (addr < 0x8000) {
         /* ROM area - ignore writes */
         return;
     } else if (addr < 0xA000) {
-        /* VRAM */
-        gb.vram[addr - 0x8000] = val;
+        /* VRAM (GBC: banked via FF4F) */
+        gb.vram[(gb.vram_bank * 0x2000) + (addr - 0x8000)] = val;
         return;
     } else if (addr < 0xC000) {
-        /* SRAM */
-        gb.sram[addr - 0xA000] = val;
+        /* SRAM (MBC5: banked) */
+        gb.sram[(gb.sram_bank * 0x2000) + (addr - 0xA000)] = val;
+        return;
+    } else if (addr < 0xD000) {
+        /* WRAM bank 0 */
+        gb.wram[addr - 0xC000] = val;
         return;
     } else if (addr < 0xE000) {
-        /* WRAM */
-        gb.wram[addr - 0xC000] = val;
+        /* WRAM bank 1-7 (GBC: banked via FF70) */
+        uint8_t bank = gb.wram_bank ? gb.wram_bank : 1;
+        gb.wram[(bank * 0x1000) + (addr - 0xD000)] = val;
         return;
     } else if (addr < 0xFE00) {
         /* Echo RAM */
-        gb.wram[addr - 0xE000] = val;
+        if (addr < 0xF000)
+            gb.wram[addr - 0xE000] = val;
+        else {
+            uint8_t bank = gb.wram_bank ? gb.wram_bank : 1;
+            gb.wram[(bank * 0x1000) + (addr - 0xF000)] = val;
+        }
         return;
     } else if (addr < 0xFEA0) {
         /* OAM */
@@ -157,6 +196,12 @@ void gb_write(uint16_t addr, uint8_t val) {
                 case 2: gb.timer_freq = 64;   break;
                 case 3: gb.timer_freq = 256;  break;
             }
+        } else if (reg == 0x4F) {
+            /* FF4F: VBK - VRAM bank select (GBC) */
+            gb.vram_bank = val & 1;
+        } else if (reg == 0x70) {
+            /* FF70: SVBK - WRAM bank select (GBC) */
+            gb.wram_bank = val & 7;
         } else if (reg >= IO_NR10 && reg <= 0x3F) {
             apu_write_reg(reg, val);
         } else if (reg == IO_LCDC || reg == IO_STAT ||
