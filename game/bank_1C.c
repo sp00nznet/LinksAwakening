@@ -916,6 +916,7 @@ void CodepointToTileMap(void) {
 }
 
 void CodepointToDiacritic(void) {
+    DialogBankTable();
 }
 
 void DialogBankTable(void) {
@@ -2639,6 +2640,7 @@ void Dialog157(void) {
 }
 
 void Dialog158(void) {
+    Dialog159();
 }
 
 void Dialog159(void) {

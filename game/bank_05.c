@@ -4510,9 +4510,11 @@ void func_005_5984(void) {
 }
 
 void EvilEagleRiderVisibleTiles(void) {
+    EvilEagleRiderHiddenTiles();
 }
 
 void EvilEagleRiderHiddenTiles(void) {
+    EntityInitEvilEagle();
 }
 
 void EntityInitEvilEagle(void) {
@@ -4660,6 +4662,7 @@ void func_005_5ADB(void) {
 }
 
 void func_005_5B09(void) {
+    jr_005_5b15();
 }
 
 void jr_005_5b15(void) {

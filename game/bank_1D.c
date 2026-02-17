@@ -334,6 +334,7 @@ void Dialog19E(void) {
 }
 
 void Dialog19F(void) {
+    Dialog1A0();
 }
 
 void Dialog1A0(void) {
@@ -513,6 +514,7 @@ void Dialog1BE(void) {
 }
 
 void Dialog1BF(void) {
+    Dialog1C0();
 }
 
 void Dialog1C0(void) {
@@ -545,6 +547,7 @@ void Dialog1C3(void) {
 }
 
 void Dialog1C4(void) {
+    Dialog1C5();
 }
 
 void Dialog1C5(void) {
@@ -1247,6 +1250,7 @@ void Dialog20E(void) {
 }
 
 void Dialog20F(void) {
+    Dialog210();
 }
 
 void Dialog210(void) {
@@ -1363,6 +1367,7 @@ void Dialog21E(void) {
 }
 
 void Dialog21F(void) {
+    Dialog220();
 }
 
 void Dialog220(void) {
@@ -1525,6 +1530,7 @@ void Dialog22E(void) {
 }
 
 void Dialog22F(void) {
+    Dialog230();
 }
 
 void Dialog230(void) {

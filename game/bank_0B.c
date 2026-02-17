@@ -512,6 +512,7 @@ void IndoorsBRoomPointers(void) {
 }
 
 void IndoorsBRooms(void) {
+    IndoorsB01();
 }
 
 void IndoorsB01(void) {

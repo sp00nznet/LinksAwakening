@@ -695,6 +695,7 @@ void Data_01B_4065(void) {
 }
 
 void label_01B_406A(void) {
+    jr_01B_406A();
 }
 
 void jr_01B_406A(void) {
@@ -808,6 +809,7 @@ void StopNoiseChannel_1B(void) {
 }
 
 void func_01B_410F(void) {
+    jr_01B_410F();
 }
 
 void jr_01B_410F(void) {
@@ -1736,6 +1738,7 @@ void func_01B_46FE(void) {
 }
 
 void label_01B_4720(void) {
+    jr_01B_4720();
 }
 
 void jr_01B_4720(void) {
@@ -1913,6 +1916,7 @@ void label_01B_4810(void) {
 }
 
 void label_01B_483D(void) {
+    jr_01B_483D();
 }
 
 void jr_01B_483D(void) {
@@ -2239,27 +2243,35 @@ void HardcodedData_1b_4b13(void) {
 }
 
 void MusicMabeVillage_Channel3_rest_1C0(void) {
+    MusicInsideBuilding_Channel3_rest_1C0();
 }
 
 void MusicInsideBuilding_Channel3_rest_1C0(void) {
+    MusicMrWriteHouse_Channel3_rest_1C0();
 }
 
 void MusicMrWriteHouse_Channel3_rest_1C0(void) {
+    MusicUlrira_Channel3_rest_1C0();
 }
 
 void MusicUlrira_Channel3_rest_1C0(void) {
+    MusicTarinBees_Channel1_rest_1C0();
 }
 
 void MusicTarinBees_Channel1_rest_1C0(void) {
+    MusicMonkeysBuildingBridge_Channel1_rest_1C0();
 }
 
 void MusicMonkeysBuildingBridge_Channel1_rest_1C0(void) {
+    MusicTotakaUnused_Channel1_rest_1C0();
 }
 
 void MusicTotakaUnused_Channel1_rest_1C0(void) {
+    MusicTotakaUnused_Channel2_rest_1C0();
 }
 
 void MusicTotakaUnused_Channel2_rest_1C0(void) {
+    MusicFishermanUnderBridge_Channel1_rest_1C0();
 }
 
 void MusicFishermanUnderBridge_Channel1_rest_1C0(void) {
@@ -10902,48 +10914,63 @@ void ChannelDefinition_1b_70a3(void) {
 }
 
 void MusicColorDungeon(void) {
+    Music62();
 }
 
 void Music62(void) {
+    Music63();
 }
 
 void Music63(void) {
+    Music64();
 }
 
 void Music64(void) {
+    Music65();
 }
 
 void Music65(void) {
+    Music66();
 }
 
 void Music66(void) {
+    Music67();
 }
 
 void Music67(void) {
+    Music68();
 }
 
 void Music68(void) {
+    Music69();
 }
 
 void Music69(void) {
+    Music6a();
 }
 
 void Music6a(void) {
+    Music6b();
 }
 
 void Music6b(void) {
+    Music6c();
 }
 
 void Music6c(void) {
+    Music6d();
 }
 
 void Music6d(void) {
+    Music6e();
 }
 
 void Music6e(void) {
+    Music6f();
 }
 
 void Music6f(void) {
+    Music70();
 }
 
 void Music70(void) {

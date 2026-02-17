@@ -3377,6 +3377,7 @@ void SetEntityDirection(void) {
 }
 
 void EntityInitNoop(void) {
+    NoopFunction();
 }
 
 void NoopFunction(void) {
@@ -3560,15 +3561,19 @@ void EntityInitGiantBuzzBlob(void) {
 }
 
 void EntityInitEntity25(void) {
+    EntityInitEntity26();
 }
 
 void EntityInitEntity26(void) {
+    Entity25Handler();
 }
 
 void Entity25Handler(void) {
+    Entity26Handler();
 }
 
 void Entity26Handler(void) {
+    FireSpriteVariants();
 }
 
 void FireSpriteVariants(void) {
@@ -4111,6 +4116,7 @@ void EntityInitTreeOrPotDroppable(void) {
 }
 
 void EntityInitWithShiftedPosition(void) {
+    EntityShiftPosition();
 }
 
 void EntityShiftPosition(void) {
@@ -5836,6 +5842,7 @@ void EntityInitEntity13(void) {
 }
 
 void Entity13Handler(void) {
+    HeartContainerSpriteVariants();
 }
 
 void HeartContainerSpriteVariants(void) {

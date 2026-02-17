@@ -3276,9 +3276,11 @@ void IndoorsADFEntities(void) {
 }
 
 void IndoorsAE0Entities(void) {
+    IndoorsAE1Entities();
 }
 
 void IndoorsAE1Entities(void) {
+    IndoorsAE2Entities();
 }
 
 void IndoorsAE2Entities(void) {
@@ -6629,30 +6631,39 @@ void ColorDungeon15Entities(void) {
 }
 
 void ColorDungeon16Entities(void) {
+    ColorDungeon17Entities();
 }
 
 void ColorDungeon17Entities(void) {
+    ColorDungeon18Entities();
 }
 
 void ColorDungeon18Entities(void) {
+    ColorDungeon19Entities();
 }
 
 void ColorDungeon19Entities(void) {
+    ColorDungeon1AEntities();
 }
 
 void ColorDungeon1AEntities(void) {
+    ColorDungeon1BEntities();
 }
 
 void ColorDungeon1BEntities(void) {
+    ColorDungeon1CEntities();
 }
 
 void ColorDungeon1CEntities(void) {
+    ColorDungeon1DEntities();
 }
 
 void ColorDungeon1DEntities(void) {
+    ColorDungeon1EEntities();
 }
 
 void ColorDungeon1EEntities(void) {
+    ColorDungeon1FEntities();
 }
 
 void ColorDungeon1FEntities(void) {
@@ -6813,6 +6824,7 @@ void Dialog0B7(void) {
 }
 
 void Dialog0B8(void) {
+    Dialog0B9();
 }
 
 void Dialog0B9(void) {
@@ -6836,6 +6848,7 @@ void Dialog0BA(void) {
 }
 
 void Dialog0BB(void) {
+    Dialog0BC();
 }
 
 void Dialog0BC(void) {
@@ -6862,9 +6875,11 @@ void Dialog0BD(void) {
 }
 
 void Dialog0BE(void) {
+    Dialog0BF();
 }
 
 void Dialog0BF(void) {
+    Dialog0C0();
 }
 
 void Dialog0C0(void) {
@@ -7117,6 +7132,7 @@ void Dialog0CD(void) {
 }
 
 void Dialog0CE(void) {
+    Dialog0CF();
 }
 
 void Dialog0CF(void) {
@@ -7194,6 +7210,7 @@ void Dialog0D0(void) {
 }
 
 void Dialog0D1(void) {
+    Dialog0D2();
 }
 
 void Dialog0D2(void) {
@@ -7204,9 +7221,11 @@ void Dialog0D2(void) {
 }
 
 void Dialog0D3(void) {
+    Dialog0D4();
 }
 
 void Dialog0D4(void) {
+    Dialog0D5();
 }
 
 void Dialog0D5(void) {
@@ -7214,6 +7233,7 @@ void Dialog0D5(void) {
 }
 
 void Dialog0D6(void) {
+    Dialog0D7();
 }
 
 void Dialog0D7(void) {
@@ -7417,9 +7437,11 @@ void Dialog0E9(void) {
 }
 
 void Dialog0EA(void) {
+    Dialog0EB();
 }
 
 void Dialog0EB(void) {
+    Dialog0EC();
 }
 
 void Dialog0EC(void) {

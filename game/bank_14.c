@@ -4204,6 +4204,7 @@ void Dialog02A(void) {
 }
 
 void Dialog02B(void) {
+    Dialog02C();
 }
 
 void Dialog02C(void) {
@@ -4278,6 +4279,7 @@ void Dialog036(void) {
 }
 
 void Dialog037(void) {
+    Dialog038();
 }
 
 void Dialog038(void) {
@@ -4297,6 +4299,7 @@ void Dialog039(void) {
 }
 
 void Dialog03A(void) {
+    Dialog03B();
 }
 
 void Dialog03B(void) {
@@ -4569,6 +4572,7 @@ void Dialog05E(void) {
 }
 
 void Dialog05F(void) {
+    Dialog060();
 }
 
 void Dialog060(void) {
@@ -4912,6 +4916,7 @@ void Dialog09D(void) {
 }
 
 void Dialog09E(void) {
+    Dialog09F();
 }
 
 void Dialog09F(void) {

@@ -5395,6 +5395,7 @@ void KidBallSprite(void) {
 }
 
 void Kid71EntityHandler(void) {
+    Kid72EntityHandler();
 }
 
 void Kid72EntityHandler(void) {
@@ -5634,6 +5635,7 @@ void KidWithBallState1(void) {
 }
 
 void Kid70EntityHandler(void) {
+    Kid73EntityHandler();
 }
 
 void Kid73EntityHandler(void) {
@@ -6293,6 +6295,7 @@ void Data_006_662D(void) {
 }
 
 void SparkClockwiseEntityHandler(void) {
+    SparkCounterClockwiseEntityHandler();
 }
 
 void SparkCounterClockwiseEntityHandler(void) {

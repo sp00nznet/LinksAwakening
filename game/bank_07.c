@@ -5961,6 +5961,7 @@ void Data_007_6348(void) {
 }
 
 void SideViewPlatformHorizontalEntityHandler(void) {
+    SideViewPlatformVerticalEntityHandler();
 }
 
 void SideViewPlatformVerticalEntityHandler(void) {

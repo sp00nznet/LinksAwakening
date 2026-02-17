@@ -6414,6 +6414,7 @@ void CheepCheepSpriteVariants(void) {
 }
 
 void CheepCheepHorizontalEntityHandler(void) {
+    CheepCheepVerticalEntityHandler();
 }
 
 void CheepCheepVerticalEntityHandler(void) {

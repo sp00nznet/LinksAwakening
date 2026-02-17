@@ -497,6 +497,7 @@ void OverworldRoomPointers(void) {
 }
 
 void OverworldRoomsFirstHalf(void) {
+    Overworld00();
 }
 
 void Overworld00(void) {

@@ -154,6 +154,7 @@ void Data_01A_70AD(void);
 void AnglersTunnelDoorEntityHandler(void);
 
 void OverworldRoomsSecondHalf(void) {
+    Overworld80();
 }
 
 void Overworld80(void) {

@@ -7457,9 +7457,11 @@ void DMARoutine(void) {
 }
 
 void DMARoutineEnd(void) {
+    IntroRainTiles();
 }
 
 void IntroRainTiles(void) {
+    MinimapEntrancePosition();
 }
 
 void MinimapEntrancePosition(void) {

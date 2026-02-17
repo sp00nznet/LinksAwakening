@@ -958,6 +958,7 @@ void Data_0E1_406D(void) {
 }
 
 void label_01E_4072(void) {
+    jr_01E_4072();
 }
 
 void jr_01E_4072(void) {
@@ -1087,6 +1088,7 @@ void func_01E_411B(void) {
 }
 
 void func_01E_4137(void) {
+    jr_01E_4137();
 }
 
 void jr_01E_4137(void) {
@@ -1532,6 +1534,7 @@ void label_01E_44A6(void) {
 }
 
 void label_01E_44D7(void) {
+    jr_01E_44D7();
 }
 
 void jr_01E_44D7(void) {
@@ -1698,6 +1701,7 @@ void label_01E_45A3(void) {
 }
 
 void label_01E_45A5(void) {
+    jr_01E_45A5();
 }
 
 void jr_01E_45A5(void) {
@@ -1917,6 +1921,7 @@ void jr_01E_46DB(void) {
 }
 
 void label_01E_46EE(void) {
+    jr_01E_46EE();
 }
 
 void jr_01E_46EE(void) {
@@ -2006,6 +2011,7 @@ void label_01E_473F(void) {
 }
 
 void label_01E_474D(void) {
+    jr_01E_474D();
 }
 
 void jr_01E_474D(void) {
@@ -2064,6 +2070,7 @@ void func_01E_4772(void) {
 }
 
 void label_01E_4794(void) {
+    jr_01E_4794();
 }
 
 void jr_01E_4794(void) {
@@ -2244,6 +2251,7 @@ void label_01E_4882(void) {
 }
 
 void label_01E_48AF(void) {
+    jr_01E_48AF();
 }
 
 void jr_01E_48AF(void) {
@@ -2513,81 +2521,107 @@ void HardcodedData_1e_4b15(void) {
 }
 
 void MusicTailCave_Channel1_rest_1C0(void) {
+    MusicAnglersTunnel_Channel3_rest_1C0();
 }
 
 void MusicAnglersTunnel_Channel3_rest_1C0(void) {
+    MusicIntroWakeUp_Channel3_rest_1C0();
 }
 
 void MusicIntroWakeUp_Channel3_rest_1C0(void) {
+    MusicDreamShrineSleep_Channel3_rest_1C0();
 }
 
 void MusicDreamShrineSleep_Channel3_rest_1C0(void) {
+    MusicSouthernShrine_Channel3_rest_1C0();
 }
 
 void MusicSouthernShrine_Channel3_rest_1C0(void) {
+    MusicSouthernShrine_Channel4_rest_1C0();
 }
 
 void MusicSouthernShrine_Channel4_rest_1C0(void) {
+    MusicInstrumentFullMoonCello_Channel1_rest_1C0();
 }
 
 void MusicInstrumentFullMoonCello_Channel1_rest_1C0(void) {
+    Music2dUnderground_Channel1_rest_1C0();
 }
 
 void Music2dUnderground_Channel1_rest_1C0(void) {
+    Music2dUnderground_Channel3_rest_1C0();
 }
 
 void Music2dUnderground_Channel3_rest_1C0(void) {
+    MusicOwl_Channel3_rest_1C0();
 }
 
 void MusicOwl_Channel3_rest_1C0(void) {
+    MusicDreamShrineBed_Channel3_rest_1C0();
 }
 
 void MusicDreamShrineBed_Channel3_rest_1C0(void) {
+    MusicCave_Channel3_rest_1C0();
 }
 
 void MusicCave_Channel3_rest_1C0(void) {
+    MusicInstrumentConchHorn_Channel1_rest_1C0();
 }
 
 void MusicInstrumentConchHorn_Channel1_rest_1C0(void) {
+    MusicInstrumentSeaLilysBell_Channel1_rest_1C0();
 }
 
 void MusicInstrumentSeaLilysBell_Channel1_rest_1C0(void) {
+    MusicInstrumentSurfHarp_Channel1_rest_1C0();
 }
 
 void MusicInstrumentSurfHarp_Channel1_rest_1C0(void) {
+    MusicInstrumentCoralTriangle_Channel1_rest_1C0();
 }
 
 void MusicInstrumentCoralTriangle_Channel1_rest_1C0(void) {
+    MusicInstrumentOrganOfEveningCalm_Channel1_rest_1C0();
 }
 
 void MusicInstrumentOrganOfEveningCalm_Channel1_rest_1C0(void) {
+    MusicInstrumentThunderDrum_Channel1_rest_1C0();
 }
 
 void MusicInstrumentThunderDrum_Channel1_rest_1C0(void) {
+    MusicInstrumentThunderDrum_Channel3_rest_1C0();
 }
 
 void MusicInstrumentThunderDrum_Channel3_rest_1C0(void) {
+    MusicEggBalladDefault_Channel2_rest_1C0();
 }
 
 void MusicEggBalladDefault_Channel2_rest_1C0(void) {
+    MusicL2Sword_Channel3_rest_1C0();
 }
 
 void MusicL2Sword_Channel3_rest_1C0(void) {
+    MusicFaceShrine_Channel3_rest_1C0();
 }
 
 void MusicFaceShrine_Channel3_rest_1C0(void) {
+    MusicWindFish_Channel3_rest_1C0();
 }
 
 void MusicWindFish_Channel3_rest_1C0(void) {
+    MusicEagleBossLoop_Channel3_rest_1C0();
 }
 
 void MusicEagleBossLoop_Channel3_rest_1C0(void) {
+    MusicFinalBossIntro_Channel1_rest_1C0();
 }
 
 void MusicFinalBossIntro_Channel1_rest_1C0(void) {
+    MusicFinalBossIntro_Channel3_rest_1C0();
 }
 
 void MusicFinalBossIntro_Channel3_rest_1C0(void) {
+    MusicBossDefeat_Channel3_rest_1C0();
 }
 
 void MusicBossDefeat_Channel3_rest_1C0(void) {
@@ -2626,6 +2660,7 @@ void MusicObtainPowerup_Channel1(void) {
 }
 
 void MusicLoop_1e_4b40(void) {
+    MusicActivePowerUp_Channel1();
 }
 
 void MusicActivePowerUp_Channel1(void) {
@@ -2638,6 +2673,7 @@ void MusicObtainPowerup_Channel2(void) {
 }
 
 void MusicLoop_1e_4b48(void) {
+    MusicActivePowerUp_Channel2();
 }
 
 void MusicActivePowerUp_Channel2(void) {
@@ -2650,6 +2686,7 @@ void MusicObtainPowerup_Channel3(void) {
 }
 
 void MusicLoop_1e_4b50(void) {
+    MusicActivePowerUp_Channel3();
 }
 
 void MusicActivePowerUp_Channel3(void) {
@@ -2662,6 +2699,7 @@ void MusicObtainPowerup_Channel4(void) {
 }
 
 void MusicLoop_1e_4b58(void) {
+    MusicActivePowerUp_Channel4();
 }
 
 void MusicActivePowerUp_Channel4(void) {
@@ -5344,6 +5382,7 @@ void ChannelDefinition_1e_rest_3C(void) {
 }
 
 void MusicTailCave(void) {
+    MusicTailCaveCopy();
 }
 
 void MusicTailCaveCopy(void) {
@@ -6379,6 +6418,7 @@ void ChannelDefinition_1e_5e5f(void) {
 }
 
 void MusicKanaletCastle(void) {
+    MusicKanaletCastleCopy();
 }
 
 void MusicKanaletCastleCopy(void) {
@@ -10247,6 +10287,7 @@ void MusicEggBalladBell_Channel1(void) {
 }
 
 void MusicEggBalladBell_Channel2(void) {
+    MusicEggBalladHarp_Channel1();
 }
 
 void MusicEggBalladHarp_Channel1(void) {
@@ -10255,18 +10296,23 @@ void MusicEggBalladHarp_Channel1(void) {
 }
 
 void MusicEggBalladBell_Channel3(void) {
+    MusicEggBalladHarp_Channel3();
 }
 
 void MusicEggBalladHarp_Channel3(void) {
+    MusicEggBalladMarimba_Channel3();
 }
 
 void MusicEggBalladMarimba_Channel3(void) {
+    MusicEggBalladTriangle_Channel3();
 }
 
 void MusicEggBalladTriangle_Channel3(void) {
+    MusicEggBalladOrgan_Channel3();
 }
 
 void MusicEggBalladOrgan_Channel3(void) {
+    MusicEggBalladAll_Channel3();
 }
 
 void MusicEggBalladAll_Channel3(void) {
@@ -10453,12 +10499,15 @@ void MusicEggBalladHarp(void) {
 }
 
 void MusicEggBalladHarp_Channel2(void) {
+    MusicEggBalladMarimba_Channel2();
 }
 
 void MusicEggBalladMarimba_Channel2(void) {
+    MusicEggBalladTriangle_Channel2();
 }
 
 void MusicEggBalladTriangle_Channel2(void) {
+    MusicEggBalladAll_Channel1();
 }
 
 void MusicEggBalladAll_Channel1(void) {
@@ -10560,6 +10609,7 @@ void MusicEggBalladMarimba(void) {
 }
 
 void MusicEggBalladMarimba_Channel1(void) {
+    MusicEggBalladTriangle_Channel1();
 }
 
 void MusicEggBalladTriangle_Channel1(void) {
@@ -10629,6 +10679,7 @@ void MusicEggBalladTriangle(void) {
 }
 
 void MusicEggBalladTriangle_Channel4(void) {
+    MusicEggBalladOrgan_Channel4();
 }
 
 void MusicEggBalladOrgan_Channel4(void) {

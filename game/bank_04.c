@@ -685,6 +685,7 @@ void jr_004_4118(void) {
 }
 
 void label_004_4144(void) {
+    jr_004_4144();
 }
 
 void jr_004_4144(void) {
@@ -1326,6 +1327,7 @@ void func_004_4517(void) {
 }
 
 void label_004_4568(void) {
+    jr_004_4568();
 }
 
 void jr_004_4568(void) {
@@ -4240,6 +4242,7 @@ void GiantGhiniEntityHandler(void) {
 }
 
 void HidingGhiniEntityHandler(void) {
+    GhiniEntityHandler();
 }
 
 void GhiniEntityHandler(void) {
@@ -6194,6 +6197,7 @@ void TractorDeviceBottleGrottoSpriteVariants(void) {
 }
 
 void TractorDeviceEntityHandler(void) {
+    ReversedTractorDeviceEntityHandler();
 }
 
 void ReversedTractorDeviceEntityHandler(void) {

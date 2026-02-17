@@ -1627,6 +1627,7 @@ void JoypadToLinkDirection(void) {
 }
 
 void LinkAnimationsLists(void) {
+    LinkAnimationsList_WalkingNoShield();
 }
 
 void LinkAnimationsList_WalkingNoShield(void) {
