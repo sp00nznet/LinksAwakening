@@ -8414,29 +8414,16 @@ void func_019_7A9A(void) {
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     if (!GET_FLAG_Z()) return;
     gb.regs.a = gb_read(0xFFE7);
-    gb.regs.a = alu_and8(gb.regs.a, 3);
-    gb.regs.a = alu_sla(gb.regs.a);
-    gb.regs.a = alu_add8(gb.regs.a, 0xB6);
-    gb.regs.l = gb.regs.a;
-    gb.regs.a = 0x7A;
-    gb.regs.a = alu_adc8(gb.regs.a, 0);
-    gb.regs.h = gb.regs.a;
-    gb.regs.a = gb_read(gb.regs.hl++);
-    gb.regs.h = gb_read(gb.regs.hl);
-    gb.regs.l = gb.regs.a;
-    /* jp hl - dynamic dispatch */;
-    Data_019_7AB6(); return;
+    switch (gb.regs.a & 3) {
+        case 0: func_019_7ABE(); return;
+        case 1: func_019_7ADB(); return;
+        case 2: func_019_7AF8(); return;
+        case 3: func_019_7B04(); return;
+    }
 }
 
 void Data_019_7AB6(void) {
-  Data_019_7AB6__00:;
-    /* data: dw func_019_7ABE */;
-  Data_019_7AB6__01:;
-    /* data: dw func_019_7ADB */;
-  Data_019_7AB6__02:;
-    /* data: dw func_019_7AF8 */;
-  Data_019_7AB6__03:;
-    /* data: dw func_019_7B04 */;
+    /* Jump table - dispatch handled inline in func_019_7A9A */
     func_019_7ABE(); return;
 }
 
