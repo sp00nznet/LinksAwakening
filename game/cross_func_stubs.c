@@ -336,8 +336,18 @@ void EntityBounceOffWallX_updateSpeed(void) {
     gb.regs.a = alu_sra(gb.regs.a);
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void EntityInitFlyingHopperBombs_setPosZ(void) { /* cross-function local label stub */ }
-void EntityInitShopOwner_setDirectionLeft(void) { /* cross-function local label stub */ }
+void EntityInitFlyingHopperBombs_setPosZ(void) {
+    /* Jump-to-middle: set entity Z position to 0x10, then set sprite variant */
+    gb.regs.hl = 0xC310; /* wEntitiesPosZTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0x10);
+    SetEntitySpriteVariant();
+}
+void EntityInitShopOwner_setDirectionLeft(void) {
+    /* Jump-to-middle: set entity facing direction to left */
+    gb.regs.a = 0x01; /* DIRECTION_LEFT */
+    SetEntityDirection();
+}
 void EntityShiftPosition_shiftBy8(void) {
     /* Jump-to-middle: add 8 to position low byte with carry to high byte */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
@@ -369,9 +379,32 @@ void InterruptVBlank_vblankDoneInterruptsEnabled(void) {
     gb.regs.ime = true;
 }
 void KikiOpenDialog_return(void) { /* cross-function local label stub */ }
-void KnightWalkingHandler_animate(void) { /* cross-function local label stub */ }
+void KnightWalkingHandler_animate(void) {
+    /* Jump-to-middle: animate knight walking sprite (inertia counter >> 3 & 1) */
+    gb.regs.hl = 0xC3D0; /* wEntitiesInertiaTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_rra();
+    alu_rra();
+    alu_rra();
+    gb.regs.a = alu_and8(gb.regs.a, 0x01);
+    SetEntitySpriteVariant();
+}
 void LCDOn_return(void) { /* just ret */ }
-void LeeverEmergingHandler_setSpriteVariant(void) { /* cross-function local label stub */ }
+void LeeverEmergingHandler_setSpriteVariant(void) {
+    /* Jump-to-middle: map transition countdown to sprite variant via lookup table
+       At entry: a = transition countdown value, hl = sprite variant lookup table */
+    gb.regs.a = alu_srl(gb.regs.a);
+    gb.regs.a = alu_srl(gb.regs.a);
+    gb.regs.a = alu_srl(gb.regs.a);
+    gb.regs.a = alu_srl(gb.regs.a);
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    SetEntitySpriteVariant();
+}
 void LoadAnimatedTilesFrame_de(void) {
     /* Jump-to-middle: LoadAnimatedTilesFrame .de - DE already set by caller */
     gb.regs.bc = 0x40;
@@ -463,7 +496,24 @@ void PickableCollectIfNeeded_collect(void) {
     }
 }
 void PickableHandleGrabbedByItemIfNeeded_return(void) { /* cross-function local label stub */ }
-void PushLinkOutOfEntity_06_forcePush(void) { /* cross-function local label stub */ }
+void PushLinkOutOfEntity_06_forcePush(void) {
+    /* Jump-to-middle: force push Link away, reset boots, clear hookshot state */
+    CopyLinkFinalPositionToPosition();
+    ResetPegasusBoots();
+    gb.regs.a = gb_read(0xC1A6); /* wHookshotEntityIndexPlusOne */
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0xC39F; /* wEntitiesTypeTable - 1 */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 0x03); /* ENTITY_HOOKSHOT_CHAIN */
+    if (!GET_FLAG_Z()) return;
+    gb.regs.hl = 0xC28F; /* wEntitiesStateTable - 1 */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 0x00);
+}
 void RaisableBlockShiftedRightEntityHandler_update(void) { /* cross-function local label stub */ }
 void RenderActiveEntitySpritesPair_paletteFlip1End(void) {
     /* Jump-to-middle: restore entity index, call OAM sprite helpers */
@@ -792,12 +842,74 @@ void AnimateTiles_jumpTable(void) {
 }
 void ApplyLinkGroundMotion_noChecks(void) { }
 void ApplyLinkMotionState_skipInitialCall(void) { }
-void BombEntityHandler_BounceOffWalls(void) { }
+void BombEntityHandler_BounceOffWalls(void) {
+    /* Jump-to-middle: check collision table, bounce off walls X and Y */
+    gb.regs.hl = 0xC2A0; /* wEntitiesCollisionsTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_and8(gb.regs.a, 0x03);
+    if (!GET_FLAG_Z()) EntityBounceOffWallX();
+    gb.regs.a = gb_read(0xFFF9); /* hIsSideScrolling */
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (!GET_FLAG_Z()) return;
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0C);
+    if (GET_FLAG_Z()) return;
+    EntityBounceOffWallY();
+}
 void CheckLinkCollisionWithEnemy_collisionEvenInTheAir(void) { }
-void CheckLinkCollisionWithProjectile_showSwordPokeVfx(void) { }
-void DialogDrawNextCharacterHandler_endDialog(void) { }
-void DidKillEnemy_label_3F5E(void) { }
-void DidKillEnemy_label_3F78(void) { }
+void CheckLinkCollisionWithProjectile_showSwordPokeVfx(void) {
+    /* Jump-to-middle: display sword poke VFX at entity position */
+    gb_write(0xFFD8, gb.regs.a); /* hMultiPurpose1 = Y pos */
+    gb.regs.a = gb_read(0xFFEE); /* hActiveEntityPosX */
+    gb_write(0xFFD7, gb.regs.a); /* hMultiPurpose0 = X pos */
+    gb.regs.a = 0x05; /* TRANSCIENT_VFX_SWORD_POKE */
+    AddTranscientVfx();
+}
+void DialogDrawNextCharacterHandler_endDialog(void) {
+    /* Jump-to-middle: play dialog break jingle */
+    gb.regs.a = 0x15; /* JINGLE_DIALOG_BREAK */
+    gb_write(0xFFF2, gb.regs.a); /* hJingle */
+}
+void DidKillEnemy_label_3F5E(void) {
+    /* Jump-to-middle: track kill in load order table, increment kill count */
+    gb.regs.hl = 0xC460; /* wEntitiesLoadOrderTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 0xFF);
+    if (GET_FLAG_Z()) { UnloadEntity(); return; }
+    gb_push16(gb.regs.af);
+    gb.regs.a = gb_read(0xDBB5); /* wKillCount */
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb_write(0xDBB5, gb.regs.a);
+    gb.regs.a = gb_read(gb.regs.hl); /* hl still = C460+bc */
+    gb.regs.hl = 0xDBB6; /* wKillOrder */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    /* fall through to label_3F78 */
+    DidKillEnemy_label_3F78();
+}
+void DidKillEnemy_label_3F78(void) {
+    /* Jump-to-middle: mark entity cleared in room, then unload */
+    alu_cp8(gb.regs.a, 0x08);
+    if (!GET_FLAG_C()) { UnloadEntity(); return; }
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0x3F48; /* data_3F48 bitmask table */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(0xFFF6); /* hMapRoom */
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.a = gb_read(gb.regs.hl); /* bitmask for entity slot */
+    gb.regs.hl = 0xCF00; /* wEntitiesClearedRooms */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+    UnloadEntity();
+}
 void ExecuteDrawCommands_noRoomTransition(void) {
     /* Replicates code at ExecuteDrawCommands label .noRoomTransition
        Original assembly loops: read header, if non-zero call DrawCommandToVRAM, repeat */
@@ -859,14 +971,63 @@ void func_91D_jp_92E(void) {
     RestoreStackedBankAndReturn();
 }
 void GhiniVisibleHandler_move(void) { }
-void HoleFillerIdleState_setSpeedByDirection(void) { }
-void LoadEntityFromDefinition_didLoadEntity(void) { }
+void HoleFillerIdleState_setSpeedByDirection(void) {
+    /* Jump-to-middle: set entity X/Y speed from direction lookup tables
+       At entry: d=0, e=direction, bc=entity index */
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0x5127; /* HoleFillerDirectionToXSpeedTable (bank 7) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.hl = 0xC240; /* wEntitiesSpeedXTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.hl = 0x512B; /* HoleFillerDirectionToYSpeedTable (bank 7) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    GetEntitySpeedYAddress();
+    gb_write(gb.regs.hl, gb.regs.a);
+}
+void LoadEntityFromDefinition_didLoadEntity(void) {
+    /* Jump-to-middle: configure new entity and prepare for room transition */
+    gb_call_bank(3, ConfigureNewEntity_helper);
+    gb_call_bank(1, PrepareEntityPositionForRoomTransition);
+    gb.regs.a = 0x16; /* BANK(OverworldEntitiesPointersTable) */
+    gb_write(0x2100, gb.regs.a);
+}
 void LoadInstrumentsBG_leftSide(void) { }
 void LoadInstrumentsBG_rightSide(void) { }
 void MiniMoldormEntityHandler_sharedMoldormBehavior(void) { }
-void MoveSelect_playMoveSelectionJingle(void) { }
-void PushLinkOutOfEntity_18_forcePush(void) { }
-void RenderLightning_playSfx(void) { }
+void MoveSelect_playMoveSelectionJingle(void) {
+    /* Jump-to-middle: play menu selection move jingle, preserve af */
+    gb_push16(gb.regs.af);
+    gb.regs.a = 0x0A; /* JINGLE_MOVE_SELECTION */
+    gb_write(0xFFF2, gb.regs.a); /* hJingle */
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void PushLinkOutOfEntity_18_forcePush(void) {
+    /* Jump-to-middle: force push Link away, reset boots, clear hookshot state */
+    CopyLinkFinalPositionToPosition();
+    ResetPegasusBoots();
+    gb.regs.a = gb_read(0xC1A6); /* wHookshotEntityIndexPlusOne */
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0xC39F; /* wEntitiesTypeTable - 1 */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 0x03); /* ENTITY_HOOKSHOT_CHAIN */
+    if (!GET_FLAG_Z()) return;
+    gb.regs.hl = 0xC28F; /* wEntitiesStateTable - 1 */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 0x00);
+}
+void RenderLightning_playSfx(void) {
+    /* Jump-to-middle: set lightning visible countdown + play explosion SFX */
+    gb.regs.a = 0x1C;
+    gb_write(0xD000, gb.regs.a); /* wIntroLightningVisibleCountdown */
+    PlayBombExplosionSfx();
+}
 void ReturnIfNonInteractive_03_allowInactiveEntity(void) {
     /* Jump-to-middle: check if game is interactive (Variant A: with credits) */
     gb.regs.a = gb_read(0xDC3D);
@@ -1055,12 +1216,44 @@ void ReturnIfNonInteractive_19_allowInactiveEntity(void) {
   _skip19:;
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
 }
-void SnakeState0Handler_updateSpeed(void) { }
+void SnakeState0Handler_updateSpeed(void) {
+    /* Jump-to-middle: set entity X/Y speed from snake direction tables
+       At entry: d=0(?), e=direction, bc=entity index */
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0x688B; /* SnakeXSpeeds table (bank 7) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.hl = 0xC240; /* wEntitiesSpeedXTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.hl = 0x688F; /* SnakeYSpeeds table (bank 7) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    GetEntitySpeedYAddress();
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void UpdateFinalLinkPosition_horizontal(void) {
     /* Jump-to-middle: horizontal-only position update (Evil Eagle) */
     gb.regs.c = 0;
     gb_write(0xFFD7, gb.regs.a);
     ComputeLinkPosition();
 }
-void WreckingBallState2Handler_collided(void) { }
+void WreckingBallState2Handler_collided(void) {
+    /* Jump-to-middle: play sword poke jingle, negate+halve both speed axes */
+    gb.regs.a = 0x07; /* JINGLE_SWORD_POKING */
+    gb_write(0xFFF2, gb.regs.a); /* hJingle */
+    gb.regs.hl = 0xC240; /* wEntitiesSpeedXTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+    GetEntitySpeedYAddress();
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void Data_005_6601___1(void) { }
