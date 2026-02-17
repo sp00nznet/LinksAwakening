@@ -4,6 +4,9 @@
 #include "gb_input.h"
 #include "rom_data.h"
 
+/* VBlank ISR from transpiled game code */
+extern void InterruptVBlank(void);
+
 gb_state_t gb;
 
 void gb_init(void) {
@@ -212,9 +215,18 @@ void gb_halt(void) {
     /* Handle timer ticks for one frame (~70224 T-cycles) */
     gb_timer_tick(70224);
 
-    /* Handle VBlank interrupt */
-    gb.io[IO_IF] |= 0x01; /* Set VBlank interrupt flag */
-    gb_handle_interrupts();
+    /* Call the game's VBlank interrupt handler.
+       This runs ExecuteDrawCommands, OAM DMA, and sets the $FFD1 flag
+       that the game polls for. On a real GB, this fires via the
+       interrupt vector at $0040. */
+    if (gb.regs.ime || gb.initialized) {
+        InterruptVBlank();
+    }
+
+    /* longjmp back to main loop to yield the frame */
+    if (gb.halt_jmp_set) {
+        longjmp(gb.halt_jmp, 1);
+    }
 }
 
 void gb_handle_interrupts(void) {

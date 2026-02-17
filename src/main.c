@@ -14,6 +14,9 @@
 
 /* Forward declarations for transpiled game code */
 extern void bank_00_entry(void);
+extern void Start(void);
+extern void RenderLoop(void);
+extern void InterruptVBlank(void);
 
 /* Frame timing */
 #define TARGET_FPS  59.7275
@@ -213,9 +216,38 @@ int main(int argc, char *argv[]) {
             input_update(keyboard);
             input_update_controller();
 
-            /* Run one frame of game logic */
+            /* Run one frame of game logic.
+               gb_halt() longjmps back here when a frame is ready,
+               preventing infinite recursion in RenderLoop. */
             gb.frame_ready = false;
-            bank_00_entry();
+            if (setjmp(gb.halt_jmp) == 0) {
+                gb.halt_jmp_set = true;
+                if (!gb.initialized) {
+                    gb.initialized = true;
+                    FILE *dbg = fopen("debug.log", "w");
+                    if (dbg) { fprintf(dbg, "Calling Start()...\n"); fclose(dbg); }
+                    Start();
+                } else {
+                    RenderLoop();
+                }
+            }
+            gb.halt_jmp_set = false;
+
+            /* Debug: log intro state progression (compact) */
+            if (gb.frame_count > 0 && gb.frame_count <= 6000
+                && (gb.frame_count <= 10 || gb.frame_count % 10 == 0)) {
+                FILE *dbg = fopen("debug.log", "a");
+                if (dbg) {
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X C17E=$%02X D20A=$%02X D7B4=$%02X\n",
+                        gb.frame_count,
+                        gb.wram[0xDC3D - 0xC000],
+                        gb.wram[0xDC3E - 0xC000],
+                        gb.wram[0xC17E - 0xC000],
+                        gb.wram[0xD20A - 0xC000],
+                        gb.wram[0xD7B4 - 0xC000]);
+                    fclose(dbg);
+                }
+            }
 
             /* Render frame to texture */
             SDL_UpdateTexture(texture, NULL, ppu.framebuffer,

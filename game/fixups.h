@@ -34,7 +34,18 @@ static inline void LoadColorDungeonTiles(void) { /* DX only */ }
 static inline void GetColorDungeonTilesAddress(void) { /* DX only */ }
 
 /* Title screen DX additions */
-static inline void PositionTitleScreenSprites(void) { /* DX only */ }
+static inline void PositionTitleScreenSprites(void) {
+    /* GBC bank $20: increments wC17E every 2 frames (caps at $10).
+       TitleScreenSfxHandler waits for wC17E >= $10 to advance. */
+    uint8_t sub = gb_read(0xDC3E);
+    if (sub >= 0x0A) return;
+    gb_write(0xC17C, 0);
+    gb_write(0xC17D, 0);
+    if (gb_read(0xFFE7) & 1) return;
+    uint8_t val = gb_read(0xC17E) + 1;
+    if (val > 0x10) val = 0x10;
+    gb_write(0xC17E, val);
+}
 static inline void UpdateBGRegionOrigin(void) { /* DX only */ }
 
 /* Photo Album (DX exclusive) */
@@ -55,6 +66,7 @@ static inline void Spawn2x2RubbleEntities(void) { /* DX only */ }
 static inline void ConvertToBombArrowIfNeeded(void) { /* DX only */ }
 
 /* Credits/Ending DX additions */
+static inline void EndCreditsHandler(void) { /* DX only - unreachable in non-DX */ }
 static inline void EndCreditsEntryPoint(void) { /* DX only */ }
 static inline void LoadCreditsMarinPortraitTiles(void) { /* DX only */ }
 static inline void LoadThanksForPlayingTiles(void) { /* DX only */ }
@@ -74,8 +86,62 @@ static inline void IsInteractiveMotionAllowed(void) { /* DX only */ }
 static inline void GetEntityInitHandler(void) { /* DX only */ }
 static inline void EntityInitGenie(void) { /* DX only */ }
 static inline void GetOwlStatueDialogId(void) { /* DX only */ }
-static inline void GetTilesetHandlerAddress(void) { /* DX only */ }
-static inline void GetBGCopyRequest(void) { /* DX only */ }
+static inline void GetTilesetHandlerAddress(void) {
+    /* Now handled inline by _executeTilesetLoadHandler() dispatch */
+}
+static inline void GetBGCopyRequest(void) {
+    /* Reads wBGMapToLoad index and looks up draw command pointer from
+       TilemapsPointersTable (originally in bank $20). Sets DE = pointer. */
+    /* DMG ROM addresses (extracted from pointer table at bank 0:$0457) */
+    static const uint16_t TilemapsPointersTable[] = {
+        0x0000, /* 00: TILEMAP_NONE */
+        0x62A5, /* 01: CreditsIslandTilemap */
+        0x7313, /* 02: InventoryTilemap */
+        0x6F0F, /* 03: MenuFileSelectionTilemap */
+        0x6F01, /* 04: MenuFileSelectionCommandsTilemap */
+        0x701E, /* 05: MenuFileCreationTilemap */
+        0x7154, /* 06: MenuFileEraseTilemap */
+        0xD651, /* 07: wMinimapTilemap (WRAM) */
+        0x6EC2, /* 08: WorldMapTilemap */
+        0x7393, /* 09: EaglesTowerCloudsTilemap */
+        0x7559, /* 0A: GameOverTilemap */
+        0x74C0, /* 0B: InventoryDebugTilemap */
+        0x722B, /* 0C: MenuFileCopyTilemap */
+        0x7637, /* 0D: MenuFileSaveTilemap */
+        0x76B7, /* 0E: IntroSeaDMGTilemap */
+        0x7800, /* 0F: IntroLinkFaceTilemap */
+        0x7A0B, /* 10: IntroBeachTilemap */
+        0x7B8A, /* 11: TitleTilemap */
+        0x54AF, /* 12: PeachTilemap */
+        0x5670, /* 13: MarinBeachTilemap */
+        0x6E81, /* 14: MamuTilemap */
+        0x5310, /* 15: FaceShrineMuralTilemap */
+        0x6365, /* 16: CreditsStairsTilemap */
+        0x66CE, /* 17: CreditsLinkOnSeaLargeTilemap */
+        0x67A1, /* 18: CreditsSunAboveTilemap */
+        0x68E5, /* 19: CreditsLinkOnSeaCloseTilemap */
+        0x6A34, /* 1A: CreditsLinkSeatedOnLogTilemap */
+        0x6B20, /* 1B: CreditsLinkFaceCloseUpTilemap */
+        0x6BDD, /* 1C: CreditsRollTilemap */
+        0x6BDD, /* 1D: CreditsRollTilemap */
+        0x5A73, /* 1E: CreditsKidsTilemap */
+        0x5C29, /* 1F: CreditsMarinSingingTilemap */
+        0x5DC8, /* 20: CreditsMrsMeowMeowsHouseTilemap */
+        0x5F67, /* 21: CreditsTarinTilemap */
+        0x6106, /* 22: CreditsBeachTilemap */
+        0x580E, /* 23: SchulePaintingTilemap */
+        0x59AD, /* 24: EaglesTowerCollapseTilemap */
+        0xFEFA, /* 25: IntroSeaCGBTilemap (GBC only) */
+    };
+    uint8_t idx = gb_read(0xD7B4); /* wBGMapToLoad */
+    if (idx < sizeof(TilemapsPointersTable)/sizeof(TilemapsPointersTable[0])) {
+        uint16_t ptr = TilemapsPointersTable[idx];
+        gb.regs.e = ptr & 0xFF;
+        gb.regs.d = (ptr >> 8) & 0xFF;
+    } else {
+        gb.regs.de = 0x0000;
+    }
+}
 static inline void CheckOverworldObjectIgnoreList(void) { /* DX only */ }
 static inline void ExpandOverworldObjectMacro(void) { /* DX only */ }
 static inline void ReplaceObjects56and57(void) { /* DX only */ }

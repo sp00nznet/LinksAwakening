@@ -18,6 +18,7 @@ typedef struct {
     uint32_t framebuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
     uint8_t bg_priority[SCREEN_WIDTH]; /* per-pixel BG priority for sprite rendering */
     uint8_t ly;          /* current scanline */
+    uint8_t ly_counter;  /* simulated LY for poll loops */
     uint32_t dmg_colors[4]; /* resolved DMG palette */
 } ppu_state_t;
 

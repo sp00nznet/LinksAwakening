@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <setjmp.h>
 
 /* SM83 CPU registers */
 typedef struct {
@@ -136,6 +137,13 @@ typedef struct {
 
     /* Interrupt state */
     uint8_t ie_reg;  /* $FFFF interrupt enable */
+
+    /* Frame yield: longjmp back to main loop from gb_halt() */
+    jmp_buf halt_jmp;
+    bool halt_jmp_set;
+
+    /* Track whether game has been initialized */
+    bool initialized;
 } gb_state_t;
 
 extern gb_state_t gb;

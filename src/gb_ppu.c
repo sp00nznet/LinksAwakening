@@ -174,6 +174,10 @@ void ppu_write_reg(uint8_t reg, uint8_t val) {
 }
 
 uint8_t ppu_get_ly(void) {
-    /* In static recomp, LY is managed by frame rendering */
-    return gb.io[IO_LY];
+    /* In static recomp, simulate LY advancing each read.
+       This prevents infinite loops in code that polls LY
+       (e.g., LCDOff waits for LY == 0x91). */
+    ppu.ly_counter = (ppu.ly_counter + 1) % 154;
+    gb.io[IO_LY] = ppu.ly_counter;
+    return ppu.ly_counter;
 }

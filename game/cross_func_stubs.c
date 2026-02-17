@@ -93,17 +93,106 @@ void soundOpcode99_setD39EAndParseNext(void) { /* cross-function local label stu
 void soundOpcode9D_nextOpcode(void) { /* cross-function local label stub */ }
 
 /* Additional cross-function stubs found during linking */
-void _bounceSpeedAdjust(void) { }
-void _decrementConsecutiveBytes(void) { }
-void _doAudioStep(void) { }
-void _executeTilesetLoadHandler(void) { }
+void _bounceSpeedAdjust(void) {
+    /* Halve and negate entity speed, then set thrown direction to 0xFF */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cpl();
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+    /* fallthrough to .func_76E7: set wEntitiesThrownDirectionTable[bc] = 0xFF */
+    gb.regs.hl = 0xC5D0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0xFF);
+}
+void _decrementConsecutiveBytes(void) {
+    /* Fill 16 consecutive bytes at hl with value a */
+    gb.regs.c = 0x10;
+    do {
+        gb_write(gb.regs.hl++, gb.regs.a);
+        gb.regs.c = alu_dec8(gb.regs.c);
+    } while (!GET_FLAG_Z());
+}
+void _doAudioStep(void) {
+    gb_call_bank(27, PlayMusicTrack_1B);
+    gb_call_bank(30, PlayMusicTrack_1E);
+}
+void _executeTilesetLoadHandler(void) {
+    /* Replicates .executeTilesetLoadHandler: lookup tileset handler and call it.
+       Original: ld e,a; callsb GetTilesetHandlerAddress; jp hl
+       The jp hl is a tail call - handler returns to LoadRequestedGfx's caller.
+       In C, the handler returns here, then goto clearFlagsAndReturn runs. */
+    uint8_t id = gb.regs.a;
+    switch(id) {
+        case 0x01: LoadRoomTilemap(); return;
+        case 0x02: FillBGMapWhite(); return;
+        case 0x03: LoadBaseTiles(); return;
+        case 0x04: LoadMenuTiles(); return;
+        case 0x05: LoadBaseOverworldTiles(); return;
+        case 0x06: LoadIndoorTiles(); return;
+        case 0x07: LoadBaseOverworldTiles(); return;
+        case 0x08: FillBGMapBlack(); return;
+        case 0x09: LoadRoomSpecificTiles(); return;
+        case 0x0A: return; /* LoadRequestedGfx.return - no-op */
+        case 0x0B: LoadWorldMapTiles(); return;
+        case 0x0C: return; /* LoadRequestedGfx.return - no-op */
+        case 0x0D: LoadSaveMenuTiles(); return;
+        case 0x0E: LoadWorldMapBGMap_trampoline(); return;
+        case 0x0F: LoadTileset0F_trampoline(); return;
+        case 0x10: LoadIntroSequenceTiles(); return;
+        case 0x11: LoadTitleScreenTiles(); return;
+        case 0x12: LoadChristinePortraitTiles(); return;
+        case 0x13: LoadMarinBeachTiles(); return;
+        case 0x14: LoadFaceShrineReliefTiles(); return;
+        case 0x15: LoadTileset15(); return;
+        case 0x16: LoadCreditsLinkOnSeaLargeTiles(); return;
+        case 0x17: LoadCreditsSunAboveTiles(); return;
+        case 0x18: LoadCreditsLinkOnSeaCloseTiles(); return;
+        case 0x19: LoadCreditsLinkSeatedOnLogTiles(); return;
+        case 0x1A: LoadCreditsLinkFaceCloseUpTiles(); return;
+        case 0x1B: LoadCreditsRollTiles(); return;
+        case 0x1C: LoadCreditsLinkFaceCloseUpTiles(); return;
+        case 0x1D: LoadCreditsKoholintViewsTiles(); return;
+        case 0x1E: LoadCreditsKoholintDisappearingTiles(); return;
+        case 0x1F: LoadCreditsStairsTiles(); return;
+        case 0x20: LoadSchulePaintingTiles(); return;
+        case 0x21: LoadEaglesTowerTopTiles(); return;
+        case 0x22: LoadCreditsMarinPortraitTiles_trampoline(); return;
+        case 0x23: LoadThanksForPlayingTiles_trampoline(); return;
+        default: return; /* Unknown tileset ID */
+    }
+}
 void _func_76E7(void) { }
 void _label_1508(void) { }
 void _playerArrowBounceY(void) { }
 void _shiftBy8(void) { }
 void _updateRoomStatusAndDrawRockyGround(void) { }
 void _updateSpeed(void) { }
-void AnimateTiles_jumpTable(void) { }
+void AnimateTiles_jumpTable(void) {
+    /* Replicates code at AnimateTiles label .jumpTable */
+    gb.regs.a = gb_read(0xFFA4);
+    switch(gb.regs.a) {
+        case 0x00: SkipTilesGroupAnimation(); return;
+        case 0x01: AnimateCounterTilesGroup(); return;
+        case 0x02: AnimateTideTilesGroup(); return;
+        case 0x03: AnimateVillageTilesGroup(); return;
+        case 0x04: AnimateDungeon1TilesGroup(); return;
+        case 0x05: AnimateUndergroundTilesGroup(); return;
+        case 0x06: AnimateLavaTilesGroup(); return;
+        case 0x07: AnimateDungeon2TilesGroup(); return;
+        case 0x08: AnimateWarpTilesGroup(); return;
+        case 0x09: AnimateWaterCurrentsTilesGroup(); return;
+        case 0x0A: AnimateWaterfallTilesGroup(); return;
+        case 0x0B: AnimateSlowWaterfallTilesGroup(); return;
+        case 0x0C: AnimateWaterDungeonTilesGroup(); return;
+        case 0x0D: AnimateLightBeamTilesGroup(); return;
+        case 0x0E: AnimateCrystalBlockTilesGroup(); return;
+        case 0x0F: AnimateBubblesTilesGroup(); return;
+        case 0x10: AnimateWeatherVaneTilesGroup(); return;
+        case 0x11: AnimatePhotoTilesGroup(); return;
+    }
+}
 void ApplyLinkGroundMotion_noChecks(void) { }
 void ApplyLinkMotionState_skipInitialCall(void) { }
 void BombEntityHandler_BounceOffWalls(void) { }
@@ -112,7 +201,16 @@ void CheckLinkCollisionWithProjectile_showSwordPokeVfx(void) { }
 void DialogDrawNextCharacterHandler_endDialog(void) { }
 void DidKillEnemy_label_3F5E(void) { }
 void DidKillEnemy_label_3F78(void) { }
-void ExecuteDrawCommands_noRoomTransition(void) { }
+void ExecuteDrawCommands_noRoomTransition(void) {
+    /* Replicates code at ExecuteDrawCommands label .noRoomTransition
+       Original assembly loops: read header, if non-zero call DrawCommandToVRAM, repeat */
+  ExecuteDrawCommands_noRoomTransition_loop:;
+    gb.regs.a = gb_read(gb.regs.de);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+    NoRoomTransitionDrawLoop();
+    goto ExecuteDrawCommands_noRoomTransition_loop;
+}
 void func_017_7EA4(void) { }
 void func_017_7F57(void) { }
 void func_91D_jp_92E(void) { }
