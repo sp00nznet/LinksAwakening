@@ -840,8 +840,164 @@ void AnimateTiles_jumpTable(void) {
         case 0x11: AnimatePhotoTilesGroup(); return;
     }
 }
-void ApplyLinkGroundMotion_noChecks(void) { }
-void ApplyLinkMotionState_skipInitialCall(void) { }
+void ApplyLinkGroundMotion_noChecks(void) {
+    /* Jump-to-middle: ground motion physics, joypad input, reset pegasus boots */
+    func_21E1();
+    gb.regs.a = gb_read(0xFFA3);
+    gb.regs.a = alu_sub8(gb.regs.a, 2);
+    gb_write(0xFFA3, gb.regs.a);
+    gb.regs.a = -1;
+    gb_write(0xC120, gb.regs.a);
+    gb.regs.a = gb_read(0xC10A);
+    gb.regs.hl = 0xC14A;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _joypadVerticalEnd;
+    gb.regs.a = gb_read(0xD475);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (!GET_FLAG_Z()) goto _jr_451E;
+    gb.regs.a = gb_read(0xC1AD);
+    alu_cp8(gb.regs.a, 0x80);
+    if (!GET_FLAG_Z()) goto _jr_4523;
+  _jr_451E:;
+    ClearLinkPositionIncrement();
+    goto _joypadVerticalEnd;
+  _jr_4523:;
+    gb.regs.a = gb_read(0xFFCB);
+    gb.regs.a = alu_and8(gb.regs.a, 3);
+    if (GET_FLAG_Z()) goto _joypadHorizontalEnd;
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = 0;
+    gb.regs.hl = 0x68B1;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(0xFF9A);
+    gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
+    if (GET_FLAG_Z()) goto _joypadHorizontalEnd;
+    gb.regs.e = 1;
+    alu_bit(7, gb.regs.a);
+    if (!GET_FLAG_Z()) goto _jr_453D;
+    gb.regs.e = 0xFF;
+  _jr_453D:;
+    gb.regs.a = gb_read(0xFF9A);
+    gb.regs.a = alu_add8(gb.regs.a, gb.regs.e);
+    gb_write(0xFF9A, gb.regs.a);
+  _joypadHorizontalEnd:;
+    gb.regs.a = gb_read(0xFFCB);
+    alu_rra();
+    alu_rra();
+    gb.regs.a = alu_and8(gb.regs.a, 3);
+    if (GET_FLAG_Z()) goto _joypadVerticalEnd;
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = 0;
+    gb.regs.hl = 0x44E7;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(0xFF9B);
+    gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
+    if (GET_FLAG_Z()) goto _joypadVerticalEnd;
+    gb.regs.e = 1;
+    alu_bit(7, gb.regs.a);
+    if (!GET_FLAG_Z()) goto _jr_455E;
+    gb.regs.e = -1;
+  _jr_455E:;
+    gb.regs.a = gb_read(0xFF9B);
+    gb.regs.a = alu_add8(gb.regs.a, gb.regs.e);
+    gb_write(0xFF9B, gb.regs.a);
+  _joypadVerticalEnd:;
+    gb.regs.a = gb_read(0xFFA2);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) goto _jr_456C;
+    gb.regs.a = alu_and8(gb.regs.a, 0x80);
+    if (GET_FLAG_Z()) return;
+  _jr_456C:;
+    ResetPegasusBoots();
+    gb_write(0xFFA2, gb.regs.a);
+    gb_write(0xC149, gb.regs.a);
+    gb_write(0xFFA3, gb.regs.a);
+    gb_write(0xC146, gb.regs.a);
+    gb_write(0xC152, gb.regs.a);
+    gb_write(0xC153, gb.regs.a);
+    gb_write(0xC10A, gb.regs.a);
+    gb.regs.a = gb_read(0xFF99);
+    alu_cp8(gb.regs.a, 0x88);
+    if (!GET_FLAG_C()) return;
+    ApplyLinkGroundPhysics();
+    gb.regs.a = gb_read(0xFFB8);
+    alu_cp8(gb.regs.a, 0x61);
+    if (GET_FLAG_Z()) return;
+    gb.regs.a = gb_read(0xC181);
+    alu_cp8(gb.regs.a, 5);
+    if (GET_FLAG_Z()) { shallowWaterVfx(); return; }
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) return;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (GET_FLAG_Z()) return;
+    alu_cp8(gb.regs.a, 0x50);
+    if (GET_FLAG_Z()) return;
+    alu_cp8(gb.regs.a, 0x51);
+    if (GET_FLAG_Z()) return;
+    gb.regs.a = 7;
+    gb_write(0xFFF4, gb.regs.a);
+}
+void ApplyLinkMotionState_skipInitialCall(void) {
+    /* Jump-to-middle: motion state handler, sword charge sparkle, magic rod */
+    gb.regs.a = gb_read(0xC11C);
+    alu_cp8(gb.regs.a, 1);
+    if (GET_FLAG_Z()) return;
+    gb.regs.a = gb_read(0xC16A);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) goto _label_17DB;
+    gb.regs.bc = 0xC010;
+    gb.regs.a = gb_read(0xC145);
+    gb.regs.hl = 0xC13B;
+    gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(0xFFD7, gb.regs.a);
+    gb.regs.a = gb_read(0xFF98);
+    gb_write(0xFFD8, gb.regs.a);
+    gb.regs.hl = 0xFFDA;
+    gb_write(gb.regs.hl, 0);
+    gb.regs.a = gb_read(0xC122);
+    alu_cp8(gb.regs.a, 0x28);
+    if (GET_FLAG_C()) goto _label_17C6;
+    gb.regs.a = gb_read(0xFFE7);
+    alu_rla();
+    alu_rla();
+    gb.regs.a = alu_and8(gb.regs.a, 0x10);
+    gb_write(gb.regs.hl, gb.regs.a);
+  _label_17C6:;
+    gb.regs.a = gb_read(0xC139);
+    gb.regs.h = gb.regs.a;
+    gb.regs.a = gb_read(0xC13A);
+    gb.regs.l = gb.regs.a;
+    gb.regs.a = gb_read(0xC136);
+    gb_write(0xFFD9, gb.regs.a);
+    gb.regs.a = gb_read(0xFF99);
+    alu_cp8(gb.regs.a, 0x88);
+    if (!GET_FLAG_C()) return;
+    func_1819(); return;
+  _label_17DB:;
+    gb.regs.a = gb_read(0xC19B);
+    gb_push16(gb.regs.af);
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _magicRodEnd;
+    gb_call_bank(2, label_002_5310);
+    gb.regs.a = gb_read(0xC19B);
+    gb.regs.a = alu_and8(gb.regs.a, 0x7F);
+    alu_cp8(gb.regs.a, 0x0C);
+    if (!GET_FLAG_Z()) goto _magicRodEnd;
+    gb.regs.hl = 0xC19F;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _magicRodEnd;
+    func_157C();
+    gb.regs.a = 4;
+    SpawnPlayerProjectile();
+    if (GET_FLAG_C()) goto _magicRodEnd;
+    gb.regs.a = 0x0D;
+    gb_write(0xFFF4, gb.regs.a);
+    gb_call_bank(2, label_002_538B);
+  _magicRodEnd:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb_write(0xC19B, gb.regs.a);
+}
 void BombEntityHandler_BounceOffWalls(void) {
     /* Jump-to-middle: check collision table, bounce off walls X and Y */
     gb.regs.hl = 0xC2A0; /* wEntitiesCollisionsTable */
@@ -857,7 +1013,61 @@ void BombEntityHandler_BounceOffWalls(void) {
     if (GET_FLAG_Z()) return;
     EntityBounceOffWallY();
 }
-void CheckLinkCollisionWithEnemy_collisionEvenInTheAir(void) { }
+void CheckLinkCollisionWithEnemy_collisionEvenInTheAir(void) {
+    /* Jump-to-middle: hitbox collision check between Link and entity */
+    gb.regs.a = gb_read(0xC11C);
+    alu_cp8(gb.regs.a, 2);
+    if (!GET_FLAG_C()) { CheckLinkCollisionWithProjectile_return(); return; }
+    gb_push16(gb.regs.bc);
+    gb.regs.c = alu_sla(gb.regs.c);
+    gb.regs.c = alu_sla(gb.regs.c);
+    gb.regs.hl = 0xD580;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.bc = gb_pop16();
+    gb.regs.a = gb_read(0xFFEE);
+    gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_push16(gb.regs.hl);
+    gb.regs.hl = 0xFF98;
+    gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.a = alu_sub8(gb.regs.a, 8);
+    alu_cp8(gb.regs.a, 0x80);
+    if (GET_FLAG_C()) goto _jr_6C98;
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+  _jr_6C98:;
+    gb.regs.hl = gb_pop16();
+    gb_push16(gb.regs.af);
+    gb.regs.hl++;
+    gb.regs.a = 4;
+    gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.e = gb.regs.a;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    alu_cp8(gb.regs.a, gb.regs.e);
+    if (!GET_FLAG_C()) { jr_003_6CCB(); return; }
+    gb.regs.hl++;
+    gb.regs.a = gb_read(0xFFEC);
+    gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_push16(gb.regs.hl);
+    gb.regs.hl = 0xFF99;
+    gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.a = alu_sub8(gb.regs.a, 8);
+    alu_cp8(gb.regs.a, 0x80);
+    if (GET_FLAG_C()) goto _jr_6CB5;
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+  _jr_6CB5:;
+    gb.regs.hl = gb_pop16();
+    gb_push16(gb.regs.af);
+    gb.regs.hl++;
+    gb.regs.a = 4;
+    gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.e = gb.regs.a;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    alu_cp8(gb.regs.a, gb.regs.e);
+    if (!GET_FLAG_C()) { jr_003_6CCB(); return; }
+    /* fallthrough: collision detected */
+    func_003_6CC0();
+}
 void CheckLinkCollisionWithProjectile_showSwordPokeVfx(void) {
     /* Jump-to-middle: display sword poke VFX at entity position */
     gb_write(0xFFD8, gb.regs.a); /* hMultiPurpose1 = Y pos */
