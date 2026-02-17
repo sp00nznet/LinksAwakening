@@ -5983,9 +5983,7 @@ void DialogOpenAnimationEndHandler(void) {
 }
 
 void IncrementDialogState(void) {
-    gb.regs.hl = 0xC19F;
-    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
-    IncrementDialogStateAndReturn(); return;
+    IncrementDialogStateAndReturn();
 }
 
 void IncrementDialogStateAndReturn(void) {
@@ -10294,10 +10292,7 @@ void DidKillEnemy(void) {
 }
 
 void UnloadEntity(void) {
-    gb.regs.hl = 0xC280;
-    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
-    gb_write(gb.regs.hl, gb.regs.b);
-    UnloadEntityAndReturn(); return;
+    UnloadEntityAndReturn();
 }
 
 void UnloadEntityAndReturn(void) {

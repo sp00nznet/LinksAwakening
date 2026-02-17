@@ -1273,9 +1273,7 @@ void GameplayWorldSelectTilesetHandler(void) {
 }
 
 void IncrementGameplaySubtype(void) {
-    gb.regs.hl = 0xDC3E;
-    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
-    IncrementGameplaySubtypeAndReturn(); return;
+    IncrementGameplaySubtypeAndReturn();
 }
 
 void IncrementGameplaySubtypeAndReturn(void) {
@@ -2034,9 +2032,7 @@ void FileSelectionExecuteChoice(void) {
 }
 
 void PlayValidationJingle(void) {
-    gb.regs.a = 0x13;
-    gb_write(0xFFF2, gb.regs.a);
-    PlayValidationJingleAndReturn(); return;
+    PlayValidationJingleAndReturn();
 }
 
 void PlayValidationJingleAndReturn(void) {

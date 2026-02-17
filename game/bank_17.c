@@ -1513,9 +1513,7 @@ void label_017_4C22(void) {
 }
 
 void IncrementCreditsGameplaySubtype(void) {
-    gb.regs.hl = 0xDC3E;
-    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
-    IncrementCreditsGameplaySubtypeAndReturn(); return;
+    IncrementCreditsGameplaySubtypeAndReturn();
 }
 
 void IncrementCreditsGameplaySubtypeAndReturn(void) {
@@ -1591,9 +1589,7 @@ void CreditsStairsPrepare1Handler(void) {
 }
 
 void IncrementCreditsSubscene(void) {
-    gb.regs.hl = 0xD20E;
-    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
-    IncrementCreditsSubsceneAndReturn(); return;
+    IncrementCreditsSubsceneAndReturn();
 }
 
 void IncrementCreditsSubsceneAndReturn(void) {
