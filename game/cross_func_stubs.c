@@ -183,10 +183,25 @@ void AnimateTiles_replaceTiles(void) {
     if (GET_FLAG_Z()) { ReplaceMarinTiles_standingUp(); return; }
     DrawLinkSpriteAndReturn();
 }
-void ApplyLinkGroundPhysics_part2_makeLinkFallInPit(void) { /* cross-function local label stub */ }
+void ApplyLinkGroundPhysics_part2_makeLinkFallInPit(void) {
+    /* Jump-to-middle: trigger pit fall - set state, reset spin, play SFX */
+    gb.regs.a = 6;
+    gb_write(0xC11C, gb.regs.a);
+    ResetSpinAttack();
+    gb_write(0xC198, gb.regs.a);
+    gb.regs.a = gb_read(0xC181);
+    gb_write(0xDC73, gb.regs.a);
+    gb.regs.a = 0x0C;
+    gb_write(0xFFF3, gb.regs.a);
+}
 void ArrowRenderAndMove_skipLoadingSprites(void) { /* cross-function local label stub */ }
 void ArrowRenderAndMove_skipRendering(void) { /* cross-function local label stub */ }
-void BombExplosionVisuals_smallExplosion(void) { /* cross-function local label stub */ }
+void BombExplosionVisuals_smallExplosion(void) {
+    /* Jump-to-middle: render small explosion sprite, check interactivity */
+    gb.regs.de = 0x506E;
+    RenderActiveEntitySpritesPair();
+    ReturnIfNonInteractive_03();
+}
 void CheckLinkCollisionWithProjectile_jr_003_6C54(void) {
     /* Jump-to-middle: set entity vulnerability flags to 0xFF */
     gb.regs.hl = 0xC2A0;
@@ -235,16 +250,45 @@ void CopyDataToVRAM_restoreBankAndReturn(void) {
     gb.regs.a = gb.regs.h;
     gb_write(0x2100, gb.regs.a);
 }
-void CopyIndoorsMacroObjectsToRoom_loop(void) { /* cross-function local label stub */ }
-void CopyOutdoorsMacroObjectsToRoom_loop(void) { /* cross-function local label stub */ }
+void CopyIndoorsMacroObjectsToRoom_loop(void) {
+    /* Jump-to-middle: entry point is same as CopyIndoorsMacroObjectsToRoom */
+    CopyIndoorsMacroObjectsToRoom();
+}
+void CopyOutdoorsMacroObjectsToRoom_loop(void) {
+    /* Jump-to-middle: entry point is same as CopyOutdoorsMacroObjectsToRoom */
+    CopyOutdoorsMacroObjectsToRoom();
+}
 void CopyTilesToPieceOfHeartMeter_restoreBank0C(void) { /* cross-function local label stub */ }
 void CrazyTracySellingHandler_buy(void) { /* cross-function local label stub */ }
 void CrazyTracySellingHandler_openFinalDialog(void) { /* cross-function local label stub */ }
 void CrazyTracySellingHandler_return(void) { /* cross-function local label stub */ }
 void DecreaseEntityTransitionCountdown_return(void) { /* cross-function local label stub */ }
-void DialogDrawNextCharacterHandler_choice(void) { /* cross-function local label stub */ }
-void DialogDrawNextCharacterHandler_end(void) { /* cross-function local label stub */ }
-void DialogDrawNextCharacterHandler_nextCharacter(void) { /* cross-function local label stub */ }
+void DialogDrawNextCharacterHandler_choice(void) {
+    /* Jump-to-middle: set dialog state to DIALOG_CHOICE (0x0D) + play jingle */
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_and8(gb.regs.a, 0xF0);
+    gb.regs.a = alu_or8(gb.regs.a, 0x0D);
+    gb_write(0xC19F, gb.regs.a);
+    /* fallthrough to endDialog: play jingle */
+    gb.regs.a = 0x15;
+    gb_write(0xFFF2, gb.regs.a);
+}
+void DialogDrawNextCharacterHandler_end(void) {
+    /* Jump-to-middle: set dialog state to DIALOG_END (0x0C) */
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_and8(gb.regs.a, 0xF0);
+    gb.regs.a = alu_or8(gb.regs.a, 0x0C);
+    gb_write(0xC19F, gb.regs.a);
+}
+void DialogDrawNextCharacterHandler_nextCharacter(void) {
+    /* Jump-to-middle: set dialog state to DIALOG_LETTER_IN_1 (0x06), reset scroll delay */
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_and8(gb.regs.a, 0xF0);
+    gb.regs.a = alu_or8(gb.regs.a, 6);
+    gb_write(0xC19F, gb.regs.a);
+    gb.regs.a = 0;
+    gb_write(0xC172, gb.regs.a);
+}
 void DrawSaveSlot1MaxHearts_clamp(void) {
     /* Jump-to-middle: DrawSaveSlot1MaxHearts .clamp label
        At entry: a=slot index, hl=health addr, de=max hearts addr */
@@ -353,11 +397,71 @@ void LoadAnimatedTilesFrame_de(void) {
         CopyData();
     }
 }
-void LoadIndoorTiles_patchInventoryTiles(void) { /* cross-function local label stub */ }
+void LoadIndoorTiles_patchInventoryTiles(void) {
+    /* Jump-to-middle: patch inventory tiles for toadstool/golden leaf/trading item */
+    gb.regs.a = gb_read(0xDBF7);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (!GET_FLAG_Z()) ReplaceMagicPowderTilesByToadstool();
+    gb.regs.a = gb_read(0xDC4D);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) goto _jr_2D17;
+    gb.regs.a = gb_read(0xFFF7);
+    alu_cp8(gb.regs.a, 0xFF);
+    if (GET_FLAG_Z()) goto _goldenLeafEnd;
+    alu_cp8(gb.regs.a, 0x0A);
+    if (GET_FLAG_C()) goto _goldenLeafEnd;
+  _jr_2D17:;
+    gb.regs.a = gb_read(0xDBC1);
+    alu_cp8(gb.regs.a, 6);
+    if (GET_FLAG_C()) goto _goldenLeafEnd;
+    ReplaceSlimeKeyTilesByGoldenLeaf();
+  _goldenLeafEnd:;
+    gb.regs.a = gb_read(0xDBBA);
+    alu_cp8(gb.regs.a, 2);
+    if (GET_FLAG_C()) return;
+    gb.regs.a = 0x0D;
+    gb_write(0xFFA5, gb.regs.a);
+}
 void LoadInstrumentsBG_start(void) { /* cross-function local label stub */ }
 void MadBomberState3Handler_throwBomb(void) { /* cross-function local label stub */ }
 void MakeEffectObjectAppear_return(void) { /* cross-function local label stub */ }
-void PickableCollectIfNeeded_collect(void) { /* cross-function local label stub */ }
+void PickableCollectIfNeeded_collect(void) {
+    /* Jump-to-middle: collect item with sound effects and dispatch */
+    gb.regs.hl = 0xC460;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    DidKillEnemy_label_3F78();
+    gb.regs.a = gb_read(0xFFEB);
+    gb.regs.a = alu_sub8(gb.regs.a, 0x2D);
+    alu_cp8(gb.regs.a, 2);
+    if (!GET_FLAG_C()) goto _heartOrRupeeEnd;
+    gb.regs.hl = 0xFFF2;
+    gb_write(gb.regs.hl, 0x14);
+    goto _sfxEnd;
+  _heartOrRupeeEnd:;
+    gb.regs.hl = 0xFFF3;
+    gb_write(gb.regs.hl, 1);
+  _sfxEnd:;
+    switch(gb.regs.a) {
+        case 0x00: PickDroppableHeart(); return;
+        case 0x01: PickDroppableRupee(); return;
+        case 0x02: PickDroppableFairy(); return;
+        case 0x03: PickDroppableKey(); return;
+        case 0x04: PickSword(); return;
+        case 0x05: return;
+        case 0x06: PickPieceOfPower(); return;
+        case 0x07: PickGuardianAcorn(); return;
+        case 0x08: PickHeartPiece(); return;
+        case 0x09: PickHeartContainer(); return;
+        case 0x0A: PickDroppableArrows(); return;
+        case 0x0B: PickDroppableBombs(); return;
+        case 0x0C: PickSirensInstrument(); return;
+        case 0x0D: PickToadstoolOrDungeonKey(); return;
+        case 0x0E: PickDroppableMagicPowder(); return;
+        case 0x0F: PickToadstoolOrDungeonKey(); return;
+        case 0x10: PickSecretSeashell(); return;
+    }
+}
 void PickableHandleGrabbedByItemIfNeeded_return(void) { /* cross-function local label stub */ }
 void PushLinkOutOfEntity_06_forcePush(void) { /* cross-function local label stub */ }
 void RaisableBlockShiftedRightEntityHandler_update(void) { /* cross-function local label stub */ }
@@ -448,16 +552,80 @@ void SetSpawnLocation_return(void) { /* cross-function local label stub */ }
 void SmallFishHandler_sharedFishBehavior(void) { /* cross-function local label stub */ }
 void TransitionToNextEndingScene_return(void) { /* cross-function local label stub */ }
 void UseItem_return(void) { /* cross-function local label stub */ }
-void func_001_7920_jr_001_7a63(void) { /* cross-function local label stub */ }
+void func_001_7920_jr_001_7a63(void) {
+    /* Jump-to-middle: intro screen animation counter increment */
+    gb.regs.hl = 0xD212;
+    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 6);
+    if (!GET_FLAG_Z()) goto _jr_7a82;
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.a = gb_read(0xD211);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    alu_cp8(gb.regs.a, 9);
+    if (!GET_FLAG_Z()) goto _jr_7a7f;
+    func_001_7BC3();
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(0xD211, gb.regs.a);
+    /* Jump to func_001_7920_jr_001_797D would continue the animation,
+       but as a stub we just return */
+    return;
+  _jr_7a7f:;
+    gb_write(0xD211, gb.regs.a);
+  _jr_7a82:;
+    gb.regs.hl = 0x7551;
+    gb.regs.a = gb_read(0xD211);
+    gb.regs.a = alu_sla(gb.regs.a);
+    gb.regs.a = alu_sla(gb.regs.a);
+    gb.regs.a = alu_sla(gb.regs.a);
+    gb.regs.b = 0;
+    gb.regs.c = gb.regs.a;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.de = 0x8C00;
+    gb.regs.bc = 8;
+    CopyData();
+}
 void func_004_6BE1_createSwordPokeVfx(void) { /* cross-function local label stub */ }
 void func_007_4C43_openDialog(void) { /* cross-function local label stub */ }
 void func_2165_return(void) { /* cross-function local label stub */ }
-void label_002_61E7_inventoryFullyClosed2(void) { /* cross-function local label stub */ }
+void label_002_61E7_inventoryFullyClosed2(void) {
+    /* Jump-to-middle: check dialog state after inventory close, update HUD */
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_and8(gb.regs.a, 0x7F); /* strip DIALOG_BOX_BOTTOM_FLAG */
+    if (GET_FLAG_Z()) goto _dialogClosed_inv;
+    alu_cp8(gb.regs.a, 0x0C);
+    if (GET_FLAG_Z()) goto _dialogClosed_inv;
+    alu_cp8(gb.regs.a, 0x0D);
+    if (!GET_FLAG_Z()) return;
+  _dialogClosed_inv:;
+    UpdateRupeesCount();
+    UpdateHealth();
+}
 void label_140F_return(void) { /* cross-function local label stub */ }
-void soundOpcode96_setD3CDAndParseNext(void) { /* cross-function local label stub */ }
-void soundOpcode97_setDeAndParseNext(void) { /* cross-function local label stub */ }
-void soundOpcode99_setD39EAndParseNext(void) { /* cross-function local label stub */ }
-void soundOpcode9D_nextOpcode(void) { /* cross-function local label stub */ }
+void soundOpcode96_setD3CDAndParseNext(void) {
+    /* Jump-to-middle: write A to 0xD3CD and parse next sound opcode */
+    gb_write(0xD3CD, gb.regs.a);
+    IncChannelDefinitionPointer();
+    ParseSoundOpcode();
+}
+void soundOpcode97_setDeAndParseNext(void) {
+    /* Jump-to-middle: write A to [DE] and parse next sound opcode */
+    gb_write(gb.regs.de, gb.regs.a);
+    IncChannelDefinitionPointer();
+    ParseSoundOpcode();
+}
+void soundOpcode99_setD39EAndParseNext(void) {
+    /* Jump-to-middle: write A to 0xD39E and parse next sound opcode */
+    gb_write(0xD39E, gb.regs.a);
+    IncChannelDefinitionPointer();
+    ParseSoundOpcode();
+}
+void soundOpcode9D_nextOpcode(void) {
+    /* Jump-to-middle: increment channel pointer and parse next opcode */
+    IncChannelDefinitionPointer();
+    ParseSoundOpcode();
+}
 
 /* Additional cross-function stubs found during linking */
 void _bounceSpeedAdjust(void) {

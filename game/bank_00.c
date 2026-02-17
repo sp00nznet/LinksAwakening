@@ -8673,7 +8673,7 @@ void CopyIndoorsMacroObjectsToRoom(void) {
     gb.regs.a = gb_read(gb.regs.bc);
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     alu_cp8(gb.regs.a, 0xFF);
-    if (!GET_FLAG_Z()) { CopyIndoorsMacroObjectsToRoom_loop(); return; };
+    if (!GET_FLAG_Z()) goto CopyIndoorsMacroObjectsToRoom_loop;
     gb.regs.bc = gb_pop16();
     return;
 }
@@ -8723,7 +8723,7 @@ void CopyOutdoorsMacroObjectsToRoom(void) {
     gb.regs.a = gb_read(gb.regs.bc);
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     alu_cp8(gb.regs.a, 0xFF);
-    if (!GET_FLAG_Z()) { CopyOutdoorsMacroObjectsToRoom_loop(); return; };
+    if (!GET_FLAG_Z()) goto CopyOutdoorsMacroObjectsToRoom_loop;
     gb.regs.bc = gb_pop16();
     return;
 }
