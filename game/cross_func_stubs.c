@@ -134,13 +134,65 @@ void AddEntitySpeedToPos_19_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AnimateTiles_doWorldAnimations(void) { /* cross-function local label stub */ }
-void AnimateTiles_replaceTiles(void) { /* cross-function local label stub */ }
+void AnimateTiles_doWorldAnimations(void) {
+    /* Jump-to-middle: AnimateTiles .doWorldAnimations label
+       Check room transition / switch blocks / tile replacement, then animate tiles */
+    gb.regs.hl = 0xC124;
+    gb.regs.a = gb_read(0xD5C2);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) { DrawLinkSpriteAndReturn(); return; }
+    gb.regs.a = gb_read(0xD7AD);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (!GET_FLAG_Z()) { UpdateSwitchBlockTiles(); DrawLinkSpriteAndReturn(); return; }
+    gb.regs.a = gb_read(0xFFA5);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (!GET_FLAG_Z()) { AnimateTiles_replaceTiles(); return; }
+    /* tilesReplacementEnd: increment animation counter, dispatch */
+    gb.regs.a = gb_read(0xFFA6);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb_write(0xFFA6, gb.regs.a);
+    AnimateTiles_jumpTable();
+}
+void AnimateTiles_replaceTiles(void) {
+    /* Jump-to-middle: AnimateTiles .replaceTiles - dispatch on FFA5 value */
+    alu_cp8(gb.regs.a, 1);
+    if (GET_FLAG_Z()) { ReplaceEvilEagleRiderVisibleTiles(); return; }
+    alu_cp8(gb.regs.a, 2);
+    if (GET_FLAG_Z()) { ReplaceEvilEagleRiderHiddenTiles(); return; }
+    alu_cp8(gb.regs.a, 3);
+    if (GET_FLAG_Z()) { ReplaceTilesButtonPressed(); return; }
+    alu_cp8(gb.regs.a, 4);
+    if (GET_FLAG_Z()) { ReplaceTiles_04(); return; }
+    alu_cp8(gb.regs.a, 8);
+    if (GET_FLAG_Z()) { ReplaceTiles_08(); return; }
+    alu_cp8(gb.regs.a, 9);
+    if (GET_FLAG_Z()) { ReplaceSlimeKeyTilesByGoldenLeaf(); return; }
+    alu_cp8(gb.regs.a, 0x0A);
+    if (GET_FLAG_Z()) { ReplaceMagicPowderTilesByToadstool(); return; }
+    alu_cp8(gb.regs.a, 0x0B);
+    if (GET_FLAG_Z()) { ReplaceToadstoolTilesByMagicPowder(); return; }
+    alu_cp8(gb.regs.a, 0x0C);
+    if (GET_FLAG_Z()) { ReplaceDialogTilesByInstruments(); return; }
+    alu_cp8(gb.regs.a, 0x0D);
+    if (GET_FLAG_Z()) { ReplaceTradingItemTiles(); return; }
+    alu_cp8(gb.regs.a, 0x0E);
+    if (GET_FLAG_Z()) { gb_call_bank(23, AnimateCreditsIslandFadeTiles); return; }
+    alu_cp8(gb.regs.a, 0x0F);
+    if (GET_FLAG_Z()) { ReplaceMarinTiles_sitting(); return; }
+    alu_cp8(gb.regs.a, 0x10);
+    if (GET_FLAG_Z()) { ReplaceMarinTiles_standingUp(); return; }
+    DrawLinkSpriteAndReturn();
+}
 void ApplyLinkGroundPhysics_part2_makeLinkFallInPit(void) { /* cross-function local label stub */ }
 void ArrowRenderAndMove_skipLoadingSprites(void) { /* cross-function local label stub */ }
 void ArrowRenderAndMove_skipRendering(void) { /* cross-function local label stub */ }
 void BombExplosionVisuals_smallExplosion(void) { /* cross-function local label stub */ }
-void CheckLinkCollisionWithProjectile_jr_003_6C54(void) { /* cross-function local label stub */ }
+void CheckLinkCollisionWithProjectile_jr_003_6C54(void) {
+    /* Jump-to-middle: set entity vulnerability flags to 0xFF */
+    gb.regs.hl = 0xC2A0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0xFF);
+}
 void CheckLinkCollisionWithProjectile_return(void) { /* cross-function local label stub */ }
 void CheckLinkInteractionWithEntity_06_label_006_647E(void) { /* cross-function local label stub */ }
 void ConfigureNewEntity_attributes(void) {
@@ -220,12 +272,43 @@ void DrawSaveSlot1MaxHearts_clamp(void) {
 }
 void DrawSaveSlot1MaxHearts_return(void) { /* cross-function local label stub */ }
 void DropHeartContainer_05_evilEagle(void) { /* cross-function local label stub */ }
-void EnemyCollidedWithSword_label_003_713B(void) { /* cross-function local label stub */ }
+void EnemyCollidedWithSword_label_003_713B(void) {
+    /* Jump-to-middle: copy entity position and render collision sprite */
+    gb.regs.a = gb_read(0xFFEE);
+    gb_write(0xFFD7, gb.regs.a);
+    gb.regs.a = gb_read(0xFFEC);
+    gb_write(0xFFD8, gb.regs.a);
+    label_D15();
+}
 void EntityBounceOffWallX_return(void) { /* cross-function local label stub */ }
-void EntityBounceOffWallX_updateSpeed(void) { /* cross-function local label stub */ }
+void EntityBounceOffWallX_updateSpeed(void) {
+    /* Jump-to-middle: negate and divide speed by 8 (3x arithmetic right shift) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void EntityInitFlyingHopperBombs_setPosZ(void) { /* cross-function local label stub */ }
 void EntityInitShopOwner_setDirectionLeft(void) { /* cross-function local label stub */ }
-void EntityShiftPosition_shiftBy8(void) { /* cross-function local label stub */ }
+void EntityShiftPosition_shiftBy8(void) {
+    /* Jump-to-middle: add 8 to position low byte with carry to high byte */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_add8(gb.regs.a, 8);
+    gb_write(gb.regs.hl, gb.regs.a);
+    alu_rla();
+    gb.regs.l = gb.regs.e;
+    gb.regs.h = gb.regs.d;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    alu_rra();
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_adc8(gb.regs.a, 0);
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void GhiniEntityHandler_sharedGhiniBehavior(void) { /* cross-function local label stub */ }
 void HardhatBeetleUpdateSpeed_return(void) { /* cross-function local label stub */ }
 void InterruptVBlank_vblankDoneInterruptsEnabled(void) {
@@ -245,7 +328,31 @@ void KikiOpenDialog_return(void) { /* cross-function local label stub */ }
 void KnightWalkingHandler_animate(void) { /* cross-function local label stub */ }
 void LCDOn_return(void) { /* just ret */ }
 void LeeverEmergingHandler_setSpriteVariant(void) { /* cross-function local label stub */ }
-void LoadAnimatedTilesFrame_de(void) { /* cross-function local label stub */ }
+void LoadAnimatedTilesFrame_de(void) {
+    /* Jump-to-middle: LoadAnimatedTilesFrame .de - DE already set by caller */
+    gb.regs.bc = 0x40;
+    CopyData();
+    gb.regs.a = gb_read(0xFFF7);
+    alu_cp8(gb.regs.a, 0xFF);
+    if (!GET_FLAG_Z()) return;
+    gb.regs.a = 32;
+    gb_write(0x2100, gb.regs.a);
+    gb.regs.b = 1;
+    ConfigureAnimatedTilesCopy();
+    if (!GET_FLAG_Z()) {
+        gb_write(0x2100, gb.regs.a);
+        CopyData();
+    }
+    gb.regs.a = 32;
+    gb_write(0x2100, gb.regs.a);
+    gb.regs.b = 0;
+    ConfigureAnimatedTilesCopy();
+    if (!GET_FLAG_Z()) {
+        gb_write(0x2100, gb.regs.a);
+        gb.regs.de = 0x96C0;
+        CopyData();
+    }
+}
 void LoadIndoorTiles_patchInventoryTiles(void) { /* cross-function local label stub */ }
 void LoadInstrumentsBG_start(void) { /* cross-function local label stub */ }
 void MadBomberState3Handler_throwBomb(void) { /* cross-function local label stub */ }
@@ -423,11 +530,73 @@ void _executeTilesetLoadHandler(void) {
         default: return; /* Unknown tileset ID */
     }
 }
-void _func_76E7(void) { }
-void _label_1508(void) { }
-void _playerArrowBounceY(void) { }
-void _shiftBy8(void) { }
-void _updateRoomStatusAndDrawRockyGround(void) { }
+void _func_76E7(void) {
+    /* Set wEntitiesThrownDirectionTable[bc] = 0xFF */
+    gb.regs.hl = 0xC5D0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0xFF);
+}
+void _label_1508(void) {
+    /* Roc's Feather jump: set Z velocity, boost with Pegasus Boots if running */
+    gb.regs.a = 0x20;
+    gb_write(0xFFA3, gb.regs.a);
+    gb.regs.a = gb_read(0xC14A);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+    gb.regs.a = gb_read(0xFF9E);
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0x1108;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb_write(0xFF9A, gb.regs.a);
+    gb.regs.hl = 0x110C;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb_write(0xFF9B, gb.regs.a);
+}
+void _playerArrowBounceY(void) {
+    /* Jump-to-middle: set hl=C250 (speed Y table), bounce logic */
+    gb.regs.hl = 0xC250;
+    /* Fall through to bounce: negate and halve speed */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+}
+void _shiftBy8(void) {
+    /* Same as EntityShiftPosition_shiftBy8: add 8 to pos low byte with carry */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_add8(gb.regs.a, 8);
+    gb_write(gb.regs.hl, gb.regs.a);
+    alu_rla();
+    gb.regs.l = gb.regs.e;
+    gb.regs.h = gb.regs.d;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    alu_rra();
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_adc8(gb.regs.a, 0);
+    gb_write(gb.regs.hl, gb.regs.a);
+}
+void _updateRoomStatusAndDrawRockyGround(void) {
+    /* Update room status for bombed rocky ground and create draw command */
+    gb.regs.de = 0x62FE;
+    gb_push16(gb.regs.de);
+    gb.regs.hl = 0xD8B5;
+    gb.regs.a = gb_read(0xFFF6);
+    gb.regs.e = gb.regs.a;
+    gb.regs.d = 0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_or8(gb.regs.a, 4);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb_write(0xFFF8, gb.regs.a);
+    label_003_51F5();
+}
 void _updateSpeed(void) { }
 void AnimateTiles_jumpTable(void) {
     /* Replicates code at AnimateTiles label .jumpTable */
@@ -473,7 +642,54 @@ void ExecuteDrawCommands_noRoomTransition(void) {
 }
 void func_017_7EA4(void) { }
 void func_017_7F57(void) { }
-void func_91D_jp_92E(void) { }
+void func_91D_jp_92E(void) {
+    /* Jump-to-middle: func_91D .jp_92E - push af then shared BG attribute code */
+    gb_push16(gb.regs.af);
+    /* .jp_92F: shared code */
+    gb_call_bank(26, GetBGAttributesAddressForObject);
+    gb.regs.a = gb_read(0xFFDF);
+    gb_write(0x2100, gb.regs.a);
+    gb.regs.hl = 0xDD39;
+    gb.regs.a = gb_read(0xDD38);
+    gb.regs.e = gb.regs.a;
+    gb.regs.a = alu_add8(gb.regs.a, 0x0A);
+    gb_write(0xDD38, gb.regs.a);
+    gb.regs.d = 0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(0xFFE0);
+    gb.regs.d = gb.regs.a;
+    gb.regs.a = gb_read(0xFFE1);
+    gb.regs.e = gb.regs.a;
+    gb.regs.a = gb_read(0xFFCF);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = gb_read(0xFFD0);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = 0x81;
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = gb_read(gb.regs.de);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.de++;
+    gb.regs.de++;
+    gb.regs.a = gb_read(gb.regs.de);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.de--;
+    gb.regs.a = gb_read(0xFFCF);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = gb_read(0xFFD0);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = 0x81;
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = gb_read(gb.regs.de);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.de++;
+    gb.regs.de++;
+    gb.regs.a = gb_read(gb.regs.de);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(gb.regs.hl++, gb.regs.a);
+    RestoreStackedBankAndReturn();
+}
 void GhiniVisibleHandler_move(void) { }
 void HoleFillerIdleState_setSpeedByDirection(void) { }
 void LoadEntityFromDefinition_didLoadEntity(void) { }
@@ -483,14 +699,194 @@ void MiniMoldormEntityHandler_sharedMoldormBehavior(void) { }
 void MoveSelect_playMoveSelectionJingle(void) { }
 void PushLinkOutOfEntity_18_forcePush(void) { }
 void RenderLightning_playSfx(void) { }
-void ReturnIfNonInteractive_03_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_04_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_05_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_06_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_07_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_15_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_18_allowInactiveEntity(void) { }
-void ReturnIfNonInteractive_19_allowInactiveEntity(void) { }
+void ReturnIfNonInteractive_03_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant A: with credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip03;
+    alu_cp8(gb.regs.a, 1);
+    if (GET_FLAG_Z()) goto _creditsEnd03;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip03;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip03;
+  _creditsEnd03:;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip03;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip03:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_04_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant B: no credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip04;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip04;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip04;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip04;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip04:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_05_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant B: no credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip05;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip05;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip05;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip05;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip05:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_06_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant A: with credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip06;
+    alu_cp8(gb.regs.a, 1);
+    if (GET_FLAG_Z()) goto _creditsEnd06;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip06;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip06;
+  _creditsEnd06:;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip06;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip06:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_07_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant B: no credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip07;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip07;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip07;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip07;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip07:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_15_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant A: with credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip15;
+    alu_cp8(gb.regs.a, 1);
+    if (GET_FLAG_Z()) goto _creditsEnd15;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip15;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip15;
+  _creditsEnd15:;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip15;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip15:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_18_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant B: no credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip18;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip18;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip18;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip18;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip18:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
+void ReturnIfNonInteractive_19_allowInactiveEntity(void) {
+    /* Jump-to-middle: check if game is interactive (Variant A: with credits) */
+    gb.regs.a = gb_read(0xDC3D);
+    alu_cp8(gb.regs.a, 7);
+    if (GET_FLAG_Z()) goto _skip19;
+    alu_cp8(gb.regs.a, 1);
+    if (GET_FLAG_Z()) goto _creditsEnd19;
+    alu_cp8(gb.regs.a, 0x0B);
+    if (!GET_FLAG_Z()) goto _skip19;
+    gb.regs.a = gb_read(0xC16B);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _skip19;
+  _creditsEnd19:;
+    gb.regs.hl = 0xC1A8;
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _skip19;
+    gb.regs.a = gb_read(0xC124);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+  _skip19:;
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+}
 void SnakeState0Handler_updateSpeed(void) { }
 void UpdateFinalLinkPosition_horizontal(void) {
     /* Jump-to-middle: horizontal-only position update (Evil Eagle) */
