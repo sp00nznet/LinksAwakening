@@ -4,7 +4,7 @@
 #include "rom_data.h"
 #include "game_labels.h"
 
-void AddEntitySpeedToPos_03_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_03_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_03_updatePosition(void) {
     /* Jump-to-middle: AddEntitySpeedToPos .updatePosition label
        At entry: hl = position table base, af pushed with speed, bc = entity index, d has carry */
@@ -22,7 +22,7 @@ void AddEntitySpeedToPos_03_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_04_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_04_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_04_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -36,7 +36,7 @@ void AddEntitySpeedToPos_04_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_05_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_05_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_05_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -50,7 +50,7 @@ void AddEntitySpeedToPos_05_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_06_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_06_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_06_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -64,7 +64,7 @@ void AddEntitySpeedToPos_06_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_07_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_07_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_07_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -78,7 +78,7 @@ void AddEntitySpeedToPos_07_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_15_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_15_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_15_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -92,7 +92,7 @@ void AddEntitySpeedToPos_15_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_17_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_17_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_17_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -106,7 +106,7 @@ void AddEntitySpeedToPos_17_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_18_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_18_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_18_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -120,7 +120,7 @@ void AddEntitySpeedToPos_18_updatePosition(void) {
     gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void AddEntitySpeedToPos_19_return(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_19_return(void) { /* ret - no-op */ }
 void AddEntitySpeedToPos_19_updatePosition(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
@@ -194,8 +194,61 @@ void ApplyLinkGroundPhysics_part2_makeLinkFallInPit(void) {
     gb.regs.a = 0x0C;
     gb_write(0xFFF3, gb.regs.a);
 }
-void ArrowRenderAndMove_skipLoadingSprites(void) { /* cross-function local label stub */ }
-void ArrowRenderAndMove_skipRendering(void) { /* cross-function local label stub */ }
+void ArrowRenderAndMove_skipLoadingSprites(void) {
+    /* Jump-to-middle: render sprites then do arrow movement/collision */
+    RenderActiveEntitySpritesPair();
+    ArrowRenderAndMove_skipRendering();
+}
+void ArrowRenderAndMove_skipRendering(void) {
+    /* Jump-to-middle: arrow movement, collision detection, bounce logic */
+    ReturnIfNonInteractive_03();
+    GetEntityTransitionCountdown();
+    if (!GET_FLAG_Z()) { ArrowRockAfterHittingWall(); return; }
+    UpdateEntityPosWithSpeed_03();
+    ApplySwordIntersectionWithObjects();
+    gb.regs.hl = 0xC2A0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) { EntityBounceOffWallX_return(); return; }
+    GetEntityTransitionCountdown();
+    gb.regs.a = gb_read(0xFFEB);
+    alu_cp8(gb.regs.a, 4);
+    if (!GET_FLAG_Z()) goto _fireballEnd;
+    GetEntityPrivateCountdown1();
+    gb_write(gb.regs.hl, 0x30);
+    return;
+  _fireballEnd:;
+    gb_write(gb.regs.hl, 0x18);
+    gb.regs.hl = 0xC320;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0x10);
+    gb.regs.hl = 0xC2A0;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    if (GET_FLAG_Z()) goto _skipSound;
+    gb.regs.a = 7;
+    gb_write(0xFFF2, gb.regs.a);
+  _skipSound:;
+    AlertSwordMoblins();
+    gb.regs.a = gb_read(0xFFEB);
+    alu_cp8(gb.regs.a, 0);
+    if (!GET_FLAG_Z()) goto _enemyProjectileBounce;
+    _playerArrowBounceY();
+    gb.regs.hl = 0xC240;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cpl();
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb.regs.a = alu_sra(gb.regs.a);
+    gb_write(gb.regs.hl, gb.regs.a);
+    return;
+  _enemyProjectileBounce:;
+    EntityBounceOffWallY();
+    EntityBounceOffWallX();
+}
 void BombExplosionVisuals_smallExplosion(void) {
     /* Jump-to-middle: render small explosion sprite, check interactivity */
     gb.regs.de = 0x506E;
@@ -208,8 +261,49 @@ void CheckLinkCollisionWithProjectile_jr_003_6C54(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 0xFF);
 }
-void CheckLinkCollisionWithProjectile_return(void) { /* cross-function local label stub */ }
-void CheckLinkInteractionWithEntity_06_label_006_647E(void) { /* cross-function local label stub */ }
+void CheckLinkCollisionWithProjectile_return(void) { /* ret - no-op */ }
+void CheckLinkInteractionWithEntity_06_label_006_647E(void) {
+    /* Jump-to-middle: continue hitbox check after Y-distance comparison */
+    if (!GET_FLAG_C()) goto _noInteraction;
+    gb.regs.a = gb_read(0xFF98);
+    gb.regs.hl = 0xFFEE;
+    gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.a = alu_add8(gb.regs.a, 0x10);
+    alu_cp8(gb.regs.a, 0x20);
+    if (!GET_FLAG_C()) goto _noInteraction;
+    gb.regs.e = alu_inc8(gb.regs.e);
+    gb.regs.a = gb_read(0xFFEB);
+    alu_cp8(gb.regs.a, 0x78);
+    if (GET_FLAG_Z()) goto _jr_649F;
+    gb_push16(gb.regs.de);
+    GetEntityDirectionToLink_06();
+    gb.regs.a = gb_read(0xFF9E);
+    gb.regs.a = alu_xor8(gb.regs.a, 1);
+    alu_cp8(gb.regs.a, gb.regs.e);
+    gb.regs.de = gb_pop16();
+    if (!GET_FLAG_Z()) goto _noInteraction;
+  _jr_649F:;
+    gb.regs.hl = 0xC1AD;
+    gb_write(gb.regs.hl, 1);
+    gb.regs.a = gb_read(0xC19F);
+    gb.regs.hl = 0xC14F;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC146;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    gb.regs.hl = 0xC134;
+    gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _noInteraction;
+    gb.regs.a = gb_read(0xDC42);
+    alu_cp8(gb.regs.a, 0x80);
+    if (!GET_FLAG_Z()) goto _noInteraction;
+    gb.regs.a = gb_read(0xFFCC);
+    gb.regs.a = alu_and8(gb.regs.a, 0x10);
+    if (GET_FLAG_Z()) goto _noInteraction;
+    alu_scf();
+    return;
+  _noInteraction:;
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+}
 void ConfigureNewEntity_attributes(void) {
     /* Jump-to-middle: load entity attributes from type tables (Gibdo->Stalfos etc.) */
     gb.regs.hl = 0xC3A0;
@@ -258,11 +352,49 @@ void CopyOutdoorsMacroObjectsToRoom_loop(void) {
     /* Jump-to-middle: entry point is same as CopyOutdoorsMacroObjectsToRoom */
     CopyOutdoorsMacroObjectsToRoom();
 }
-void CopyTilesToPieceOfHeartMeter_restoreBank0C(void) { /* cross-function local label stub */ }
-void CrazyTracySellingHandler_buy(void) { /* cross-function local label stub */ }
-void CrazyTracySellingHandler_openFinalDialog(void) { /* cross-function local label stub */ }
-void CrazyTracySellingHandler_return(void) { /* cross-function local label stub */ }
-void DecreaseEntityTransitionCountdown_return(void) { /* cross-function local label stub */ }
+void CopyTilesToPieceOfHeartMeter_restoreBank0C(void) {
+    gb.regs.a = 0x0C;
+    gb_write(0x2100, gb.regs.a);
+}
+void CrazyTracySellingHandler_buy(void) {
+    /* Jump-to-middle: purchase medicine - deduct rupees, set inventory, open dialog */
+    gb.regs.hl = 0xC2B0; /* wEntitiesPrivateState1Table */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.e = gb_read(gb.regs.hl);
+    gb.regs.d = gb.regs.b;
+    gb.regs.hl = 0x5F89; /* MedicinePriceDecimal (bank 6 ROM) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(0xDB92); /* wSubstractRupeeBufferLow */
+    gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(0xDB92, gb.regs.a);
+    gb.regs.a = alu_rl(gb.regs.a); /* save carry in bit 0 */
+    gb.regs.hl = 0x5F8D; /* Data_006_5F8D (bank 6 ROM) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = alu_rr(gb.regs.a); /* restore carry from bit 0 */
+    gb.regs.a = gb_read(0xDB91); /* wSubstractRupeeBufferHigh */
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(0xDB91, gb.regs.a);
+    gb.regs.hl = 0xDB0D; /* wHasMedicine */
+    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    gb.regs.a = 0x1A;
+    CrazyTracySellingHandler_openFinalDialog();
+    IncrementEntityState();
+    gb_write(gb.regs.hl, 0x04);
+    GetEntityTransitionCountdown();
+    gb_write(gb.regs.hl, 0x20);
+    gb.regs.a = 0x01; /* JINGLE_TREASURE_FOUND */
+    gb_write(0xFFF2, gb.regs.a);
+}
+void CrazyTracySellingHandler_openFinalDialog(void) {
+    /* Jump-to-middle: open dialog with bottom box, reset entity state */
+    OpenDialogInTable0();
+    gb.regs.hl = 0xC19F; /* wDialogState */
+    gb_write(gb.regs.hl, gb_read(gb.regs.hl) | 0x80); /* set DIALOG_BOX_BOTTOM_BIT */
+    IncrementEntityState();
+    gb_write(gb.regs.hl, gb.regs.b);
+}
+void CrazyTracySellingHandler_return(void) { /* ret - no-op */ }
+void DecreaseEntityTransitionCountdown_return(void) { /* ret - no-op */ }
 void DialogDrawNextCharacterHandler_choice(void) {
     /* Jump-to-middle: set dialog state to DIALOG_CHOICE (0x0D) + play jingle */
     gb.regs.a = gb_read(0xC19F);
@@ -314,8 +446,40 @@ void DrawSaveSlot1MaxHearts_clamp(void) {
     gb_write(0xFFD9, gb.regs.a);
     BuildSaveSlotHeartsDrawCommand();
 }
-void DrawSaveSlot1MaxHearts_return(void) { /* cross-function local label stub */ }
-void DropHeartContainer_05_evilEagle(void) { /* cross-function local label stub */ }
+void DrawSaveSlot1MaxHearts_return(void) { /* ret - no-op */ }
+void DropHeartContainer_05_evilEagle(void) {
+    /* Jump-to-middle: spawn heart container at fixed Evil Eagle position */
+    gb.regs.a = 0x36;
+    SpawnNewEntity_trampoline();
+    gb.regs.a = 0x48;
+    gb_write(0xFFD7, gb.regs.a);
+    gb.regs.a = 0x10;
+    gb_write(0xFFD8, gb.regs.a);
+    /* notEvilEagle: common heart container placement code */
+    gb.regs.a = gb_read(0xFFD8);
+    gb.regs.hl = 0xC210;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.a = gb_read(0xFFD7);
+    gb.regs.hl = 0xC200;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.a = gb_read(0xFFF9);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) goto _jr_75B4;
+    gb.regs.hl = 0xC250;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0xF0);
+    jr_005_75C0(); return;
+  _jr_75B4:;
+    gb.regs.hl = 0xC320;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 0x10);
+    gb.regs.hl = 0xC310;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 8);
+    jr_005_75C0();
+}
 void EnemyCollidedWithSword_label_003_713B(void) {
     /* Jump-to-middle: copy entity position and render collision sprite */
     gb.regs.a = gb_read(0xFFEE);
@@ -324,7 +488,7 @@ void EnemyCollidedWithSword_label_003_713B(void) {
     gb_write(0xFFD8, gb.regs.a);
     label_D15();
 }
-void EntityBounceOffWallX_return(void) { /* cross-function local label stub */ }
+void EntityBounceOffWallX_return(void) { /* ret - no-op */ }
 void EntityBounceOffWallX_updateSpeed(void) {
     /* Jump-to-middle: negate and divide speed by 8 (3x arithmetic right shift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
@@ -363,8 +527,31 @@ void EntityShiftPosition_shiftBy8(void) {
     gb.regs.a = alu_adc8(gb.regs.a, 0);
     gb_write(gb.regs.hl, gb.regs.a);
 }
-void GhiniEntityHandler_sharedGhiniBehavior(void) { /* cross-function local label stub */ }
-void HardhatBeetleUpdateSpeed_return(void) { /* cross-function local label stub */ }
+void GhiniEntityHandler_sharedGhiniBehavior(void) {
+    /* Jump-to-middle: check ghini state, dispatch visible or hiding logic */
+    gb.regs.a = gb_read(0xFFF0);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) { GhiniVisibleHandler(); return; }
+    gb.regs.a = 0xFF;
+    SetEntitySpriteVariant();
+    GetEntityXDistanceToLink_04();
+    gb.regs.a = alu_add8(gb.regs.a, 0x10);
+    alu_cp8(gb.regs.a, 0x20);
+    if (!GET_FLAG_C()) return;
+    GetEntityYDistanceToLink_04();
+    gb.regs.a = alu_add8(gb.regs.a, 0x10);
+    alu_cp8(gb.regs.a, 0x20);
+    if (!GET_FLAG_C()) return;
+    gb.regs.a = gb_read(0xC133);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) return;
+    IncrementEntityState();
+    gb_write(gb.regs.hl, gb.regs.b);
+    gb.regs.hl = 0xC300;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, 0x30);
+}
+void HardhatBeetleUpdateSpeed_return(void) { /* ret - no-op */ }
 void InterruptVBlank_vblankDoneInterruptsEnabled(void) {
     /* Jump-to-middle: VBlank done - restore regs, signal VBlank complete */
     gb.regs.bc = gb_pop16();
@@ -378,7 +565,7 @@ void InterruptVBlank_vblankDoneInterruptsEnabled(void) {
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     gb.regs.ime = true;
 }
-void KikiOpenDialog_return(void) { /* cross-function local label stub */ }
+void KikiOpenDialog_return(void) { /* ret - no-op */ }
 void KnightWalkingHandler_animate(void) {
     /* Jump-to-middle: animate knight walking sprite (inertia counter >> 3 & 1) */
     gb.regs.hl = 0xC3D0; /* wEntitiesInertiaTable */
@@ -455,9 +642,103 @@ void LoadIndoorTiles_patchInventoryTiles(void) {
     gb.regs.a = 0x0D;
     gb_write(0xFFA5, gb.regs.a);
 }
-void LoadInstrumentsBG_start(void) { /* cross-function local label stub */ }
-void MadBomberState3Handler_throwBomb(void) { /* cross-function local label stub */ }
-void MakeEffectObjectAppear_return(void) { /* cross-function local label stub */ }
+void LoadInstrumentsBG_start(void) {
+    /* Jump-to-middle: loop through instruments, load tilemap for each
+       At entry: c = end instrument index, e = start instrument index */
+    gb.regs.a = gb.regs.c;
+    gb_write(0xFFE0, gb.regs.a); /* hMultiPurpose9 = end index */
+    gb.regs.d = 0x00;
+  _loop:;
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(0xFFD7, gb.regs.a); /* hMultiPurpose0 = 0 */
+    gb_write(0xFFD8, gb.regs.a); /* hMultiPurpose1 = 0 */
+    gb_write(0xFFD9, gb.regs.a); /* hMultiPurpose2 = 0 */
+    gb_write(0xFFDA, gb.regs.a); /* hMultiPurpose3 = 0 */
+    gb.regs.hl = 0xDB65; /* wHasInstrument1 */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_bit(1, gb.regs.a);
+    if (!GET_FLAG_Z()) goto _loadInstrumentTilemap;
+    /* loadPlaceholderTilemap */
+    gb.regs.c = 0x00;
+    gb.regs.b = gb.regs.c;
+    gb.regs.hl = 0x6BCF; /* Data_001_6BCF (bank 1 ROM) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.l = gb.regs.a;
+    gb.regs.h = 0x9D;
+    gb_push16(gb.regs.hl);
+    gb.regs.a = 0x7C;
+    gb_write(0xFFD7, gb.regs.a);
+    gb_write(0xFFD8, gb.regs.a);
+    gb_write(0xFFD9, gb.regs.a);
+    gb.regs.hl = 0x6BD7; /* Data_001_6BD7 (bank 1 ROM) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb_write(0xFFDA, gb.regs.a);
+    gb.regs.hl = gb_pop16();
+    goto _copyToBG;
+  _loadInstrumentTilemap:;
+    gb.regs.c = 0x00;
+    gb.regs.b = gb.regs.c;
+    gb.regs.hl = 0x6BCF;
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.l = gb.regs.a;
+    gb.regs.h = 0x9D;
+    gb_push16(gb.regs.hl);
+    gb.regs.hl = 0x6BDF; /* Data_001_6BDF (bank 1 ROM) */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb_write(0xFFD7, gb.regs.a);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb_write(0xFFD8, gb.regs.a);
+    gb.regs.a = alu_add8(gb.regs.a, 0x0F);
+    gb_write(0xFFD9, gb.regs.a);
+    gb.regs.a = alu_inc8(gb.regs.a);
+    gb_write(0xFFDA, gb.regs.a);
+    gb.regs.hl = gb_pop16();
+  _copyToBG:;
+    gb.regs.a = gb_read(0xFFD7);
+    gb_write(gb.regs.hl, gb.regs.a);
+    GetInstrumentNextBGAddress();
+    gb.regs.a = gb_read(0xFFD8);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.c = alu_inc8(gb.regs.c);
+    GetInstrumentNextBGAddress();
+    gb.regs.a = gb_read(0xFFD9);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.c = alu_inc8(gb.regs.c);
+    GetInstrumentNextBGAddress();
+    gb.regs.a = gb_read(0xFFDA);
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb.regs.e = alu_inc8(gb.regs.e);
+    gb.regs.a = gb.regs.e;
+    gb.regs.hl = 0xFFE0; /* hMultiPurpose9 */
+    alu_cp8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_Z()) goto _loop;
+}
+void MadBomberState3Handler_throwBomb(void) {
+    /* Jump-to-middle: configure thrown bomb entity (de = bomb entity index) */
+    gb.regs.hl = 0xC320; /* wEntitiesSpeedZTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 0x18);
+    gb.regs.hl = 0xC2E0; /* wEntitiesTransitionCountdownTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 0x40);
+    gb.regs.hl = 0xC440; /* wEntitiesPrivateState4Table */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    gb_write(gb.regs.hl, 0x01);
+    gb_push16(gb.regs.bc);
+    gb.regs.c = gb.regs.e;
+    gb.regs.b = gb.regs.d;
+    gb.regs.a = 0x10;
+    ApplyVectorTowardsLink_trampoline();
+    gb.regs.bc = gb_pop16();
+    gb.regs.a = 0x08; /* JINGLE_FALL_DOWN */
+    gb_write(0xFFF2, gb.regs.a);
+}
+void MakeEffectObjectAppear_return(void) { /* ret - no-op */ }
 void PickableCollectIfNeeded_collect(void) {
     /* Jump-to-middle: collect item with sound effects and dispatch */
     gb.regs.hl = 0xC460;
@@ -495,7 +776,7 @@ void PickableCollectIfNeeded_collect(void) {
         case 0x10: PickSecretSeashell(); return;
     }
 }
-void PickableHandleGrabbedByItemIfNeeded_return(void) { /* cross-function local label stub */ }
+void PickableHandleGrabbedByItemIfNeeded_return(void) { /* ret - no-op */ }
 void PushLinkOutOfEntity_06_forcePush(void) {
     /* Jump-to-middle: force push Link away, reset boots, clear hookshot state */
     CopyLinkFinalPositionToPosition();
@@ -514,7 +795,63 @@ void PushLinkOutOfEntity_06_forcePush(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 0x00);
 }
-void RaisableBlockShiftedRightEntityHandler_update(void) { /* cross-function local label stub */ }
+void RaisableBlockShiftedRightEntityHandler_update(void) {
+    /* Jump-to-middle: render block, handle raising/falling, shove Link */
+    gb.regs.de = 0x4E9D; /* RaisableBlockSpriteVariants (bank 6 ROM) */
+    RenderActiveEntitySpritesPair();
+    ReturnIfNonInteractive_06();
+    gb.regs.a = gb_read(0xFFBA); /* hMovingBlockMoverState */
+    alu_cp8(gb.regs.a, 0x02);
+    if (GET_FLAG_Z()) goto _shoveLink;
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) goto _moverNotGrabbed;
+    /* Block is being raised */
+    gb.regs.hl = 0xC3D0; /* wEntitiesInertiaTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 0x0A);
+    if (!GET_FLAG_Z()) return;
+    gb_write(gb.regs.hl, gb.regs.b);
+    gb.regs.a = 0x11; /* NOISE_SFX_RUMBLE */
+    gb_write(0xFFF4, gb.regs.a);
+    gb.regs.hl = 0xC310; /* wEntitiesPosZTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 0x20);
+    if (!GET_FLAG_C()) return;
+    gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    return;
+  _moverNotGrabbed:;
+    gb.regs.hl = 0xC310; /* wEntitiesPosZTable */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    if (GET_FLAG_Z()) goto _onGround;
+    gb.regs.a = gb_read(0xFFE7); /* hFrameCounter */
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    if (!GET_FLAG_Z()) goto _shoveLink;
+    gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
+  _shoveLink:;
+    gb.regs.a = gb_read(gb.regs.hl);
+    alu_cp8(gb.regs.a, 0x04);
+    if (!GET_FLAG_C()) return;
+    CheckLinkCollisionWithEnemy_trampoline();
+    if (!GET_FLAG_C()) return;
+    gb.regs.a = 0x08;
+    gb_write(0xC13E, gb.regs.a); /* wIgnoreLinkCollisionsCountdown */
+    gb.regs.a = 0x10;
+    GetVectorTowardsLink_trampoline();
+    gb.regs.a = gb_read(0xFFD7);
+    gb_write(0xFF9B, gb.regs.a); /* hLinkSpeedY */
+    gb.regs.a = gb_read(0xFFD8);
+    gb_write(0xFF9A, gb.regs.a); /* hLinkSpeedX */
+    return;
+  _onGround:;
+    CheckLinkCollisionWithEnemy_trampoline();
+    if (!GET_FLAG_C()) return;
+    PushLinkOutOfEntity_06_forcePush();
+}
 void RenderActiveEntitySpritesPair_paletteFlip1End(void) {
     /* Jump-to-middle: restore entity index, call OAM sprite helpers */
     gb.regs.a = gb_read(0xC123);
@@ -587,21 +924,78 @@ void RenderActiveEntitySpritesRect_withDestination(void) {
     gb_call_bank(21, func_015_795D);
     ReloadSavedBank();
 }
-void RenderLoop_waitForNextFrame(void) { /* cross-function local label stub */ }
-void ReplaceEvilEagleRiderHiddenTiles_copyData(void) { /* cross-function local label stub */ }
-void ReplaceMarinTiles_sitting(void) { /* cross-function local label stub */ }
-void ReplaceMarinTiles_standingUp(void) { /* cross-function local label stub */ }
-void ReplaceTiles_04_replaceTiles(void) { /* cross-function local label stub */ }
+void RenderLoop_waitForNextFrame(void) {
+    /* Jump-to-middle: enter render loop at wait-for-frame, then start main loop */
+    gb_call_bank(31, func_01F_7F80);
+    gb.regs.a = 0x0C;
+    AdjustBankNumberForGBC();
+    SwitchBank();
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(0xFFFD, gb.regs.a);
+    gb_halt();
+    do {
+        gb.regs.a = gb_read(0xFFD1);
+        gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
+    } while (GET_FLAG_Z());
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(0xFFD1, gb.regs.a);
+    RenderLoop(); /* enters infinite render loop */
+}
+void ReplaceEvilEagleRiderHiddenTiles_copyData(void) {
+    /* Jump-to-middle: copy tile data, clear replace flag, restore bank, draw Link */
+    gb.regs.de = 0x8480; /* vTiles0 + $480 */
+    gb.regs.bc = 0x0010;
+    CopyData();
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(0xFFA5, gb.regs.a); /* hReplaceTiles = 0 */
+    gb.regs.a = 0x0C;
+    gb_write(0x2100, gb.regs.a);
+    DrawLinkSpriteAndReturn();
+}
+void ReplaceMarinTiles_sitting(void) {
+    /* Jump-to-middle: load Marin sitting tiles from bank 0x12 */
+    gb.regs.a = 18;
+    gb.regs.hl = 0x6080;
+    /* .copyTiles */
+    gb_write(0x2100, gb.regs.a);
+    gb.regs.de = 0x8400;
+    gb.regs.bc = 0x40;
+    CopyDataAndDrawLinkSprite();
+}
+void ReplaceMarinTiles_standingUp(void) {
+    /* Jump-to-middle: alias for ReplaceMarinTiles (same address) */
+    ReplaceMarinTiles();
+}
+void ReplaceTiles_04_replaceTiles(void) {
+    /* Jump-to-middle: adjust bank for GBC, set destination, copy 4 tiles */
+    AdjustBankNumberForGBC();
+    gb_write(0x2100, gb.regs.a);
+    gb.regs.de = 0x9140; /* vTiles2 + $140 */
+    Copy4TilesAndDrawLinkSprite();
+}
 void SetNextMusicTrack_setMusicTrack(void) {
     /* Jump-to-middle: skip fade timer, just set music track + increment state */
     gb.regs.a = gb.regs.c;
     gb_write(0xFFB0, gb.regs.a);
     IncrementRoomTransitionStateAndReturn();
 }
-void SetSpawnLocation_return(void) { /* cross-function local label stub */ }
-void SmallFishHandler_sharedFishBehavior(void) { /* cross-function local label stub */ }
-void TransitionToNextEndingScene_return(void) { /* cross-function local label stub */ }
-void UseItem_return(void) { /* cross-function local label stub */ }
+void SetSpawnLocation_return(void) { /* ret - no-op */ }
+void SmallFishHandler_sharedFishBehavior(void) {
+    /* Jump-to-middle: shared fish behavior with state dispatch */
+    ReturnIfNonInteractive_04();
+    UpdateEntityPosWithSpeed_04();
+    gb.regs.a = gb_read(0xFFF0);
+    switch(gb.regs.a) {
+        case 0x00: func_004_6463(); return;
+        case 0x01: func_004_649B(); return;
+        case 0x02: func_004_64F2(); return;
+        case 0x03: func_004_652D(); return;
+        case 0x04: func_004_657A(); return;
+        case 0x05: func_004_6689(); return;
+    }
+}
+void TransitionToNextEndingScene_return(void) { /* ret - no-op */ }
+void UseItem_return(void) { /* ret - no-op */ }
 void func_001_7920_jr_001_7a63(void) {
     /* Jump-to-middle: intro screen animation counter increment */
     gb.regs.hl = 0xD212;
@@ -636,9 +1030,21 @@ void func_001_7920_jr_001_7a63(void) {
     gb.regs.bc = 8;
     CopyData();
 }
-void func_004_6BE1_createSwordPokeVfx(void) { /* cross-function local label stub */ }
-void func_007_4C43_openDialog(void) { /* cross-function local label stub */ }
-void func_2165_return(void) { /* cross-function local label stub */ }
+void func_004_6BE1_createSwordPokeVfx(void) {
+    /* Jump-to-middle: store entity pos to hMultiPurpose0/1, add sword poke VFX */
+    gb.regs.a = gb_read(0xFFEE); /* hActiveEntityPosX */
+    gb_write(0xFFD7, gb.regs.a); /* hMultiPurpose0 */
+    gb.regs.a = gb_read(0xFFEC); /* hActiveEntityVisualPosY */
+    gb_write(0xFFD8, gb.regs.a); /* hMultiPurpose1 */
+    gb.regs.a = 0x05; /* TRANSCIENT_VFX_SWORD_POKE */
+    AddTranscientVfx();
+}
+void func_007_4C43_openDialog(void) {
+    /* Jump-to-middle: copy e to a and open bear dialog */
+    gb.regs.a = gb.regs.e;
+    BearOpenDialog();
+}
+void func_2165_return(void) { /* ret - no-op */ }
 void label_002_61E7_inventoryFullyClosed2(void) {
     /* Jump-to-middle: check dialog state after inventory close, update HUD */
     gb.regs.a = gb_read(0xC19F);
@@ -652,7 +1058,7 @@ void label_002_61E7_inventoryFullyClosed2(void) {
     UpdateRupeesCount();
     UpdateHealth();
 }
-void label_140F_return(void) { /* cross-function local label stub */ }
+void label_140F_return(void) { /* ret - no-op */ }
 void soundOpcode96_setD3CDAndParseNext(void) {
     /* Jump-to-middle: write A to 0xD3CD and parse next sound opcode */
     gb_write(0xD3CD, gb.regs.a);

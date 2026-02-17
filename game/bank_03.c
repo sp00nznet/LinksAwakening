@@ -9024,6 +9024,7 @@ void CheckLinkCollisionWithEnemy(void) {
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     alu_cp8(gb.regs.a, gb.regs.e);
     if (!GET_FLAG_C()) { jr_003_6CCB(); return; };
+    func_003_6CC0(); return;
 }
 
 void func_003_6CC0(void) {
