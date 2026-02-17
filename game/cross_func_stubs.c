@@ -5,23 +5,135 @@
 #include "game_labels.h"
 
 void AddEntitySpeedToPos_03_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_03_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_03_updatePosition(void) {
+    /* Jump-to-middle: AddEntitySpeedToPos .updatePosition label
+       At entry: hl = position table base, af pushed with speed, bc = entity index, d has carry */
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _positive;
+    gb.regs.e = 0xF0;
+  _positive:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_04_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_04_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_04_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p; gb.regs.e = 0xF0; _p:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_05_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_05_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_05_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p05; gb.regs.e = 0xF0; _p05:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_06_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_06_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_06_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p06; gb.regs.e = 0xF0; _p06:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_07_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_07_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_07_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p07; gb.regs.e = 0xF0; _p07:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_15_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_15_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_15_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p15; gb.regs.e = 0xF0; _p15:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_17_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_17_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_17_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p17; gb.regs.e = 0xF0; _p17:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_18_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_18_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_18_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p18; gb.regs.e = 0xF0; _p18:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AddEntitySpeedToPos_19_return(void) { /* cross-function local label stub */ }
-void AddEntitySpeedToPos_19_updatePosition(void) { /* cross-function local label stub */ }
+void AddEntitySpeedToPos_19_updatePosition(void) {
+    gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
+    gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
+    gb.regs.e = 0;
+    alu_bit(7, gb.regs.a);
+    if (GET_FLAG_Z()) goto _p19; gb.regs.e = 0xF0; _p19:;
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_and8(gb.regs.a, 0x0F);
+    gb.regs.a = alu_or8(gb.regs.a, gb.regs.e);
+    gb.regs.d = alu_rr(gb.regs.d);
+    gb.regs.a = alu_adc8(gb.regs.a, gb_read(gb.regs.hl));
+    gb_write(gb.regs.hl, gb.regs.a);
+}
 void AnimateTiles_doWorldAnimations(void) { /* cross-function local label stub */ }
 void AnimateTiles_replaceTiles(void) { /* cross-function local label stub */ }
 void ApplyLinkGroundPhysics_part2_makeLinkFallInPit(void) { /* cross-function local label stub */ }
@@ -32,8 +144,19 @@ void CheckLinkCollisionWithProjectile_jr_003_6C54(void) { /* cross-function loca
 void CheckLinkCollisionWithProjectile_return(void) { /* cross-function local label stub */ }
 void CheckLinkInteractionWithEntity_06_label_006_647E(void) { /* cross-function local label stub */ }
 void ConfigureNewEntity_attributes(void) { /* cross-function local label stub */ }
-void CopyDataAndDrawLinkSprite_drawLinkSprite(void) { /* cross-function local label stub */ }
-void CopyDataToVRAM_restoreBankAndReturn(void) { /* cross-function local label stub */ }
+void CopyDataAndDrawLinkSprite_drawLinkSprite(void) {
+    /* Jump-to-middle: CopyDataAndDrawLinkSprite .drawLinkSprite label */
+    gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    gb_write(0xFFA5, gb.regs.a);
+    gb.regs.a = 12;
+    gb_write(0x2100, gb.regs.a);
+    DrawLinkSpriteAndReturn();
+}
+void CopyDataToVRAM_restoreBankAndReturn(void) {
+    /* Jump-to-middle: CopyDataToVRAM .restoreBankAndReturn label */
+    gb.regs.a = gb.regs.h;
+    gb_write(0x2100, gb.regs.a);
+}
 void CopyIndoorsMacroObjectsToRoom_loop(void) { /* cross-function local label stub */ }
 void CopyOutdoorsMacroObjectsToRoom_loop(void) { /* cross-function local label stub */ }
 void CopyTilesToPieceOfHeartMeter_restoreBank0C(void) { /* cross-function local label stub */ }
@@ -44,7 +167,31 @@ void DecreaseEntityTransitionCountdown_return(void) { /* cross-function local la
 void DialogDrawNextCharacterHandler_choice(void) { /* cross-function local label stub */ }
 void DialogDrawNextCharacterHandler_end(void) { /* cross-function local label stub */ }
 void DialogDrawNextCharacterHandler_nextCharacter(void) { /* cross-function local label stub */ }
-void DrawSaveSlot1MaxHearts_clamp(void) { /* cross-function local label stub */ }
+void DrawSaveSlot1MaxHearts_clamp(void) {
+    /* Jump-to-middle: DrawSaveSlot1MaxHearts .clamp label
+       At entry: a=slot index, hl=health addr, de=max hearts addr */
+    gb_write(0xFFDB, gb.regs.a);
+    gb.regs.a = gb_read(gb.regs.hl);
+    gb_write(0xFFD9, gb.regs.a);
+    gb.regs.a = gb_read(gb.regs.de);
+    alu_cp8(gb.regs.a, 3);
+    if (!GET_FLAG_C()) goto _max;
+    gb.regs.a = 3;
+  _max:;
+    alu_cp8(gb.regs.a, 0x0E);
+    if (GET_FLAG_C()) goto _prep;
+    gb.regs.a = 0x0E;
+  _prep:;
+    gb_write(gb.regs.de, gb.regs.a);
+    gb_write(0xFFDA, gb.regs.a);
+    gb.regs.a = alu_swap(gb.regs.a);
+    gb.regs.a = alu_srl(gb.regs.a);
+    alu_cp8(gb.regs.a, gb_read(gb.regs.hl));
+    if (!GET_FLAG_C()) { BuildSaveSlotHeartsDrawCommand(); return; }
+    gb_write(gb.regs.hl, gb.regs.a);
+    gb_write(0xFFD9, gb.regs.a);
+    BuildSaveSlotHeartsDrawCommand();
+}
 void DrawSaveSlot1MaxHearts_return(void) { /* cross-function local label stub */ }
 void DropHeartContainer_05_evilEagle(void) { /* cross-function local label stub */ }
 void EnemyCollidedWithSword_label_003_713B(void) { /* cross-function local label stub */ }
