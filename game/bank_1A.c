@@ -155,6 +155,7 @@ void AnglersTunnelDoorEntityHandler(void);
 
 void OverworldRoomsSecondHalf(void) {
     Overworld80();
+    Overworld80(); return;
 }
 
 void Overworld80(void) {
@@ -4479,6 +4480,7 @@ void BGAttributesPointers_Overworld(void) {
     /* data: dw OverworldObjectsAttrmap_0B */;
   BGAttributesPointers_Overworld__FF:;
     /* data: dw OverworldObjectsAttrmap_0B */;
+    BGAttributesPointers_IndoorsA(); return;
 }
 
 void BGAttributesPointers_IndoorsA(void) {
@@ -4994,6 +4996,7 @@ void BGAttributesPointers_IndoorsA(void) {
     /* data: dw IndoorsAObjectsAttrmap_00 */;
   BGAttributesPointers_IndoorsA__FF:;
     /* data: dw IndoorsAObjectsAttrmap_00 */;
+    BGAttributesPointers_IndoorsB(); return;
 }
 
 void BGAttributesPointers_IndoorsB(void) {
@@ -5509,6 +5512,7 @@ void BGAttributesPointers_IndoorsB(void) {
     /* data: dw IndoorsBObjectsAttrmap_00 */;
   BGAttributesPointers_IndoorsB__FF:;
     /* data: dw IndoorsBObjectsAttrmap_06 */;
+    OverworldBGAttributesBanks(); return;
 }
 
 void OverworldBGAttributesBanks(void) {
@@ -6024,6 +6028,7 @@ void OverworldBGAttributesBanks(void) {
     /* data: db BANK(OverworldObjectsAttrmap_0B) */;
   OverworldBGAttributesBanks__FF:;
     /* data: db BANK(OverworldObjectsAttrmap_0B) */;
+    GetBGAttributesAddressForObject(); return;
 }
 
 void GetBGAttributesAddressForObject(void) {
@@ -6719,6 +6724,7 @@ void OverworldObjectsTilemapDMG(void) {
     /* data: db $7F, $59, $7F, $59 */;
   OverworldObjectsTilemapDMG__F4:;
     /* data: db $5E, $59, $49, $59 */;
+    OverworldObjectsTilemapCGB(); return;
 }
 
 void OverworldObjectsTilemapCGB(void) {
@@ -7234,6 +7240,7 @@ void OverworldObjectsTilemapCGB(void) {
     /* data: db $71, $71, $71, $71 */;
   OverworldObjectsTilemapCGB__FF:;
     /* data: db $7C, $7C, $7C, $7C */;
+    Data_01A_6F1D(); return;
 }
 
 void Data_01A_6F1D(void) {

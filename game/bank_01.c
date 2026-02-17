@@ -519,6 +519,7 @@ void FileSaveInitial(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFF70, gb.regs.a);
     gb.regs.ime = true;
+    FileSaveMapFadeOut(); return;
 }
 
 void FileSaveMapFadeOut(void) {
@@ -629,6 +630,7 @@ void jr_001_40F9(void) {
     gb.regs.a = 1;
     gb_write(0xDC57, gb.regs.a);
     func_001_6162();
+    LCDOn(); return;
 }
 
 void LCDOn(void) {
@@ -926,6 +928,7 @@ void GameOverInteractiveHandler(void) {
   GameOverInteractiveHandler_jr_42F2:;
     /* TODO: :  */;
     SaveGameToFile();
+    jr_001_42F5(); return;
 }
 
 void jr_001_42F5(void) {
@@ -961,6 +964,7 @@ void jr_001_432C(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFFF5, gb.regs.a);
     func_001_6162();
+    ret_001_4335(); return;
 }
 
 void ret_001_4335(void) {
@@ -987,6 +991,7 @@ void func_001_4339(void) {
   func_001_4339_jr_434C:;
     /* TODO: :  */;
     gb_write(gb.regs.hl, gb.regs.a);
+    jr_001_434D(); return;
 }
 
 void jr_001_434D(void) {
@@ -1001,6 +1006,7 @@ void jr_001_434D(void) {
   jr_001_434D_jr_435B:;
     /* TODO: :  */;
     gb_write(gb.regs.hl, gb.regs.a);
+    jr_001_435C(); return;
 }
 
 void jr_001_435C(void) {
@@ -1066,6 +1072,7 @@ void MinimapLayoutTable(void) {
     /* data: db INVENTORY_MINIMAP_SINGLE_FLOOR */;
   MinimapLayoutTable__0F:;
     /* data: db MINIMAP_STYLE_COLOR_DUNGEON */;
+    GameplayWorldLoad0Handler(); return;
 }
 
 void GameplayWorldLoad0Handler(void) {
@@ -1201,6 +1208,7 @@ void GameplayWorldLoadRoomHandler(void) {
     alu_cp8(gb.regs.a, 6);
     if (GET_FLAG_C()) { jr_001_447E(); return; };
     gb.regs.d = alu_inc8(gb.regs.d);
+    jr_001_447E(); return;
 }
 
 void jr_001_447E(void) {
@@ -1225,6 +1233,7 @@ void jr_001_447E(void) {
     if (!GET_FLAG_Z()) { jr_001_44A6(); return; };
     gb.regs.a = 0x0C;
     gb_write(0xD462, gb.regs.a);
+    jr_001_44A6(); return;
 }
 
 void jr_001_44A6(void) {
@@ -1260,11 +1269,13 @@ void GameplayWorldSelectTilesetHandler(void) {
     gb_write(0xFF91, gb.regs.a);
     gb.regs.a = 9;
     gb_write(0xD7B3, gb.regs.a);
+    IncrementGameplaySubtype(); return;
 }
 
 void IncrementGameplaySubtype(void) {
     gb.regs.hl = 0xDC3E;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    IncrementGameplaySubtypeAndReturn(); return;
 }
 
 void IncrementGameplaySubtypeAndReturn(void) {
@@ -1345,6 +1356,7 @@ void GameplayWorldLoad6Handler(void) {
 
 void TransitionToFileMenu(void) {
     gb_write(0xD47B, gb.regs.a);
+    label_001_4555(); return;
 }
 
 void label_001_4555(void) {
@@ -1442,6 +1454,7 @@ void label_001_4555(void) {
     gb_write(0xDC41, gb.regs.a);
     gb.regs.a = 1;
     ClearFileMenuBG_trampoline();
+    TransitionReturn(); return;
 }
 
 void TransitionReturn(void) {
@@ -1841,6 +1854,7 @@ void Data_001_48E4(void) {
     gb.regs.d = gb.regs.e;
     gb.regs.l = gb.regs.e;
     gb.regs.a = alu_add8(gb.regs.a, gb.regs.e);
+    Data_001_48EB(); return;
 }
 
 void Data_001_48EB(void) {
@@ -1848,6 +1862,7 @@ void Data_001_48EB(void) {
     /* data: db $99, $C7, $00, $AF */;
     /* data: db $00 */;
   Data_001_48EB_end:;
+    FileSelectionInteractiveHandler(); return;
 }
 
 void FileSelectionInteractiveHandler(void) {
@@ -1899,10 +1914,12 @@ void FileSelectionInteractiveHandler(void) {
     gb.regs.a = alu_sub8(gb.regs.a, 1);
     if (!GET_FLAG_C()) { jr_001_491D(); return; };
     gb.regs.a = gb.regs.c;
+    jr_001_491D(); return;
 }
 
 void jr_001_491D(void) {
     gb_write(0xDC4E, gb.regs.a);
+    jr_001_4920(); return;
 }
 
 void jr_001_4920(void) {
@@ -1936,6 +1953,7 @@ void jr_001_4920(void) {
     gb_write(gb.regs.hl++, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(gb.regs.hl, gb.regs.a);
+    func_001_4954(); return;
 }
 
 void func_001_4954(void) {
@@ -2012,11 +2030,13 @@ void FileSelectionExecuteChoice(void) {
     gb_write(0xDC3E, gb.regs.a);
     gb.regs.a = 3;
     gb_write(0xDC3D, gb.regs.a);
+    PlayValidationJingle(); return;
 }
 
 void PlayValidationJingle(void) {
     gb.regs.a = 0x13;
     gb_write(0xFFF2, gb.regs.a);
+    PlayValidationJingleAndReturn(); return;
 }
 
 void PlayValidationJingleAndReturn(void) {
@@ -2166,6 +2186,7 @@ void SaveSlotNameAddresses(void) {
     /* data: db wSaveSlot2Name - wSaveSlotNames */;
   SaveSlotNameAddresses__03:;
     /* data: db wSaveSlot3Name - wSaveSlotNames */;
+    FileCreationInteractiveHandler(); return;
 }
 
 void FileCreationInteractiveHandler(void) {
@@ -2286,10 +2307,12 @@ void NameEntryCharacterTable(void) {
     /* data: db "VWXYZ    vwxyz  " */;
     /* TODO: POPC  */;
   NameEntryCharacterTable_end:;
+    func_001_4BF5(); return;
 }
 
 void func_001_4BF5(void) {
     gb.regs.a = gb_read(0xFFCC);
+    jr_001_4BF7(); return;
 }
 
 void jr_001_4BF7(void) {
@@ -2360,6 +2383,7 @@ void jr_001_4C41(void) {
     alu_cp8(gb.regs.a, NameEntryCharacterTableSize);
     if (GET_FLAG_C()) { jr_001_4C5E(); return; };
     gb.regs.a = alu_sub8(gb.regs.a, NameEntryCharacterTableSize);
+    jr_001_4C5E(); return;
 }
 
 void jr_001_4C5E(void) {
@@ -2416,10 +2440,12 @@ void func_001_4C8A(void) {
     alu_cp8(gb.regs.a, 0xFF);
     if (!GET_FLAG_Z()) { jr_001_4CB4(); return; };
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    jr_001_4CB4(); return;
 }
 
 void jr_001_4CB4(void) {
     gb_write(0xDC52, gb.regs.a);
+    jr_001_4CB7(); return;
 }
 
 void jr_001_4CB7(void) {
@@ -2525,6 +2551,7 @@ void FileDeletionState9Handler(void) {
     if (GET_FLAG_Z()) { jr_001_4D53(); return; };
     gb.regs.a = 2;
     gb_write(0xDE79, gb.regs.a);
+    jr_001_4D53(); return;
 }
 
 void jr_001_4D53(void) {
@@ -2692,6 +2719,7 @@ void FileDeletionState10Handler(void) {
   FileDeletionState10Handler_jr_4E28:;
     /* TODO: :  */;
     gb_write(0xDC4E, gb.regs.a);
+    jr_001_4E2B(); return;
 }
 
 void jr_001_4E2B(void) {
@@ -2706,6 +2734,7 @@ void jr_001_4E2B(void) {
     /* TODO: :  */;
     PlayValidationJingleAndReturn();
     IncrementGameplaySubtype();
+    CopyQuitOkTilemap(); return;
 }
 
 void CopyQuitOkTilemap(void) {
@@ -2735,6 +2764,7 @@ void FileMenuQuitOkTilemap(void) {
     /* data: db $7E, $7E, $10, $14, $08, $13, $7E, $7E, $7E, $7E, $0E, $0A, $7E, $7E */;
     /* data: db $00 */;
   FileMenuQuitOkTilemap_end:;
+    CopyQuitOkTilemap__dup01(); return;
 }
 
 void CopyQuitOkTilemap__dup01(void) {
@@ -2826,10 +2856,12 @@ void FileReturnToMenuTilemap(void) {
     /* data: db $11, $04, $13, $14, $11, $0D, $7E, $13, $0E, $7E, $0C, $04, $0D, $14 */;
     /* data: db $00 */;
   FileReturnToMenuTilemap_end:;
+    FileReturnToMenuTilemap_alt(); return;
 }
 
 void FileReturnToMenuTilemap_alt(void) {
   FileReturnToMenuTilemap_alt_end:;
+    CopyReturnToMenuTilemap__dup01(); return;
 }
 
 void CopyReturnToMenuTilemap__dup01(void) {
@@ -2933,6 +2965,7 @@ void func_001_4F0C(void) {
     gb_write(gb.regs.hl++, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(gb.regs.hl, gb.regs.a);
+    ret_001_4F3A(); return;
 }
 
 void ret_001_4F3A(void) {
@@ -3071,11 +3104,13 @@ void FileCopyState8Handler(void) {
     if (GET_FLAG_Z()) { jr_001_501D(); return; };
     gb.regs.a = gb_read(0xD201);
     gb.regs.a = alu_dec8(gb.regs.a);
+    jr_001_5018(); return;
 }
 
 void jr_001_5018(void) {
     gb.regs.a = alu_and8(gb.regs.a, 3);
     gb_write(0xD201, gb.regs.a);
+    jr_001_501D(); return;
 }
 
 void jr_001_501D(void) {
@@ -3097,6 +3132,7 @@ void jr_001_501D(void) {
   jr_001_501D_jr_503F:;
     /* TODO: :  */;
     gb.regs.hl = 0xDC2D;
+    jr_001_5042(); return;
 }
 
 void jr_001_5042(void) {
@@ -3114,6 +3150,7 @@ void jr_001_5042(void) {
     if (GET_FLAG_Z()) { jr_001_5055(); return; };
     IncrementGameplaySubtype();
     PlayValidationJingleAndReturn();
+    jr_001_5055(); return;
 }
 
 void jr_001_5055(void) {
@@ -3126,6 +3163,7 @@ void jr_001_5055(void) {
     gb.regs.a = alu_and8(gb.regs.a, 8);
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.hl = 0xC000;
+    label_001_5067(); return;
 }
 
 void label_001_5067(void) {
@@ -3220,6 +3258,7 @@ void FileCopyState9Handler(void) {
   FileCopyState9Handler_jr_5101:;
     /* TODO: :  */;
     gb_write(0xD202, gb.regs.a);
+    jr_001_5104(); return;
 }
 
 void jr_001_5104(void) {
@@ -3243,6 +3282,7 @@ void jr_001_5104(void) {
   jr_001_5104_jr_5129:;
     /* TODO: :  */;
     func_001_5175();
+    func_001_512C(); return;
 }
 
 void func_001_512C(void) {
@@ -3588,6 +3628,7 @@ void LoadSavedFile(void) {
     EnableSRAM();
     gb.regs.a = gb_read(gb.regs.bc);
     gb_write(0xDCB5, gb.regs.a);
+    jr_001_531D(); return;
 }
 
 void jr_001_531D(void) {
@@ -3985,12 +4026,14 @@ void WorldMapState0Handler(void) {
     if (!GET_FLAG_Z()) goto WorldMapState0Handler_loop_5660;
     gb.regs.a = 1;
     gb_write(0xD200, gb.regs.a);
+    jr_001_5674(); return;
 }
 
 void jr_001_5674(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFF70, gb.regs.a);
     gb.regs.ime = true;
+    WorldMapState1Handler(); return;
 }
 
 void WorldMapState1Handler(void) {
@@ -4051,6 +4094,7 @@ void WorldMapState1Handler(void) {
     func_001_5888();
     gb.regs.a = 8;
     gb_write(0xD7B4, gb.regs.a);
+    ret_001_56F3(); return;
 }
 
 void ret_001_56F3(void) {
@@ -4149,6 +4193,7 @@ void jr_001_577E(void) {
     gb.regs.hl = 0x574E;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
+    jr_001_5792(); return;
 }
 
 void jr_001_5792(void) {
@@ -4163,6 +4208,7 @@ void jr_001_5792(void) {
     /* TODO: :  */;
     gb.regs.a = 1;
     gb_write(0xC112, gb.regs.a);
+    jr_001_57A8(); return;
 }
 
 void jr_001_57A8(void) {
@@ -4226,6 +4272,7 @@ void jr_001_57B7(void) {
     gb.regs.a = 1;
     gb_write(0xDE7D, gb.regs.a);
     IncrementGameplaySubtype();
+    label_001_5818(); return;
 }
 
 void label_001_5818(void) {
@@ -4237,6 +4284,7 @@ void label_001_5818(void) {
 
 void PeachPictureStateAHandler(void) {
     func_6A7C();
+    FileSaveFadeOut(); return;
 }
 
 void FileSaveFadeOut(void) {
@@ -4268,6 +4316,7 @@ void FileSaveFadeOut(void) {
     gb_write(0xD200, gb.regs.a);
     gb_write(0xFF70, gb.regs.a);
     gb.regs.ime = true;
+    jr_001_5854(); return;
 }
 
 void jr_001_5854(void) {
@@ -4296,6 +4345,7 @@ void jr_001_5854(void) {
   jr_001_5854_jr_5885:;
     /* TODO: :  */;
     gb_write(0xD7B3, gb.regs.a);
+    func_001_5888(); return;
 }
 
 void func_001_5888(void) {
@@ -4319,6 +4369,7 @@ void InitializeInventoryBar(void) {
     gb_write(0xC150, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xC14F, gb.regs.a);
+    ret_001_58A7(); return;
 }
 
 void ret_001_58A7(void) {
@@ -4438,6 +4489,7 @@ void func_001_5A71(void) {
 void jr_001_5A9D(void) {
     gb.regs.a = gb_read(0xFFCC);
     gb.regs.c = gb.regs.a;
+    jr_001_5AA0(); return;
 }
 
 void jr_001_5AA0(void) {
@@ -4534,6 +4586,7 @@ void jr_001_5B30(void) {
     gb_write(0xC1B1, gb.regs.a);
     gb.regs.a = 0x10;
     gb_write(0xC1B3, gb.regs.a);
+    label_001_5B3F(); return;
 }
 
 void label_001_5B3F(void) {
@@ -4668,6 +4721,7 @@ void func_001_5C55(void) {
     if (GET_FLAG_Z()) { jr_001_5C72(); return; };
     gb.regs.a = alu_dec8(gb.regs.a);
     gb_write(0xC1B2, gb.regs.a);
+    jr_001_5C6C(); return;
 }
 
 void jr_001_5C6C(void) {
@@ -4682,6 +4736,7 @@ void jr_001_5C72(void) {
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     if (GET_FLAG_Z()) { label_001_5D13(); return; };
     gb.regs.a = 0;
+    jr_001_5C7B(); return;
 }
 
 void jr_001_5C7B(void) {
@@ -4779,6 +4834,7 @@ void jr_001_5C7B(void) {
     gb.regs.de++;
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(gb.regs.de, gb.regs.a);
+    label_001_5D13(); return;
 }
 
 void label_001_5D13(void) {
@@ -4796,6 +4852,7 @@ void SaveSlot1HeartsDrawData(void) {
     /* data: db $7E, $7E, $7E, $7E, $7E, $7E, $7E */;
   SaveSlot1HeartsDrawData_end:;
     /* data: db $00 */;
+    SaveSlot2HeartsDrawData(); return;
 }
 
 void SaveSlot2HeartsDrawData(void) {
@@ -4809,6 +4866,7 @@ void SaveSlot2HeartsDrawData(void) {
     /* data: db $7E, $7E, $7E, $7E, $7E, $7E, $7E */;
   SaveSlot2HeartsDrawData_end:;
     /* data: db $00 */;
+    SaveSlot3HeartsDrawData(); return;
 }
 
 void SaveSlot3HeartsDrawData(void) {
@@ -4822,6 +4880,7 @@ void SaveSlot3HeartsDrawData(void) {
     /* data: db $7E, $7E, $7E, $7E, $7E, $7E, $7E */;
   SaveSlot3HeartsDrawData_end:;
     /* data: db $00 */;
+    BuildSaveSlotHeartsDrawCommand(); return;
 }
 
 void BuildSaveSlotHeartsDrawCommand(void) {
@@ -4914,6 +4973,7 @@ void func_5DC0(void) {
     gb.regs.b = 1;
     gb.regs.c = 0;
     gb.regs.hl = 0xDC28;
+    jr_001_5DCC(); return;
 }
 
 void jr_001_5DCC(void) {
@@ -5098,6 +5158,7 @@ void RecalculateMaxHearts(void) {
 
 void jr_001_5f16(void) {
     gb.regs.a = gb_read(0xFFD8);
+    jr_001_5f18(); return;
 }
 
 void jr_001_5f18(void) {
@@ -5165,6 +5226,7 @@ void EntityPosXOffsetTable(void) {
     /* data: db $00 */;
   EntityPosXOffsetTable_default:;
     /* data: db $00 */;
+    EntityPosXSignTable(); return;
 }
 
 void EntityPosXSignTable(void) {
@@ -5178,6 +5240,7 @@ void EntityPosXSignTable(void) {
     /* data: db $00 */;
   EntityPosXSignTable_default:;
     /* data: db $00 */;
+    EntityPosYOffsetTable(); return;
 }
 
 void EntityPosYOffsetTable(void) {
@@ -5191,6 +5254,7 @@ void EntityPosYOffsetTable(void) {
     /* data: db $80 */;
   EntityPosYOffsetTable_default:;
     /* data: db $00 */;
+    EntityPosYSignTable(); return;
 }
 
 void EntityPosYSignTable(void) {
@@ -5204,6 +5268,7 @@ void EntityPosYSignTable(void) {
     /* data: db $00 */;
   EntityPosYSignTable_default:;
     /* data: db $00 */;
+    PrepareEntityPositionForRoomTransition(); return;
 }
 
 void PrepareEntityPositionForRoomTransition(void) {
@@ -5789,6 +5854,7 @@ void MarinBeachPrepare0(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFF70, gb.regs.a);
     gb.regs.ime = true;
+    MarinBeachPrepare1(); return;
 }
 
 void MarinBeachPrepare1(void) {
@@ -5984,6 +6050,7 @@ void MarinBeachScroll1(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC40, gb.regs.a);
+    MarinBeachScroll2(); return;
 }
 
 void MarinBeachScroll2(void) {
@@ -6131,6 +6198,7 @@ void MarinBeachDialog4(void) {
     func_001_68D9();
     gb.regs.a = 1;
     gb_write(0xDC1B, gb.regs.a);
+    func_001_64FF(); return;
 }
 
 void func_001_64FF(void) {
@@ -6259,6 +6327,7 @@ void func_001_658B(void) {
 void func_001_65AE(void) {
     gb.regs.c = 8;
     gb.regs.b = 0;
+    jr_001_65B2(); return;
 }
 
 void jr_001_65B2(void) {
@@ -6286,6 +6355,7 @@ void jr_001_65B2(void) {
     /* TODO: :  */;
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     func_001_65DD();
+    jr_001_65D6(); return;
 }
 
 void jr_001_65D6(void) {
@@ -6480,6 +6550,7 @@ void func_001_66FD(void) {
   func_001_66FD_jr_6717:;
     /* TODO: :  */;
     gb.regs.e = gb_read(gb.regs.hl);
+    jr_001_6718(); return;
 }
 
 void jr_001_6718(void) {
@@ -6583,6 +6654,7 @@ void jr_001_6718(void) {
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.a = alu_add8(gb.regs.a, gb.regs.e);
     gb_write(gb.regs.hl, gb.regs.a);
+    ret_001_67A7(); return;
 }
 
 void ret_001_67A7(void) {
@@ -6683,6 +6755,7 @@ void PeachPictureState0Handler(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFF70, gb.regs.a);
     gb.regs.ime = true;
+    PeachPictureState1Handler(); return;
 }
 
 void PeachPictureState1Handler(void) {
@@ -6707,6 +6780,7 @@ void PeachPictureState1Handler(void) {
     gb_write(0xC1BF, gb.regs.a);
     gb.regs.a = 0x0F;
     gb_write(0xD7B3, gb.regs.a);
+    ret_001_6855(); return;
 }
 
 void ret_001_6855(void) {
@@ -6792,6 +6866,7 @@ void PeachPictureState5Handler(void) {
     if (GET_FLAG_Z()) { ret_001_68E3(); return; };
     gb.regs.a = 0x13;
     gb_write(0xFFF2, gb.regs.a);
+    func_001_68D9(); return;
 }
 
 void func_001_68D9(void) {
@@ -6799,6 +6874,7 @@ void func_001_68D9(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xC16B, gb.regs.a);
     gb_write(0xC16C, gb.regs.a);
+    ret_001_68E3(); return;
 }
 
 void ret_001_68E3(void) {
@@ -6886,6 +6962,7 @@ void func_001_695B(void) {
     /* TODO: :  */;
     gb.regs.a = gb.regs.e;
     gb_write(0xC156, gb.regs.a);
+    ret_001_6975(); return;
 }
 
 void ret_001_6975(void) {
@@ -7092,6 +7169,7 @@ void FaceShrineMuralStage0Handler(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFF70, gb.regs.a);
     gb.regs.ime = true;
+    FaceShrineMuralStage1Handler(); return;
 }
 
 void FaceShrineMuralStage1Handler(void) {
@@ -7458,10 +7536,12 @@ void DMARoutine(void) {
 
 void DMARoutineEnd(void) {
     IntroRainTiles();
+    IntroRainTiles(); return;
 }
 
 void IntroRainTiles(void) {
     MinimapEntrancePosition();
+    MinimapEntrancePosition(); return;
 }
 
 void MinimapEntrancePosition(void) {
@@ -7868,6 +7948,7 @@ void RenderLightning(void) {
     gb.regs.a = 0x1C;
     gb_write(0xD200, gb.regs.a);
     PlayBombExplosionSfx();
+    IntroShipOnSeaReturn(); return;
 }
 
 void IntroShipOnSeaReturn(void) {
@@ -7960,6 +8041,7 @@ void Data_001_7148(void) {
 void label_7154(void) {
     gb_write(0xFFE0, gb.regs.a);
     gb_write(0xFFE0, gb.regs.a);
+    IntroStage6Handler(); return;
 }
 
 void IntroStage6Handler(void) {
@@ -8249,6 +8331,7 @@ void IntroStageAHandler(void) {
     gb.regs.a = 0x3C;
     gb_write(0xD215, gb.regs.a);
     IncrementGameplaySubtype();
+    ResetIntroTimers(); return;
 }
 
 void ResetIntroTimers(void) {
@@ -8654,6 +8737,7 @@ void IntroMarinSpriteVariants(void) {
   IntroMarinSpriteVariants_variant3:;
     /* data: db $0C, OAM_GBC_PAL_3 */;
     /* data: db $0E, OAM_GBC_PAL_3 */;
+    RenderIntroMarin(); return;
 }
 
 void RenderIntroMarin(void) {
@@ -8883,6 +8967,7 @@ void IntroSparkleSpriteVariants(void) {
   IntroSparkleSpriteVariants_variant7:;
     /* data: db $38, OAMF_PAL0 */;
     /* data: db $38, OAMF_PAL0 | OAMF_XFLIP */;
+    RenderIntroSparkle(); return;
 }
 
 void RenderIntroSparkle(void) {
@@ -8935,6 +9020,7 @@ void DXOnWhiteTilesDMG(void) {
     /* data: db $10, $00, $43, $16 */;
     /* data: db $00, $00, $41, $16 */;
   DXOnWhiteTilesDMG_end:;
+    DXOnDarkTilesGBC(); return;
 }
 
 void DXOnDarkTilesGBC(void) {
@@ -8962,6 +9048,7 @@ void DXOnWhiteAndJP1pxTilesGBC(void) {
     /* data: db $10, $00, $42, $16 */;
     /* data: db $00, $00, $40, $16 */;
   DXOnWhiteAndJP1pxTilesGBC_end:;
+    DXJPShineAnimation(); return;
 }
 
 void DXJPShineAnimation(void) {
@@ -9008,6 +9095,7 @@ void DXOnWhiteTilesDMG__dup01(void) {
     /* data: db $10, $00, $42, $16 */;
     /* data: db $00, $00, $40, $16 */;
   DXOnWhiteTilesDMG_end:;
+    DXOnDarkTilesGBC__dup01(); return;
 }
 
 void DXOnDarkTilesGBC__dup01(void) {
@@ -9033,6 +9121,7 @@ void DXOnWhiteAndJP1pxTilesGBC__dup01(void) {
     /* data: db $10, $00, $42, $16 */;
     /* data: db $00, $00, $40, $16 */;
   DXOnWhiteAndJP1pxTilesGBC_end:;
+    Data_001_7898(); return;
 }
 
 void Data_001_7898(void) {
@@ -9299,6 +9388,7 @@ void func_001_7A11(void) {
 
 void func_001_7A16(void) {
     gb.regs.hl = 0x79EC;
+    jr_001_7A19(); return;
 }
 
 void jr_001_7A19(void) {
@@ -9322,6 +9412,7 @@ void InertLinkSpriteVariants(void) {
   InertLinkSpriteVariants_variant1:;
     /* data: db $14, OAMF_PAL0 */;
     /* data: db $16, OAMF_PAL0 */;
+    RenderIntroInertLink(); return;
 }
 
 void RenderIntroInertLink(void) {
@@ -9598,6 +9689,7 @@ void func_001_7D01(void) {
     gb.regs.a = 0;
     gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(0xC106, gb.regs.a);
+    func_001_7D46(); return;
 }
 
 void func_001_7D46(void) {
@@ -9653,6 +9745,7 @@ void func_001_7D4E(void) {
     gb_write(0xD208, gb.regs.a);
     gb.regs.a = gb.regs.d;
     gb_write(0xD209, gb.regs.a);
+    ret_001_7D9B(); return;
 }
 
 void ret_001_7D9B(void) {

@@ -1521,6 +1521,7 @@ void PerformOverworldAudioTasks(void) {
     gb.regs.a = gb_read(0xFFBF);
   PerformOverworldAudioTasks_jr_4AE4:;
     gb_write(0xD368, gb.regs.a);
+    jr_014_4AE7(); return;
 }
 
 void jr_014_4AE7(void) {
@@ -1586,6 +1587,7 @@ void jr_014_4AE7(void) {
     gb_write(0xDC41, gb.regs.a);
     gb.regs.a = 0x1C;
     gb_write(0xDC40, gb.regs.a);
+    jr_014_4B5A(); return;
 }
 
 void jr_014_4B5A(void) {
@@ -1615,11 +1617,13 @@ void jr_014_4B5A(void) {
     gb_write(0xDC41, gb.regs.a);
     gb.regs.a = 0x0C;
     gb_write(0xDC40, gb.regs.a);
+    jr_014_4B8A(); return;
 }
 
 void jr_014_4B8A(void) {
     gb.regs.a = 2;
     gb_write(0xFFA1, gb.regs.a);
+    ret_014_4B8E(); return;
 }
 
 void ret_014_4B8E(void) {
@@ -1659,6 +1663,7 @@ void func_014_4BA7(void) {
     gb.regs.b = 0x20;
     func_014_4BDA();
     gb.regs.a = 2;
+    jr_014_4BD6(); return;
 }
 
 void jr_014_4BD6(void) {
@@ -1748,6 +1753,7 @@ void PaletteEffectDisabledTable(void) {
     /* data: db 0 */;
   PaletteEffectDisabledTable_LINK_MOTION_UNKNOWN_0A:;
     /* data: db 0 */;
+    UpdatePaletteEffectForInteractiveObjects(); return;
 }
 
 void UpdatePaletteEffectForInteractiveObjects(void) {
@@ -1876,6 +1882,7 @@ void jr_014_4D0B(void) {
     gb.regs.a = gb_read(0xC3CC);
     gb.regs.a = alu_add8(gb.regs.a, 4);
     gb_write(0xC3CC, gb.regs.a);
+    jr_014_4D22(); return;
 }
 
 void jr_014_4D22(void) {
@@ -1920,6 +1927,7 @@ void jr_014_4D22(void) {
     jr_014_4D6F(); return;
   jr_014_4D22_jr_4D6D:;
     gb.regs.a = 0x0B;
+    jr_014_4D6F(); return;
 }
 
 void jr_014_4D6F(void) {
@@ -2158,6 +2166,7 @@ void ApplyFadeToWhite_DMG(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC40, gb.regs.a);
+    jr_014_5036(); return;
 }
 
 void jr_014_5036(void) {
@@ -2194,6 +2203,7 @@ void RenderTransitionEffect(void) {
     if (GET_FLAG_Z()) { label_014_5067(); return; };
     gb.regs.a = 0x88;
     gb_write(0xFFD9, gb.regs.a);
+    label_014_5067(); return;
 }
 
 void label_014_5067(void) {
@@ -2814,6 +2824,7 @@ void SignpostDialogTable(void) {
     /* db_dialog_low Dialog110 */;
   SignpostDialogTable__FF:;
     /* db_dialog_low Dialog110 */;
+    BowWowEatableEntitiesTable(); return;
 }
 
 void BowWowEatableEntitiesTable(void) {
@@ -2894,6 +2905,7 @@ void jr_014_5360(void) {
     alu_cp8(gb.regs.a, gb.regs.d);
     if (GET_FLAG_Z()) { jr_014_5391(); return; };
     gb.regs.e = 0x30;
+    jr_014_5391(); return;
 }
 
 void jr_014_5391(void) {
@@ -2906,6 +2918,7 @@ void jr_014_5391(void) {
     gb_write(gb.regs.hl, gb.regs.a);
     gb.regs.hl = 0xFFF2;
     gb_write(gb.regs.hl, 8);
+    func_014_53A3(); return;
 }
 
 void func_014_53A3(void) {
@@ -2967,6 +2980,7 @@ void jr_014_53F6(void) {
     alu_cp8(gb.regs.a, 5);
     if (GET_FLAG_Z()) { jr_014_5409(); return; };
     gb_write(gb.regs.hl, 8);
+    jr_014_5409(); return;
 }
 
 void jr_014_5409(void) {
@@ -3007,6 +3021,7 @@ void jr_014_5409(void) {
     gb_write(gb.regs.hl, gb.regs.a);
     gb.regs.a = 0x0C;
     gb_write(0xC19B, gb.regs.a);
+    label_014_5443(); return;
 }
 
 void label_014_5443(void) {
@@ -3101,6 +3116,7 @@ void func_014_54AC(void) {
     gb.regs.a = gb_read(0xFF99);
     gb.regs.a = alu_dec8(gb.regs.a);
     gb_write(0xFF99, gb.regs.a);
+    jr_014_54DE(); return;
 }
 
 void jr_014_54DE(void) {
@@ -3108,6 +3124,7 @@ void jr_014_54DE(void) {
     gb_write(0xFFA1, gb.regs.a);
     gb.regs.a = 2;
     gb_write(0xC111, gb.regs.a);
+    ret_014_54E7(); return;
 }
 
 void ret_014_54E7(void) {
@@ -3361,6 +3378,7 @@ void jr_014_5673(void) {
 
 void jr_014_5677(void) {
     gb_write(gb.regs.hl, 4);
+    jr_014_5679(); return;
 }
 
 void jr_014_5679(void) {
@@ -3403,6 +3421,7 @@ void jr_014_56B3(void) {
 
 void jr_014_56B7(void) {
     gb.regs.c = 4;
+    jr_014_56B9(); return;
 }
 
 void jr_014_56B9(void) {
@@ -3414,6 +3433,7 @@ void jr_014_56B9(void) {
     gb.regs.a = 0x14;
     func_91D_jp_92E();
     gb.regs.bc = gb_pop16();
+    jr_014_56C9(); return;
 }
 
 void jr_014_56C9(void) {
@@ -3491,6 +3511,7 @@ void jr_014_5729(void) {
     gb.regs.a = 0x76;
     gb_write(gb.regs.hl++, gb.regs.a);
     gb.regs.a = 0x76;
+    label_014_573E(); return;
 }
 
 void label_014_573E(void) {
@@ -3521,6 +3542,7 @@ void label_014_5743(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, alu_set(4, gb_read(gb.regs.hl)));
     gb.regs.hl = gb_pop16();
+    label_014_5767(); return;
 }
 
 void label_014_5767(void) {
@@ -3688,10 +3710,12 @@ void GetRoomStatusAddressForMapPosition(void) {
     alu_cp8(gb.regs.a, 6);
     if (GET_FLAG_C()) { jr_014_5882(); return; };
     gb.regs.d = alu_inc8(gb.regs.d);
+    jr_014_5882(); return;
 }
 
 void jr_014_5882(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    ret_014_5883(); return;
 }
 
 void ret_014_5883(void) {
@@ -3707,6 +3731,7 @@ void GetChestsStatusForRoom(void) {
     jr_014_5894(); return;
   GetChestsStatusForRoom_jr_5891:;
     gb.regs.hl = 0x4560;
+    jr_014_5894(); return;
 }
 
 void jr_014_5894(void) {
@@ -3740,6 +3765,7 @@ void func_014_5897(void) {
     gb.regs.a = alu_and8(gb.regs.a, 4);
     if (GET_FLAG_Z()) { jr_014_58C7(); return; };
     gb.regs.hl = 0x4520;
+    jr_014_58C7(); return;
 }
 
 void jr_014_58C7(void) {
@@ -3749,6 +3775,7 @@ void jr_014_58C7(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xFFF6, gb.regs.a);
+    jr_014_58D1(); return;
 }
 
 void jr_014_58D1(void) {
@@ -3768,6 +3795,7 @@ void jr_014_58D1(void) {
     gb.regs.b = alu_inc8(gb.regs.b);
   jr_014_58D1_jr_58EA:;
     gb.regs.hl = 0x4000;
+    jr_014_58ED(); return;
 }
 
 void jr_014_58ED(void) {
@@ -3801,6 +3829,7 @@ void func_014_5900(void) {
     gb.regs.d = alu_inc8(gb.regs.d);
   func_014_5900_jr_591D:;
     gb.regs.hl = 0x4560;
+    jr_014_5920(); return;
 }
 
 void jr_014_5920(void) {
@@ -4205,6 +4234,7 @@ void Dialog02A(void) {
 
 void Dialog02B(void) {
     Dialog02C();
+    Dialog02C(); return;
 }
 
 void Dialog02C(void) {
@@ -4280,6 +4310,7 @@ void Dialog036(void) {
 
 void Dialog037(void) {
     Dialog038();
+    Dialog038(); return;
 }
 
 void Dialog038(void) {
@@ -4300,6 +4331,7 @@ void Dialog039(void) {
 
 void Dialog03A(void) {
     Dialog03B();
+    Dialog03B(); return;
 }
 
 void Dialog03B(void) {
@@ -4573,6 +4605,7 @@ void Dialog05E(void) {
 
 void Dialog05F(void) {
     Dialog060();
+    Dialog060(); return;
 }
 
 void Dialog060(void) {
@@ -4917,6 +4950,7 @@ void Dialog09D(void) {
 
 void Dialog09E(void) {
     Dialog09F();
+    Dialog09F(); return;
 }
 
 void Dialog09F(void) {

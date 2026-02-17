@@ -520,6 +520,7 @@ void IndoorObjectsTilemapDMG(void) {
     /* data: db $0C, $0D, $0E, $0F */;
   IndoorObjectsTilemapDMG__EB:;
     /* data: db $00, $00, $00, $00 */;
+    IndoorObjectsTilemapCGB(); return;
 }
 
 void IndoorObjectsTilemapCGB(void) {
@@ -995,6 +996,7 @@ void IndoorObjectsTilemapCGB(void) {
     /* data: db $0C, $0D, $0E, $0F */;
   IndoorObjectsTilemapCGB__EB:;
     /* data: db $00, $00, $00, $00 */;
+    ColorDungeonObjectsTilemap(); return;
 }
 
 void ColorDungeonObjectsTilemap(void) {
@@ -1440,6 +1442,7 @@ void ColorDungeonObjectsTilemap(void) {
     /* data: db $04, $05, $06, $07 */;
   ColorDungeonObjectsTilemap__DC:;
     /* data: db $08, $09, $0A, $0B */;
+    OverworldObjectPhysicFlags(); return;
 }
 
 void OverworldObjectPhysicFlags(void) {
@@ -1955,6 +1958,7 @@ void OverworldObjectPhysicFlags(void) {
     /* data: db OBJ_PHYSICS_SOLID */;
   OverworldObjectPhysicFlags__FF:;
     /* data: db OBJ_PHYSICS_TRACTOR_DEVICE */;
+    Indoors1ObjectPhysicFlags(); return;
 }
 
 void Indoors1ObjectPhysicFlags(void) {
@@ -2470,6 +2474,7 @@ void Indoors1ObjectPhysicFlags(void) {
     /* data: db OBJ_PHYSICS_UNUSED */;
   Indoors1ObjectPhysicFlags__FF:;
     /* data: db OBJ_PHYSICS_TRACTOR_DEVICE */;
+    Indoors2ObjectPhysicFlags(); return;
 }
 
 void Indoors2ObjectPhysicFlags(void) {
@@ -2985,6 +2990,7 @@ void Indoors2ObjectPhysicFlags(void) {
     /* data: db OBJ_PHYSICS_UNUSED */;
   Indoors2ObjectPhysicFlags__FF:;
     /* data: db OBJ_PHYSICS_TRACTOR_DEVICE */;
+    BGTilemaps(); return;
 }
 
 void BGTilemaps(void) {

@@ -549,6 +549,7 @@ void IndoorsARoomPointers(void) {
 
 void IndoorsARooms(void) {
     IndoorsA00();
+    IndoorsA00(); return;
 }
 
 void IndoorsA00(void) {
@@ -7946,6 +7947,7 @@ void ColorDungeonRoomPointers(void) {
 
 void ColorDungeonRooms(void) {
     ColorDungeon00();
+    ColorDungeon00(); return;
 }
 
 void ColorDungeon00(void) {

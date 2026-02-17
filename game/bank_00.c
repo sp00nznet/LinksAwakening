@@ -534,6 +534,7 @@ void ClearPieceOfHeartMeterTiles1(void) {
 void ClearPieceOfHeartMeterTiles2(void) {
     gb.regs.hl = 0x41D0;
     gb.regs.de = 0x89A0;
+    CopyTilesToPieceOfHeartMeter(); return;
 }
 
 void CopyTilesToPieceOfHeartMeter(void) {
@@ -955,6 +956,7 @@ void BlockUpdateAnimationStageTable(void) {
     /* data: db 07 */;
   BlockUpdateAnimationStageTable_kindB:;
     /* data: db 09 */;
+    InterruptVBlank(); return;
 }
 
 void InterruptVBlank(void) {
@@ -1419,6 +1421,7 @@ void TilesGfxSource(void) {
     /* data: dw CharacterVfxTiles + $40 */;
   TilesGfxSource__0D:;
     /* data: dw CharacterVfxTiles + $60 */;
+    TilesDestination(); return;
 }
 
 void TilesDestination(void) {
@@ -1434,6 +1437,7 @@ void TilesDestination(void) {
     /* data: dw vTiles0 + $240 */;
   TilesDestination__0D:;
     /* data: dw vTiles0 + $260 */;
+    LoadBGTilesCommands8ToD(); return;
 }
 
 void LoadBGTilesCommands8ToD(void) {
@@ -1580,6 +1584,7 @@ void PlayAudioStep(void) {
 
 void func_020_6A30_trampoline(void) {
     gb_call_bank(32, func_020_6A30);
+    RestoreBankAndReturn(); return;
 }
 
 void RestoreBankAndReturn(void) {
@@ -1611,6 +1616,7 @@ void LoadFileMenuBG_trampoline(void) {
 
 void CopyLinkTunicPalette_trampoline(void) {
     gb_call_bank(32, CopyLinkTunicPalette);
+    LoadBank1AndReturn(); return;
 }
 
 void LoadBank1AndReturn(void) {
@@ -1674,6 +1680,7 @@ void func_91D(void) {
     gb_write(gb.regs.hl++, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(gb.regs.hl++, gb.regs.a);
+    RestoreStackedBankAndReturn(); return;
 }
 
 void RestoreStackedBankAndReturn(void) {
@@ -1862,6 +1869,7 @@ void func_A9B(void) {
 void Spawn2x2RubbleEntities_trampoline(void) {
     gb_push16(gb.regs.af);
     gb_call_bank(54, Spawn2x2RubbleEntities);
+    RestoreStackedBank(); return;
 }
 
 void RestoreStackedBank(void) {
@@ -2072,6 +2080,7 @@ void Farcall_trampoline(void) {
     gb.regs.a = gb_read(0xDEAB);
     gb.regs.l = gb.regs.a;
     /* jp hl - dynamic dispatch */;
+    UpdateLinkWalkingAnimation_trampoline(); return;
 }
 
 void UpdateLinkWalkingAnimation_trampoline(void) {
@@ -2093,6 +2102,7 @@ void GetEntityPrivateCountdown1(void) {
 
 void GetEntityTransitionCountdown(void) {
     gb.regs.hl = 0xC2E0;
+    IsZero(); return;
 }
 
 void IsZero(void) {
@@ -2129,6 +2139,7 @@ void ReadTileValueFromAsciiTable(void) {
 
 void ReadTileValueFromDiacriticsTable(void) {
     gb.regs.hl = 0x4491;
+    ReadValueInDialogsBank(); return;
 }
 
 void ReadValueInDialogsBank(void) {
@@ -2154,6 +2165,7 @@ void CopySirenInstrumentTiles(void) {
 void PlayBombExplosionSfx(void) {
     gb.regs.hl = 0xFFF4;
     gb_write(gb.regs.hl, 0x0C);
+    AlertSwordMoblins(); return;
 }
 
 void AlertSwordMoblins(void) {
@@ -2213,11 +2225,13 @@ void ApplyMapFadeOutTransitionWithSound(void) {
     if (GET_FLAG_Z()) { ApplyMapFadeOutTransitionWithNoise(); return; };
     gb.regs.a = 1;
     gb_write(0xFFBC, gb.regs.a);
+    playNoiseStairs(); return;
 }
 
 void playNoiseStairs(void) {
     gb.regs.a = 6;
     gb_write(0xFFF4, gb.regs.a);
+    disableMovementInTransition(); return;
 }
 
 void disableMovementInTransition(void) {
@@ -2235,6 +2249,7 @@ void ResetSpinAttack(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xC121, gb.regs.a);
     gb_write(0xC122, gb.regs.a);
+    ResetPegasusBoots(); return;
 }
 
 void ResetPegasusBoots(void) {
@@ -2302,6 +2317,7 @@ void label_D07(void) {
     gb.regs.a = gb_read(0xC142);
     gb.regs.a = alu_sub8(gb.regs.a, 8);
     gb_write(0xFFD8, gb.regs.a);
+    label_D15(); return;
 }
 
 void label_D15(void) {
@@ -2524,6 +2540,7 @@ void presentSaveScreenIfNeeded(void) {
     gb_write(0xDC3E, gb.regs.a);
     gb.regs.a = 6;
     gb_write(0xDC3D, gb.regs.a);
+    jumpToGameplayHandler(); return;
 }
 
 void jumpToGameplayHandler(void) {
@@ -2593,6 +2610,7 @@ void AnimateEntitiesAndRestoreBank17(void) {
     gb.regs.a = 3;
     gb_write(0x2100, gb.regs.a);
     gb.regs.a = 0x17;
+    AnimateEntitiesAndRestoreBank(); return;
 }
 
 void AnimateEntitiesAndRestoreBank(void) {
@@ -2734,10 +2752,12 @@ void WorldInteractiveHandler(void) {
     gb.regs.e = alu_dec8(gb.regs.e);
   WorldInteractiveHandler_label_100A:;
     gb_call_bank(32, DrawInventorySlots);
+    label_1012(); return;
 }
 
 void label_1012(void) {
     gb_call_bank(20, func_014_54F8);
+    returnFromGameplayHandler(); return;
 }
 
 void returnFromGameplayHandler(void) {
@@ -2763,6 +2783,7 @@ void DialogForItem(void) {
     /* db_dialog_low Dialog028 */;
   DialogForItem_gotItem5:;
     /* db_dialog_low Dialog0EC */;
+    ApplyGotItem(); return;
 }
 
 void ApplyGotItem(void) {
@@ -3181,6 +3202,7 @@ void SetShieldVals(void) {
     gb_write(0xC15B, gb.regs.a);
     gb.regs.a = gb_read(0xDBF0);
     gb_write(0xC15A, gb.regs.a);
+    func_020_4B4A_trampoline(); return;
 }
 
 void func_020_4B4A_trampoline(void) {
@@ -3259,6 +3281,7 @@ void data_13AD(void) {
     /* data: db 0 */;
   data_13AD_downWithoutPieceOfPower:;
     /* data: db 0 */;
+    data_13B5(); return;
 }
 
 void data_13B5(void) {
@@ -3309,6 +3332,7 @@ void ShootArrow(void) {
     gb.regs.a = gb_read(0xFF9E);
     gb.regs.c = gb.regs.a;
     gb.regs.b = 0;
+    label_140F(); return;
 }
 
 void label_140F(void) {
@@ -3512,6 +3536,7 @@ void UseSword(void) {
     if (!GET_FLAG_Z()) { label_1562(); return; };
     ResetSpinAttack();
     ClearLinkPositionIncrement();
+    label_1562(); return;
 }
 
 void label_1562(void) {
@@ -3643,6 +3668,7 @@ void label_1629(void) {
     alu_cp8(gb.regs.a, 0x0A);
     if (!GET_FLAG_Z()) return;
     gb.regs.c = 0xFF;
+    label_1637(); return;
 }
 
 void label_1637(void) {
@@ -3659,6 +3685,7 @@ void label_1637(void) {
     gb_write(0xC122, gb.regs.a);
     gb.regs.a = 0x0C;
     gb_write(0xC16D, gb.regs.a);
+    label_1653(); return;
 }
 
 void label_1653(void) {
@@ -3730,6 +3757,7 @@ void LinkDirectionToSwordCollisionRangeX(void) {
     /* data: db $FC */;
   LinkDirectionToSwordCollisionRangeX_down:;
     /* data: db 4 */;
+    LinkDirectionToSwordCollisionRangeY(); return;
 }
 
 void LinkDirectionToSwordCollisionRangeY(void) {
@@ -3741,6 +3769,7 @@ void LinkDirectionToSwordCollisionRangeY(void) {
     /* data: db $EE */;
   LinkDirectionToSwordCollisionRangeY_down:;
     /* data: db $12 */;
+    CheckItemsSwordCollision(); return;
 }
 
 void CheckItemsSwordCollision(void) {
@@ -3788,6 +3817,7 @@ void XPositionIncrementPegasusRunning(void) {
     /* data: db 0 */;
   XPositionIncrementPegasusRunning_down:;
     /* data: db 0 */;
+    YPositionIncrementPegasusRunning(); return;
 }
 
 void YPositionIncrementPegasusRunning(void) {
@@ -3799,6 +3829,7 @@ void YPositionIncrementPegasusRunning(void) {
     /* data: db -32 */;
   YPositionIncrementPegasusRunning_down:;
     /* data: db 32 */;
+    UsePegasusBoots(); return;
 }
 
 void UsePegasusBoots(void) {
@@ -4379,6 +4410,7 @@ void AnimateMarinBeachTiles(void) {
     gb_write(0xFFE0, gb.regs.a);
     gb_write(0xFFA0, gb.regs.a);
     gb.regs.h = gb.regs.b;
+    AnimateTiles(); return;
 }
 
 void AnimateTiles(void) {
@@ -4531,6 +4563,7 @@ void AnimateWaterDungeonTilesGroup(void) {
 
 void AnimateSlowWaterfallTilesGroup(void) {
     gb.regs.h = 0x40;
+    AnimateTilesSlowSpeed(); return;
 }
 
 void AnimateTilesSlowSpeed(void) {
@@ -4560,6 +4593,7 @@ void AnimateDungeon1TilesGroup(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.l = gb_read(gb.regs.hl);
     gb.regs.h = 0x40;
+    LoadAnimatedTilesFrame(); return;
 }
 
 void LoadAnimatedTilesFrame(void) {
@@ -4633,6 +4667,7 @@ void label_1CB8(void) {
 
 void AnimateWarpTilesGroup(void) {
     gb.regs.h = 0x40;
+    AnimateTilesMediumSpeed(); return;
 }
 
 void AnimateTilesMediumSpeed(void) {
@@ -4645,6 +4680,7 @@ void AnimateTilesMediumSpeed(void) {
 
 void AnimateWaterCurrentsTilesGroup(void) {
     gb.regs.h = 0x40;
+    AnimateTilesFastSpeed(); return;
 }
 
 void AnimateTilesFastSpeed(void) {
@@ -4712,10 +4748,12 @@ void SkipTilesGroupAnimation(void) {
     gb.regs.a = 0x0C;
     AdjustBankNumberForGBC();
     gb_write(0x2100, gb.regs.a);
+    DrawLinkSprite(); return;
 }
 
 void DrawLinkSprite(void) {
     DrawLinkSpriteAndReturn();
+    DrawLinkSpriteAndReturn(); return;
 }
 
 void DrawLinkSpriteAndReturn(void) {
@@ -4783,6 +4821,7 @@ void label_1D8C(void) {
     gb.regs.a = alu_inc8(gb.regs.a);
     gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
+    label_1D95(); return;
 }
 
 void label_1D95(void) {
@@ -4795,6 +4834,7 @@ void label_1D95(void) {
 
 void label_1D9F(void) {
     gb_write(gb.regs.hl, 3);
+    label_1DA1(); return;
 }
 
 void label_1DA1(void) {
@@ -4836,6 +4876,7 @@ void label_1DD2(void) {
     gb.regs.a = alu_inc8(gb.regs.a);
     gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
+    label_1DDB(); return;
 }
 
 void label_1DDB(void) {
@@ -4848,10 +4889,12 @@ void label_1DDB(void) {
 
 void label_1DE5(void) {
     gb_write(gb.regs.hl, 0x23);
+    label_1DE7(); return;
 }
 
 void label_1DE7(void) {
     gb.regs.hl++;
+    AnimateTiles_return(); return;
 }
 
 void AnimateTiles_return(void) {
@@ -4917,6 +4960,7 @@ void ReplaceDialogTilesByInstruments(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_push16(gb.regs.hl);
     gb.regs.hl = 0x5000;
+    ReplaceEndCreditsTiles(); return;
 }
 
 void ReplaceEndCreditsTiles(void) {
@@ -4965,6 +5009,7 @@ void ReplaceToadstoolTilesByMagicPowder(void) {
 void ReplaceSlimeKeyTilesByGoldenLeaf(void) {
     gb.regs.hl = 0x5160;
     gb.regs.de = 0x8CA0;
+    ReplaceTilesPairAndDrawLinkSprite(); return;
 }
 
 void ReplaceTilesPairAndDrawLinkSprite(void) {
@@ -4996,12 +5041,14 @@ void SwitchBlockTransitionTilesTable(void) {
     /* data: dw SwitchBlockTiles + $40 */;
   SwitchBlockTransitionTilesTable_kindB:;
     /* data: dw SwitchBlockTiles + $40 */;
+    SwitchBlockState0TilesTable(); return;
 }
 
 void SwitchBlockState0TilesTable(void) {
   SwitchBlockState0TilesTable_kindA:;
     /* data: dw SwitchBlockTiles */;
   SwitchBlockState0TilesTable_kindB:;
+    SwitchBlockState1TilesTable(); return;
 }
 
 void SwitchBlockState1TilesTable(void) {
@@ -5009,6 +5056,7 @@ void SwitchBlockState1TilesTable(void) {
     /* data: dw SwitchBlockTiles + $80 */;
   SwitchBlockState1TilesTable_kindB:;
     /* data: dw SwitchBlockTiles + $00 */;
+    UpdateSwitchBlockTiles(); return;
 }
 
 void UpdateSwitchBlockTiles(void) {
@@ -5070,6 +5118,7 @@ void UpdateSwitchBlockTiles(void) {
 
 void Copy4TilesAndDrawLinkSprite(void) {
     gb.regs.bc = 0x40;
+    CopyDataAndDrawLinkSprite(); return;
 }
 
 void CopyDataAndDrawLinkSprite(void) {
@@ -5091,6 +5140,7 @@ void SwordAreaXForDirection(void) {
     /* data: db $08 */;
   SwordAreaXForDirection_down:;
     /* data: db $08 */;
+    SwordAreaYForDirection(); return;
 }
 
 void SwordAreaYForDirection(void) {
@@ -5102,6 +5152,7 @@ void SwordAreaYForDirection(void) {
     /* data: db $05 */;
   SwordAreaYForDirection_down:;
     /* data: db $10 */;
+    LinkDirectionToLinkAnimationState_2(); return;
 }
 
 void LinkDirectionToLinkAnimationState_2(void) {
@@ -5113,6 +5164,7 @@ void LinkDirectionToLinkAnimationState_2(void) {
     /* data: db LINK_ANIMATION_STATE_GRABBING_UP */;
   LinkDirectionToLinkAnimationState_2_down:;
     /* data: db LINK_ANIMATION_STATE_GRABBING_DOWN */;
+    LinkDirectionToLiftDirectionButton(); return;
 }
 
 void LinkDirectionToLiftDirectionButton(void) {
@@ -5400,6 +5452,7 @@ void label_1F69(void) {
   label_1F69_jr_2161:;
     gb.regs.a = 1;
     gb_write(0xFFE5, gb.regs.a);
+    func_2165(); return;
 }
 
 void func_2165(void) {
@@ -5451,6 +5504,7 @@ void UpdateFinalLinkPosition(void) {
   UpdateFinalLinkPosition_horizontal:;
     gb.regs.c = 0;
     gb_write(0xFFD7, gb.regs.a);
+    ComputeLinkPosition(); return;
 }
 
 void ComputeLinkPosition(void) {
@@ -5517,6 +5571,7 @@ void BGRegionIncrement(void) {
     /* data: db $01 */;
   BGRegionIncrement_bottom:;
     /* data: db $01 */;
+    UpdateBGRegion(); return;
 }
 
 void UpdateBGRegion(void) {
@@ -5873,6 +5928,7 @@ void label_2444(void) {
     gb_write(gb.regs.bc, gb.regs.a);
     gb.regs.a = 1;
     gb_write(0xFF4F, gb.regs.a);
+    label_244A(); return;
 }
 
 void label_244A(void) {
@@ -5896,6 +5952,7 @@ void label_244A(void) {
 
 void label_2463(void) {
     gb.regs.l = alu_inc8(gb.regs.l);
+    label_2464(); return;
 }
 
 void label_2464(void) {
@@ -5909,6 +5966,7 @@ void label_2464(void) {
     gb_write(0xFFD7, gb.regs.a);
     if (!GET_FLAG_C()) { label_2475(); return; };
     gb.regs.h = alu_inc8(gb.regs.h);
+    label_2475(); return;
 }
 
 void label_2475(void) {
@@ -5927,6 +5985,7 @@ void DialogOpenAnimationEndHandler(void) {
 void IncrementDialogState(void) {
     gb.regs.hl = 0xC19F;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    IncrementDialogStateAndReturn(); return;
 }
 
 void IncrementDialogStateAndReturn(void) {
@@ -5960,6 +6019,7 @@ void UpdateDialogState(void) {
     gb.regs.a = alu_or8(gb.regs.a, 0x0E);
   UpdateDialogState_fi:;
     gb_write(0xC19F, gb.regs.a);
+    UpdateDialogState_return(); return;
 }
 
 void UpdateDialogState_return(void) {
@@ -6283,6 +6343,7 @@ void DialogBoxOrigin(void) {
   DialogBoxOrigin_high:;
     /* data: db $98 */;
     /* data: db $99 */;
+    DialogBreakHandler(); return;
 }
 
 void DialogBreakHandler(void) {
@@ -6348,6 +6409,7 @@ void DialogBreakHandler(void) {
     gb_write((wDrawCommand_data + 1), gb.regs.a);
     IncrementDialogState(); return;
     IncrementDialogState();
+    DialogScrollingStartHandler(); return;
 }
 
 void DialogScrollingStartHandler(void) {
@@ -6361,6 +6423,7 @@ void DialogBoxMidOrigin(void) {
   DialogBoxMidOrigin_high:;
     /* data: db $98 */;
     /* data: db $99 */;
+    DialogBeginScrolling(); return;
 }
 
 void DialogBeginScrolling(void) {
@@ -6369,6 +6432,7 @@ void DialogBeginScrolling(void) {
     gb.regs.a = alu_and8(gb.regs.a, 0x80);
     if (GET_FLAG_Z()) { label_2723(); return; };
     gb.regs.e = alu_inc8(gb.regs.e);
+    label_2723(); return;
 }
 
 void label_2723(void) {
@@ -6379,6 +6443,7 @@ void label_2723(void) {
     gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
     gb.regs.b = gb.regs.a;
     gb.regs.hl = 0x2176;
+    label_2731(); return;
 }
 
 void label_2731(void) {
@@ -6387,6 +6452,7 @@ void label_2731(void) {
     gb.regs.a = alu_add8(gb.regs.a, gb_read(gb.regs.hl));
     gb.regs.c = gb.regs.a;
     gb.regs.e = 0x10;
+    label_2739(); return;
 }
 
 void label_2739(void) {
@@ -6418,6 +6484,7 @@ void label_2739(void) {
     gb.regs.a = gb.regs.c;
     gb.regs.a = alu_sub8(gb.regs.a, 0x20);
     gb.regs.c = gb.regs.a;
+    label_275D(); return;
 }
 
 void label_275D(void) {
@@ -6439,6 +6506,7 @@ void DialogBoxFirstLineOrigin(void) {
   DialogBoxFirstLineOrigin_high:;
     /* data: db $98 */;
     /* data: db $99 */;
+    DialogFinishScrolling(); return;
 }
 
 void DialogFinishScrolling(void) {
@@ -6447,6 +6515,7 @@ void DialogFinishScrolling(void) {
     gb.regs.a = alu_and8(gb.regs.a, 0x80);
     if (GET_FLAG_Z()) { label_2777(); return; };
     gb.regs.e = alu_inc8(gb.regs.e);
+    label_2777(); return;
 }
 
 void label_2777(void) {
@@ -6672,6 +6741,7 @@ void TableJump(void) {
     gb.regs.l = gb.regs.e;
     gb.regs.h = gb.regs.d;
     /* jp hl - dynamic dispatch */;
+    LCDOff(); return;
 }
 
 void LCDOff(void) {
@@ -6749,6 +6819,7 @@ void NoRoomTransitionDrawLoop(void) {
     gb.regs.a = gb_read(gb.regs.de);
     gb.regs.de++;
     DrawCommandToVRAM();
+    ExecuteDrawCommands(); return;
 }
 
 void ExecuteDrawCommands(void) {
@@ -6904,16 +6975,19 @@ void ClearWRAMAndLowerHRAM(void) {
 
 void ClearHRAMAndWRAM(void) {
     gb.regs.bc = 0x6D;
+    ClearHRAMBytesAndWRAM(); return;
 }
 
 void ClearHRAMBytesAndWRAM(void) {
     gb.regs.hl = 0xFF90;
     ClearBytes();
     gb.regs.bc = 0x1F00;
+    ClearWRAMBytes(); return;
 }
 
 void ClearWRAMBytes(void) {
     gb.regs.hl = 0xC000;
+    ClearBytes(); return;
 }
 
 void ClearBytes(void) {
@@ -7067,11 +7141,13 @@ void LoadCreditsSunAboveTiles(void) {
 
 void LoadCreditsLinkOnSeaLargeTiles(void) {
     gb.regs.hl = 0x6000;
+    label_2B01(); return;
 }
 
 void label_2B01(void) {
     gb.regs.a = 19;
     AdjustBankNumberForGBC();
+    label_2B06(); return;
 }
 
 void label_2B06(void) {
@@ -7143,10 +7219,12 @@ void LoadCreditsLinkSeatedOnLogTiles(void) {
 
 void label_2B90(void) {
     gb.regs.a = 19;
+    func_2B92(); return;
 }
 
 void func_2B92(void) {
     AdjustBankNumberForGBC();
+    label_2B95(); return;
 }
 
 void label_2B95(void) {
@@ -7449,6 +7527,7 @@ void LoadSchulePaintingTiles(void) {
 
 void LoadChristinePortraitTiles(void) {
     gb.regs.hl = 0x4030;
+    LoadStaticPictureTiles(); return;
 }
 
 void LoadStaticPictureTiles(void) {
@@ -7749,6 +7828,7 @@ void WriteOverworldObjectToBG(void) {
 
 void WriteIndoorObjectToBG(void) {
     gb.regs.c = gb_read(gb.regs.hl);
+    doCopyObjectToBG(); return;
 }
 
 void doCopyObjectToBG(void) {
@@ -8472,6 +8552,7 @@ void LoadRoomObject(void) {
     gb.regs.e = gb.regs.a;
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     gb.regs.d = gb.regs.a;
+    FillRoomWithConsecutiveObjects(); return;
 }
 
 void FillRoomWithConsecutiveObjects(void) {
@@ -9426,6 +9507,7 @@ void ExecuteActiveEntityHandler(void) {
     gb_write(0xDC57, gb.regs.a);
     gb_write(0x2100, gb.regs.a);
     /* jp hl - dynamic dispatch */;
+    HitboxPositions(); return;
 }
 
 void HitboxPositions(void) {
@@ -9461,6 +9543,7 @@ void HitboxPositions(void) {
     /* data: db $08, $07, $0C, $08 */;
   HitboxPositions__3C:;
     /* data: db $08, $08, $02, $08 */;
+    ConfigureEntityHitbox(); return;
 }
 
 void ConfigureEntityHitbox(void) {
@@ -9704,6 +9787,7 @@ void RenderActiveEntitySpritesPair(void) {
     gb.regs.c = gb.regs.a;
     gb.regs.b = 0;
     gb_call_bank(21, func_015_795D);
+    label_3C71(); return;
 }
 
 void label_3C71(void) {
@@ -10206,12 +10290,14 @@ void DidKillEnemy(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = alu_or8(gb.regs.a, gb_read(gb.regs.hl));
     gb_write(gb.regs.hl, gb.regs.a);
+    UnloadEntity(); return;
 }
 
 void UnloadEntity(void) {
     gb.regs.hl = 0xC280;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.b);
+    UnloadEntityAndReturn(); return;
 }
 
 void UnloadEntityAndReturn(void) {

@@ -613,6 +613,7 @@ void MovingBlockSpriteVariants(void) {
   MovingBlockSpriteVariants_variant0:;
     /* data: db $F8, OAM_GBC_PAL_7 | OAMF_PAL1 */;
     /* data: db $FA, OAM_GBC_PAL_7 | OAMF_PAL1 */;
+    MovingBlockLeftTopEntityHandler(); return;
 }
 
 void MovingBlockLeftTopEntityHandler(void) {
@@ -689,6 +690,7 @@ void MovingBlockLeftTopUpdateHandler(void) {
   MovingBlockLeftTopUpdateHandler_fullyClosed:;
     gb.regs.hl = 0xFFE8;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    MovingBlockPushLinkIfNeeded(); return;
 }
 
 void MovingBlockPushLinkIfNeeded(void) {
@@ -985,6 +987,7 @@ void CrystalSwitchSpriteVariants(void) {
   CrystalSwitchSpriteVariants_variant0:;
     /* data: db $58, $03 */;
     /* data: db $58, $23 */;
+    CrystalSwitchEntityHandler(); return;
 }
 
 void CrystalSwitchEntityHandler(void) {
@@ -1077,6 +1080,7 @@ void Unknown043SpriteVariants(void) {
   Unknown043SpriteVariants_variant3:;
     /* data: db $5C, $40 */;
     /* data: db $5E, $40 */;
+    Data_015_43BE(); return;
 }
 
 void Data_015_43BE(void) {
@@ -1150,6 +1154,7 @@ void label_015_43CA(void) {
     gb_write(gb.regs.hl, gb.regs.a);
     gb.regs.a = 0x20;
     gb_write(0xFFF2, gb.regs.a);
+    jr_015_4430(); return;
 }
 
 void jr_015_4430(void) {
@@ -1166,6 +1171,7 @@ void YarnaTalkingBonesEntityHandler(void) {
     ReturnIfNonInteractive_15();
     gb.regs.e = 0x0F;
     gb.regs.d = gb.regs.b;
+    jr_015_4445(); return;
 }
 
 void jr_015_4445(void) {
@@ -1241,6 +1247,7 @@ void FishSpriteVariants(void) {
   FishSpriteVariants_variant4:;
     /* data: db $5A, $20 */;
     /* data: db $58, $20 */;
+    Data_015_44B3(); return;
 }
 
 void Data_015_44B3(void) {
@@ -1261,6 +1268,7 @@ void FishEntityHandler(void) {
   FishEntityHandler_jr_44D1:;
     gb.regs.de = 0x44BB;
     RenderActiveEntitySpritesPair();
+    jr_015_44D7(); return;
 }
 
 void jr_015_44D7(void) {
@@ -1302,6 +1310,7 @@ void func_015_4500(void) {
     gb.regs.hl = 0xC240;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, alu_sla(gb_read(gb.regs.hl)));
+    func_015_451D(); return;
 }
 
 void func_015_451D(void) {
@@ -1611,6 +1620,7 @@ void func_015_4734(void) {
     gb_write(0xD4A8, gb.regs.a);
     SetEntitySpriteVariant();
     IncrementEntityState();
+    func_015_4743(); return;
 }
 
 void func_015_4743(void) {
@@ -1847,6 +1857,7 @@ void func_015_4873(void) {
     alu_rra();
     gb.regs.a = alu_and8(gb.regs.a, 1);
     gb.regs.a = alu_add8(gb.regs.a, 4);
+    func_015_48B6(); return;
 }
 
 void func_015_48B6(void) {
@@ -1915,6 +1926,7 @@ void func_015_491C(void) {
     alu_rra();
     gb.regs.a = alu_add8(gb.regs.a, 4);
     gb.regs.a = alu_and8(gb.regs.a, 7);
+    func_015_4928(); return;
 }
 
 void func_015_4928(void) {
@@ -2298,6 +2310,7 @@ void Unknown044SpriteVariants(void) {
   Unknown044SpriteVariants_variant0:;
     /* data: db $76, $00 */;
     /* data: db $76, $20 */;
+    label_015_4CD9(); return;
 }
 
 void label_015_4CD9(void) {
@@ -2326,6 +2339,7 @@ void label_015_4CD9(void) {
     gb.regs.a = alu_and8(gb.regs.a, 0x0C);
     if (GET_FLAG_Z()) { jr_015_4D39(); return; };
     gb.regs.hl = 0xC250;
+    func_015_4D0F(); return;
 }
 
 void func_015_4D0F(void) {
@@ -2368,6 +2382,7 @@ void FlameShooterSpriteVariants(void) {
   FlameShooterSpriteVariants_variant1:;
     /* data: db $72, $03 */;
     /* data: db $72, $23 */;
+    FlameShooterEntityHandler(); return;
 }
 
 void FlameShooterEntityHandler(void) {
@@ -2432,6 +2447,7 @@ void Unknown045SpriteVariants(void) {
   Unknown045SpriteVariants_variant2:;
     /* data: db $74, $02 */;
     /* data: db $74, $22 */;
+    Unknown046SpriteVariants(); return;
 }
 
 void Unknown046SpriteVariants(void) {
@@ -2441,6 +2457,7 @@ void Unknown046SpriteVariants(void) {
   Unknown046SpriteVariants_variant1:;
     /* data: db $7C, $22 */;
     /* data: db $7A, $22 */;
+    Data_015_4DB1(); return;
 }
 
 void Data_015_4DB1(void) {
@@ -2547,6 +2564,7 @@ void jr_015_4E49(void) {
     alu_cp8(gb.regs.a, 2);
     if (GET_FLAG_Z()) { ret_015_4E61(); return; };
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    ret_015_4E61(); return;
 }
 
 void ret_015_4E61(void) {
@@ -2578,6 +2596,7 @@ void StalfosEvasive2SpriteVariants(void) {
   StalfosEvasive2SpriteVariants_variant2:;
     /* data: db $4E, $01 */;
     /* data: db $4E, $21 */;
+    Data_015_4E89(); return;
 }
 
 void Data_015_4E89(void) {
@@ -2591,6 +2610,7 @@ void StalfosEvasive1SpriteVariants(void) {
   StalfosEvasive1SpriteVariants_variant1:;
     /* data: db $48, $41 */;
     /* data: db $48, $21 */;
+    StalfosEvasiveEntityHandler(); return;
 }
 
 void StalfosEvasiveEntityHandler(void) {
@@ -2772,6 +2792,7 @@ void func_015_4F5A(void) {
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.a = alu_xor8(gb.regs.a, 0xF0);
     gb_write(gb.regs.hl, gb.regs.a);
+    jr_015_4FCE(); return;
 }
 
 void jr_015_4FCE(void) {
@@ -2811,6 +2832,7 @@ void jr_015_4FCE(void) {
     gb.regs.hl = 0xC250;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.a);
+    jr_015_500A(); return;
 }
 
 void jr_015_500A(void) {
@@ -2984,6 +3006,7 @@ void func_015_511D(void) {
     GetEntityTransitionCountdown();
     if (!GET_FLAG_Z()) { jr_015_512D(); return; };
     IncrementEntityState();
+    func_015_5128(); return;
 }
 
 void func_015_5128(void) {
@@ -3198,6 +3221,7 @@ void func_015_522C(void) {
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 0x30);
     IncrementEntityState();
+    jr_015_527A(); return;
 }
 
 void jr_015_527A(void) {
@@ -3343,6 +3367,7 @@ void label_015_5335(void) {
     gb_write(gb.regs.hl, gb.regs.a);
     IncrementEntityState();
     gb_write(gb.regs.hl, 1);
+    ret_015_5355(); return;
 }
 
 void ret_015_5355(void) {
@@ -3374,10 +3399,12 @@ void func_015_5370(void) {
     gb_write(gb.regs.hl, 4);
     gb.regs.a = 0x21;
     gb_write(0xFFF3, gb.regs.a);
+    func_015_5383(); return;
 }
 
 void func_015_5383(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    jr_015_5384(); return;
 }
 
 void jr_015_5384(void) {
@@ -3486,6 +3513,7 @@ void func_015_53E1(void) {
     gb_write(gb.regs.hl, 0x80);
     IncrementEntityState();
     gb_write(gb.regs.hl, 5);
+    func_015_542E(); return;
 }
 
 void func_015_542E(void) {
@@ -3522,6 +3550,7 @@ void func_015_5435(void) {
 void jr_015_5465(void) {
     gb.regs.e = 0x0F;
     gb.regs.d = gb.regs.b;
+    jr_015_5468(); return;
 }
 
 void jr_015_5468(void) {
@@ -3556,6 +3585,7 @@ void jr_015_5468(void) {
     if (!GET_FLAG_C()) { jr_015_54B7(); return; };
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 0x80);
+    label_015_54A2(); return;
 }
 
 void label_015_54A2(void) {
@@ -3590,6 +3620,7 @@ void Unknown047SpriteVariants(void) {
   Unknown047SpriteVariants_variant2:;
     /* data: db $4A, $00 */;
     /* data: db $4A, $20 */;
+    Data_015_54CA(); return;
 }
 
 void Data_015_54CA(void) {
@@ -3651,12 +3682,14 @@ void Unknown048SpriteVariants(void) {
   Unknown048SpriteVariants_variant0:;
     /* data: db $4C, $00 */;
     /* data: db $4C, $20 */;
+    Unknown052SpriteVariants(); return;
 }
 
 void Unknown052SpriteVariants(void) {
   Unknown052SpriteVariants_variant0:;
     /* data: db $48, $00 */;
     /* data: db $48, $20 */;
+    Data_015_5629(); return;
 }
 
 void Data_015_5629(void) {
@@ -3669,6 +3702,7 @@ void func_015_5631(void) {
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xFFE9, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    jr_015_5639(); return;
 }
 
 void jr_015_5639(void) {
@@ -3707,6 +3741,7 @@ void jr_015_5639(void) {
     RenderActiveEntitySpritesPair();
     gb.regs.a = 2;
     func_015_7964_trampoline();
+    jr_015_5676(); return;
 }
 
 void jr_015_5676(void) {
@@ -3915,6 +3950,7 @@ void func_015_5819(void) {
     gb.regs.hl = 0xC380;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.a);
+    label_015_582B(); return;
 }
 
 void label_015_582B(void) {
@@ -3927,6 +3963,7 @@ void label_015_582B(void) {
     SetEntitySpriteVariant(); return;
     /* nop */;
     gb.regs.bc = 0x0302;
+    Data_015_583C(); return;
 }
 
 void Data_015_583C(void) {
@@ -4268,6 +4305,7 @@ void Unknown049SpriteVariants(void) {
   Unknown049SpriteVariants_variant3:;
     /* data: db $6A, $20 */;
     /* data: db $FF, $FF */;
+    Data_015_5A83(); return;
 }
 
 void Data_015_5A83(void) {
@@ -4345,6 +4383,7 @@ void func_015_5B2C(void) {
     gb_write(0xFFEC, gb.regs.a);
     gb.regs.hl = 0x5A93;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
+    jr_015_5B4B(); return;
 }
 
 void jr_015_5B4B(void) {
@@ -4367,6 +4406,7 @@ void jr_015_5B4B(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.c = 2;
     RenderActiveEntitySpritesRect();
+    jr_015_5B6C(); return;
 }
 
 void jr_015_5B6C(void) {
@@ -4450,6 +4490,7 @@ void Unknown050SpriteVariants(void) {
   Unknown050SpriteVariants_variant2:;
     /* data: db $7E, $00 */;
     /* data: db $7E, $20 */;
+    Data_015_5D85(); return;
 }
 
 void Data_015_5D85(void) {
@@ -4527,6 +4568,7 @@ void Unknown051SpriteVariants(void) {
   Unknown051SpriteVariants_variant4:;
     /* data: db $5A, $00 */;
     /* data: db $5A, $20 */;
+    label_015_5DED(); return;
 }
 
 void label_015_5DED(void) {
@@ -4573,6 +4615,7 @@ void jr_015_5E24(void) {
 
 void func_015_5E35(void) {
     DefaultEnemyDamageCollisionHandler_trampoline();
+    func_015_5E38(); return;
 }
 
 void func_015_5E38(void) {
@@ -4701,6 +4744,7 @@ void func_015_5EAC(void) {
     gb_write(gb.regs.hl, 0xC0);
     gb.regs.a = 0x36;
     gb_write(0xFFF2, gb.regs.a);
+    jr_015_5F0F(); return;
 }
 
 void jr_015_5F0F(void) {
@@ -4709,6 +4753,7 @@ void jr_015_5F0F(void) {
     gb_write(gb.regs.hl, 0x14);
     gb.regs.a = 7;
     gb_write(0xFFF3, gb.regs.a);
+    ret_015_5F19(); return;
 }
 
 void ret_015_5F19(void) {
@@ -4739,6 +4784,7 @@ void func_015_5F22(void) {
     gb.regs.a = 0x18;
   func_015_5F22_jr_5F3C:;
     ApplyVectorTowardsLink_trampoline();
+    jr_015_5F3F(); return;
 }
 
 void jr_015_5F3F(void) {
@@ -4877,6 +4923,7 @@ void func_015_604A(void) {
     gb.regs.e = gb.regs.a;
     gb.regs.d = gb.regs.b;
     gb.regs.hl = 0x6042;
+    jr_015_6069(); return;
 }
 
 void jr_015_6069(void) {
@@ -4974,6 +5021,7 @@ void func_015_60D4(void) {
     gb_write(gb.regs.hl, gb.regs.b);
     gb.regs.a = 0x38;
     gb_write(0xFFF2, gb.regs.a);
+    jr_015_6109(); return;
 }
 
 void jr_015_6109(void) {
@@ -5037,6 +5085,7 @@ void Unknown053SpriteVariants(void) {
   Unknown053SpriteVariants_variant3:;
     /* data: db $76, $00 */;
     /* data: db $76, $20 */;
+    func_015_6245(); return;
 }
 
 void func_015_6245(void) {
@@ -5172,6 +5221,7 @@ void func_015_6245(void) {
     gb.regs.hl = 0xC480;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 0x50);
+    ret_015_6330(); return;
 }
 
 void ret_015_6330(void) {
@@ -5221,6 +5271,7 @@ void func_015_6331(void) {
   func_015_6331_jr_6374:;
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 0x10);
+    jr_015_6379(); return;
 }
 
 void jr_015_6379(void) {
@@ -5298,6 +5349,7 @@ void FinalNightmareFormGanonLanmolaHandler(void) {
 
 void jr_015_63F2(void) {
     func_015_692A();
+    jr_015_63F5(); return;
 }
 
 void jr_015_63F5(void) {
@@ -5323,6 +5375,7 @@ void jr_015_63F5(void) {
     gb.regs.hl = 0xC420;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 0x80);
+    jr_015_6425(); return;
 }
 
 void jr_015_6425(void) {
@@ -5635,6 +5688,7 @@ void jr_015_6628(void) {
     gb.regs.hl = 0xD4A1;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
     gb.regs.bc = gb_pop16();
+    ret_015_66C7(); return;
 }
 
 void ret_015_66C7(void) {
@@ -5717,6 +5771,7 @@ void func_015_66CC(void) {
     gb.regs.a = 0x27;
     gb_write(0xFFF4, gb.regs.a);
     gb.regs.bc = gb_pop16();
+    jr_015_674E(); return;
 }
 
 void jr_015_674E(void) {
@@ -5798,6 +5853,7 @@ void func_015_678F(void) {
     alu_cp8(gb.regs.a, 6);
     if (!GET_FLAG_C()) { jr_015_67D9(); return; };
     IncrementEntityState();
+    jr_015_67D9(); return;
 }
 
 void jr_015_67D9(void) {
@@ -5866,6 +5922,7 @@ void func_015_6811(void) {
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
   func_015_6811_jr_683E:;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    jr_015_683F(); return;
 }
 
 void jr_015_683F(void) {
@@ -6304,6 +6361,7 @@ void Unknown054SpriteVariants(void) {
   Unknown054SpriteVariants_variant2:;
     /* data: db $4E, $00 */;
     /* data: db $4E, $20 */;
+    Data_015_6D3C(); return;
 }
 
 void Data_015_6D3C(void) {
@@ -6341,6 +6399,7 @@ void Unknown055SpriteVariants(void) {
   Unknown055SpriteVariants_variant3:;
     /* data: db $56, $00 */;
     /* data: db $56, $20 */;
+    FinalNightmareGanonBatHandler(); return;
 }
 
 void FinalNightmareGanonBatHandler(void) {
@@ -6399,6 +6458,7 @@ void func_015_6D9C(void) {
     UpdateEntityPosWithSpeed_15();
   func_015_6D9C_jr_6DC1:;
     label_3B44();
+    jr_015_6DC4(); return;
 }
 
 void jr_015_6DC4(void) {
@@ -6448,6 +6508,7 @@ void FinalNightmareFormDethlHandler(void) {
     func_015_52B1();
   FinalNightmareFormDethlHandler_jr_6E3B:;
     gb.regs.a = 0x10;
+    jr_015_6E3D(); return;
 }
 
 void jr_015_6E3D(void) {
@@ -6624,6 +6685,7 @@ void func_015_6E66(void) {
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     gb_write(0xFF99, gb.regs.a);
+    jr_015_6F70(); return;
 }
 
 void jr_015_6F70(void) {
@@ -6703,6 +6765,7 @@ void func_015_6FBC(void) {
   func_015_6FBC_jr_6FF1:;
     gb.regs.a = alu_dec8(gb.regs.a);
     gb_write(0xD4A3, gb.regs.a);
+    ret_015_6FF5(); return;
 }
 
 void ret_015_6FF5(void) {
@@ -6822,6 +6885,7 @@ void Unknown056SpriteVariants(void) {
   Unknown056SpriteVariants_variant2:;
     /* data: db $7C, $02 */;
     /* data: db $7C, $22 */;
+    func_015_717B(); return;
 }
 
 void func_015_717B(void) {
@@ -6865,6 +6929,7 @@ void func_015_717B(void) {
   func_015_717B_jr_71C0:;
     gb.regs.a = 1;
     func_015_72CF();
+    jr_015_71C5(); return;
 }
 
 void jr_015_71C5(void) {
@@ -6923,6 +6988,7 @@ void jr_015_7208(void) {
     gb_write(0xFFEC, gb.regs.a);
     gb.regs.a = 0;
     func_015_72CF();
+    jr_015_7226(); return;
 }
 
 void jr_015_7226(void) {
@@ -7120,6 +7186,7 @@ void SandCrabEntityHandler(void) {
     gb.regs.hl = 0xC250;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.a);
+    ret_015_7382(); return;
 }
 
 void ret_015_7382(void) {
@@ -7139,6 +7206,7 @@ void Urchin2SpriteVariants(void) {
   Urchin2SpriteVariants_variant3:;
     /* data: db $5C, $43 */;
     /* data: db $5E, $43 */;
+    Urchin1SpriteVariants(); return;
 }
 
 void Urchin1SpriteVariants(void) {
@@ -7154,6 +7222,7 @@ void Urchin1SpriteVariants(void) {
   Urchin1SpriteVariants_variant3:;
     /* data: db $2C, $43 */;
     /* data: db $2E, $43 */;
+    Data_015_73A3(); return;
 }
 
 void Data_015_73A3(void) {
@@ -7232,6 +7301,7 @@ void UrchinEntityHandler(void) {
     gb.regs.hl = 0xC410;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.b);
+    jr_015_7428(); return;
 }
 
 void jr_015_7428(void) {
@@ -7455,6 +7525,7 @@ void BeetleSpriteVariants(void) {
   BeetleSpriteVariants_variant1:;
     /* data: db $72, $20 */;
     /* data: db $70, $20 */;
+    BeetleSpawnerBeetleHandler(); return;
 }
 
 void BeetleSpawnerBeetleHandler(void) {
@@ -7499,6 +7570,7 @@ void BeetleSpawnerBeetleHandler(void) {
   BeetleSpawnerBeetleHandler_jr_75CB:;
     return;
     gb.regs.a = 1;
+    Data_015_75CE(); return;
 }
 
 void Data_015_75CE(void) {
@@ -7545,6 +7617,7 @@ void LaserBeamEntityHandler(void) {
     jr_015_7619(); return;
   LaserBeamEntityHandler_jr_7616:;
     gb.regs.hl = 0xC250;
+    jr_015_7619(); return;
 }
 
 void jr_015_7619(void) {
@@ -7701,6 +7774,7 @@ void func_015_770A(void) {
     jr_015_773A(); return;
   func_015_770A_jr_7738:;
     gb.regs.a = 0xE0;
+    jr_015_773A(); return;
 }
 
 void jr_015_773A(void) {
@@ -7751,6 +7825,7 @@ void jr_015_773A(void) {
     gb.regs.hl = 0xC440;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 1);
+    ret_015_7792(); return;
 }
 
 void ret_015_7792(void) {
@@ -7777,11 +7852,13 @@ void func_015_7793(void) {
     gb_write(gb.regs.hl, 0x20);
     ClearEntitySpeed();
     IncrementEntityState();
+    jr_015_77BA(); return;
 }
 
 void jr_015_77BA(void) {
     gb.regs.a = 0x14;
     gb_write(0xFFF3, gb.regs.a);
+    ret_015_77BE(); return;
 }
 
 void ret_015_77BE(void) {
@@ -7843,6 +7920,7 @@ void Unknown057SpriteVariants(void) {
   Unknown057SpriteVariants_variant1:;
     /* data: db $7E, $21 */;
     /* data: db $7C, $21 */;
+    Data_015_781B(); return;
 }
 
 void Data_015_781B(void) {
@@ -7926,6 +8004,7 @@ void WitchRatSpriteVariants(void) {
   WitchRatSpriteVariants_variant3:;
     /* data: db $56, $23 */;
     /* data: db $54, $23 */;
+    WitchRatEntityHandler(); return;
 }
 
 void WitchRatEntityHandler(void) {
@@ -8036,6 +8115,7 @@ void func_015_792E(void) {
     gb.regs.hl = 0xC310;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    jr_015_7950(); return;
 }
 
 void jr_015_7950(void) {
@@ -8052,6 +8132,7 @@ void func_015_795D(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.a = alu_and8(gb.regs.a, -241);
+    func_015_7964(); return;
 }
 
 void func_015_7964(void) {
@@ -8268,6 +8349,7 @@ void EntityVariantForDirection_15(void) {
     /* data: db 2 */;
   EntityVariantForDirection_15_down:;
     /* data: db 0 */;
+    SetEntityVariantForDirection_15(); return;
 }
 
 void SetEntityVariantForDirection_15(void) {
@@ -8422,6 +8504,7 @@ void ApplyRecoilIfNeeded_15(void) {
 
 void UpdateEntityPosWithSpeed_15(void) {
     AddEntitySpeedToPos_15();
+    UpdateEntityYPosWithSpeed_15(); return;
 }
 
 void UpdateEntityYPosWithSpeed_15(void) {
@@ -8582,6 +8665,7 @@ void func_015_7C43(void) {
     gb.regs.hl = 0xC420;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 0xFF);
+    label_015_7C4E(); return;
 }
 
 void label_015_7C4E(void) {
@@ -8665,6 +8749,7 @@ void label_015_7C91(void) {
     gb.regs.hl = 0xC310;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 8);
+    jr_015_7CD2(); return;
 }
 
 void jr_015_7CD2(void) {
@@ -8752,6 +8837,7 @@ void Unknown061SpriteVariants(void) {
   Unknown061SpriteVariants_variant1:;
     /* data: db $54, $00 */;
     /* data: db $56, $00 */;
+    Unknown059SpriteVariants(); return;
 }
 
 void Unknown059SpriteVariants(void) {
@@ -8761,6 +8847,7 @@ void Unknown059SpriteVariants(void) {
   Unknown059SpriteVariants_variant1:;
     /* data: db $54, $02 */;
     /* data: db $56, $02 */;
+    Unknown060SpriteVariants(); return;
 }
 
 void Unknown060SpriteVariants(void) {
@@ -8770,6 +8857,7 @@ void Unknown060SpriteVariants(void) {
   Unknown060SpriteVariants_variant1:;
     /* data: db $54, $03 */;
     /* data: db $56, $03 */;
+    Data_015_7D68(); return;
 }
 
 void Data_015_7D68(void) {
@@ -8850,6 +8938,7 @@ void func_015_7D78(void) {
     gb.regs.a = 0x65;
     gb_write(gb.regs.hl++, gb.regs.a);
     gb_write(gb.regs.hl, gb.regs.b);
+    jr_015_7DEC(); return;
 }
 
 void jr_015_7DEC(void) {
@@ -8860,6 +8949,7 @@ void jr_015_7DEC(void) {
     gb.regs.e = alu_inc8(gb.regs.e);
   jr_015_7DEC_jr_7DF4:;
     gb.regs.a = gb.regs.e;
+    func_015_7DF5(); return;
 }
 
 void func_015_7DF5(void) {
@@ -8987,6 +9077,7 @@ void BookEntityHandler(void) {
 void jr_015_7EA0(void) {
     gb.regs.de = 0x7E6F;
     RenderActiveEntitySprite();
+    jr_015_7EA6(); return;
 }
 
 void jr_015_7EA6(void) {
@@ -9037,6 +9128,7 @@ void func_015_7EB9(void) {
     gb.regs.a = gb.regs.e;
     gb.regs.a = alu_add8(gb.regs.a, 4);
     gb.regs.e = gb.regs.a;
+    jr_015_7EF3(); return;
 }
 
 void jr_015_7EF3(void) {
@@ -9093,6 +9185,7 @@ void func_015_7F04(void) {
     gb.regs.a = alu_and8(gb.regs.a, 3);
     gb.regs.a = alu_add8(gb.regs.a, 0x17);
     gb.regs.e = gb.regs.a;
+    jr_015_7F4F(); return;
 }
 
 void jr_015_7F4F(void) {
@@ -9143,6 +9236,7 @@ void AnimalD1SpriteVariants(void) {
   AnimalD1SpriteVariants_variant3:;
     /* data: db $72, $23 */;
     /* data: db $70, $23 */;
+    AnimalD1EntityHandler(); return;
 }
 
 void AnimalD1EntityHandler(void) {

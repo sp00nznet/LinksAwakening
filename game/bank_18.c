@@ -550,6 +550,7 @@ void MamuAndFrogsState0Handler(void) {
     /* ld_dialog_low a, Dialog0DC */;
     MamuOpenDialogAtBottom();
     IncrementEntityState();
+    func_018_407C(); return;
 }
 
 void func_018_407C(void) {
@@ -608,6 +609,7 @@ void jr_018_40AF(void) {
     func_018_45A0();
     gb.regs.a = 1;
     gb_write(0xC500, gb.regs.a);
+    ret_018_40D6(); return;
 }
 
 void ret_018_40D6(void) {
@@ -803,11 +805,13 @@ void MamuAndFrogsState6Handler(void) {
     gb_write(0xC167, gb.regs.a);
     IncrementEntityState();
     gb_write(gb.regs.hl, gb.regs.b);
+    label_018_42B2(); return;
 }
 
 void label_018_42B2(void) {
     /* ld_dialog_low a, Dialog0E0 */;
     MamuOpenDialogAtBottom();
+    jr_018_42B7(); return;
 }
 
 void jr_018_42B7(void) {
@@ -869,6 +873,7 @@ void func_018_438F(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.a);
     IncrementEntityState();
+    func_018_439A(); return;
 }
 
 void func_018_439A(void) {
@@ -906,6 +911,7 @@ void MamuAndFrogsSpriteVariants(void) {
   MamuAndFrogsSpriteVariants_variant3:;
     /* data: db $5E, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $5C, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
+    MamuAndFrogsSpriteList(); return;
 }
 
 void MamuAndFrogsSpriteList(void) {
@@ -1166,6 +1172,7 @@ void ManboAndFishesState0Handler(void) {
     ClearLinkPositionIncrement();
     /* call_open_dialog Dialog185 */;
     IncrementEntityState();
+    func_018_455C(); return;
 }
 
 void func_018_455C(void) {
@@ -1200,11 +1207,13 @@ void jr_018_4581(void) {
     IncrementEntityState();
     gb_write(gb.regs.hl, gb.regs.b);
     /* jp_open_dialog Dialog18A */;
+    jr_018_458A(); return;
 }
 
 void jr_018_458A(void) {
     IncrementEntityState();
     /* jp_open_dialog Dialog187 */;
+    ManboAndFishesSingHandler(); return;
 }
 
 void ManboAndFishesSingHandler(void) {
@@ -1214,6 +1223,7 @@ void ManboAndFishesSingHandler(void) {
     gb.regs.a = 0x30;
     gb_write(0xD368, gb.regs.a);
     IncrementEntityState();
+    func_018_45A0(); return;
 }
 
 void func_018_45A0(void) {
@@ -1225,6 +1235,7 @@ void func_018_45A0(void) {
     gb_write(0xD497, gb.regs.a);
     gb_write(0xD494, gb.regs.a);
     gb_write(0xD498, gb.regs.a);
+    ret_018_45B6(); return;
 }
 
 void ret_018_45B6(void) {
@@ -1326,6 +1337,7 @@ void ManboAndFishesState3Handler(void) {
 void jr_018_471D(void) {
     gb.regs.a = 0x28;
     gb_write(0xD494, gb.regs.a);
+    jr_018_4722(); return;
 }
 
 void jr_018_4722(void) {
@@ -1418,6 +1430,7 @@ void ManboAndFishes1SpriteVariants(void) {
   ManboAndFishes1SpriteVariants_variant4:;
     /* data: db $66, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $64, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
+    func_018_4833(); return;
 }
 
 void func_018_4833(void) {
@@ -1444,6 +1457,7 @@ void jr_018_4857(void) {
     gb.regs.hl = 0xC3B0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb.regs.a = gb_read(gb.regs.hl);
+    jr_018_485C(); return;
 }
 
 void jr_018_485C(void) {
@@ -1515,6 +1529,7 @@ void ManboAndFishes2SpriteVariants(void) {
   ManboAndFishes2SpriteVariants_variant8:;
     /* data: db $74, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $72, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
+    label_018_48C8(); return;
 }
 
 void label_018_48C8(void) {
@@ -1627,6 +1642,7 @@ void MermaidStatueInteractiveHandler(void) {
     IncrementEntityState(); return;
   MermaidStatueInteractiveHandler_alreadyHasMagnifyingLens:;
     /* jp_open_dialog Dialog19C */;
+    MermaidStatueOpeningHandler(); return;
 }
 
 void MermaidStatueOpeningHandler(void) {
@@ -1671,6 +1687,7 @@ void ZoraSpriteVariants(void) {
   ZoraSpriteVariants_variant4:;
     /* data: db $52, OAM_GBC_PAL_2 | OAMF_PAL0 */;
     /* data: db $52, OAM_GBC_PAL_2 | OAMF_PAL0 | OAMF_XFLIP */;
+    ZoraEntityHandler(); return;
 }
 
 void ZoraEntityHandler(void) {
@@ -1877,12 +1894,14 @@ void MrWrite2SpriteVariants(void) {
   MrWrite2SpriteVariants_variant0:;
     /* data: db $7A, OAM_GBC_PAL_2 | OAMF_PAL0 */;
     /* data: db $7C, OAM_GBC_PAL_2 | OAMF_PAL0 */;
+    MrWrite1SpriteVariants(); return;
 }
 
 void MrWrite1SpriteVariants(void) {
   MrWrite1SpriteVariants_variant0:;
     /* data: db $7E, OAM_GBC_PAL_2 | OAMF_PAL0 */;
     /* data: db $7E, OAM_GBC_PAL_2 | OAMF_PAL0 | OAMF_XFLIP */;
+    MrWriteEntityHandler(); return;
 }
 
 void MrWriteEntityHandler(void) {
@@ -1901,6 +1920,7 @@ void MrWriteEntityHandler(void) {
     jr_018_4BB5(); return;
   MrWriteEntityHandler_jr_4BB2:;
     gb.regs.hl = 0x4B15;
+    jr_018_4BB5(); return;
 }
 
 void jr_018_4BB5(void) {
@@ -1992,6 +2012,7 @@ void MrWriteState1Handler(void) {
   MrWriteState1Handler_jr_4C58:;
     gb_write(gb.regs.hl, gb.regs.b);
     /* jp_open_dialog Dialog169 */;
+    MrWriteState2Handler(); return;
 }
 
 void MrWriteState2Handler(void) {
@@ -2048,6 +2069,7 @@ void func_018_4CA3(void) {
 void func_018_4CAB(void) {
     IncrementEntityState();
     gb.regs.a = 8;
+    func_018_4CB0(); return;
 }
 
 void func_018_4CB0(void) {
@@ -2068,6 +2090,7 @@ void func_018_4CBE(void) {
     if (!GET_FLAG_Z()) return;
     IncrementEntityState();
     /* jp_open_dialog Dialog135 */;
+    func_018_4CD1(); return;
 }
 
 void func_018_4CD1(void) {
@@ -2087,6 +2110,7 @@ void func_018_4CD1(void) {
   func_018_4CD1_jr_4CEC:;
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
     /* jp_open_dialog Dialog137 */;
+    func_018_4CF2(); return;
 }
 
 void func_018_4CF2(void) {
@@ -2105,6 +2129,7 @@ void GrandmaUlrira1SpriteVariants(void) {
   GrandmaUlrira1SpriteVariants_variant2:;
     /* data: db $6C, OAM_GBC_PAL_1 | OAMF_PAL0 */;
     /* data: db $6E, OAM_GBC_PAL_1 | OAMF_PAL0 */;
+    GrandmaUlrira2SpriteVariants(); return;
 }
 
 void GrandmaUlrira2SpriteVariants(void) {
@@ -2117,12 +2142,14 @@ void GrandmaUlrira2SpriteVariants(void) {
   GrandmaUlrira2SpriteVariants_variant2:;
     /* data: db $6C, OAM_GBC_PAL_1 | OAMF_PAL0 */;
     /* data: db $6E, OAM_GBC_PAL_1 | OAMF_PAL0 */;
+    GrandmaUlrira3SpriteVariants(); return;
 }
 
 void GrandmaUlrira3SpriteVariants(void) {
   GrandmaUlrira3SpriteVariants_variant0:;
     /* data: db $9A, OAM_GBC_PAL_4 | OAMF_PAL1 */;
     /* data: db $9C, OAM_GBC_PAL_4 | OAMF_PAL1 */;
+    GrandmaUlriraEntityHandler(); return;
 }
 
 void GrandmaUlriraEntityHandler(void) {
@@ -2162,6 +2189,7 @@ void jr_018_4D36(void) {
     gb.regs.a = 1;
     gb_write(0xFFE8, gb.regs.a);
     gb.regs.de = 0x4C07;
+    jr_018_4D58(); return;
 }
 
 void jr_018_4D58(void) {
@@ -2218,6 +2246,7 @@ void jr_018_4DA3(void) {
     IncrementEntityState(); return;
   jr_018_4DA3_jr_4DB5:;
     /* jp_open_dialog Dialog15B */;
+    GrandmaUlriraState1Handler(); return;
 }
 
 void GrandmaUlriraState1Handler(void) {
@@ -2343,6 +2372,7 @@ void label_018_4E91(void) {
 void jr_018_4E9F(void) {
     IncrementEntityState();
     /* ld_dialog_low e, Dialog12B */;
+    jr_018_4EA4(); return;
 }
 
 void jr_018_4EA4(void) {
@@ -2367,6 +2397,7 @@ void PapahlsWifeState1Handler(void) {
     /* call_open_dialog Dialog127 */;
     IncrementEntityState();
     gb_write(gb.regs.hl, gb.regs.b);
+    ret_018_4ECE(); return;
 }
 
 void ret_018_4ECE(void) {
@@ -2502,6 +2533,7 @@ void MadBatterUpgradeDialogs(void) {
     /* db_dialog_low Dialog0E3 */;
   MadBatterUpgradeDialogs__2:;
     /* db_dialog_low Dialog0E4 */;
+    MadBatterState5Handler(); return;
 }
 
 void MadBatterState5Handler(void) {
@@ -2689,6 +2721,7 @@ void MadBatterSpriteVariants(void) {
   MadBatterSpriteVariants_variant1:;
     /* data: db $7E, OAM_GBC_PAL_3 | OAMF_PAL0 | OAMF_YFLIP */;
     /* data: db $7E, OAM_GBC_PAL_3 | OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP */;
+    MadBatterRenderSmallSprite(); return;
 }
 
 void MadBatterRenderSmallSprite(void) {
@@ -2700,6 +2733,7 @@ void MadBatterRenderSmallSprite(void) {
     gb_write(0xFFF1, gb.regs.a);
     gb.regs.de = 0x4F6C;
     RenderActiveEntitySpritesPair();
+    func_018_50D2(); return;
 }
 
 void func_018_50D2(void) {
@@ -2826,6 +2860,7 @@ void BunnyD3SpriteVariants(void) {
   BunnyD3SpriteVariants_variant7:;
     /* data: db $5A, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $58, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    BunnyD3EntityHandler(); return;
 }
 
 void BunnyD3EntityHandler(void) {
@@ -2865,6 +2900,7 @@ void BunnyD3EntityHandler(void) {
     gb.regs.a = alu_and8(gb.regs.a, 0x1F);
     if (!GET_FLAG_Z()) { jr_018_521C(); return; };
     gb_write(gb.regs.hl, 0x0C);
+    jr_018_521C(); return;
 }
 
 void jr_018_521C(void) {
@@ -2917,6 +2953,7 @@ void AnimalD2SpriteVariants(void) {
   AnimalD2SpriteVariants_variant3:;
     /* data: db $7E, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $7C, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    AnimalD2EntityHandler(); return;
 }
 
 void AnimalD2EntityHandler(void) {
@@ -2959,6 +2996,7 @@ void BunnyCallingMarinSpriteVariants(void) {
   BunnyCallingMarinSpriteVariants_variant3:;
     /* data: db $5C, OAM_GBC_PAL_1 | OAMF_PAL0 */;
     /* data: db $5E, OAM_GBC_PAL_1 | OAMF_PAL0 */;
+    BunnyCallingMarinEntityHandler(); return;
 }
 
 void BunnyCallingMarinEntityHandler(void) {
@@ -3031,6 +3069,7 @@ void BunnyCallingMarinState1Handler(void) {
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 0x10);
     IncrementEntityState();
+    func_018_5321(); return;
 }
 
 void func_018_5321(void) {
@@ -3138,6 +3177,7 @@ void jr_018_5375(void) {
     gb_write(0xDC1B, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xC167, gb.regs.a);
+    ret_018_53CD(); return;
 }
 
 void ret_018_53CD(void) {
@@ -3243,6 +3283,7 @@ void MovingBlockMoverHandleSpriteVariants(void) {
   MovingBlockMoverHandleSpriteVariants_variant1:;
     /* data: db $74, OAM_GBC_PAL_1 | OAMF_PAL0 */;
     /* data: db $74, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    MovingBlockMoverRodSpriteVariants(); return;
 }
 
 void MovingBlockMoverRodSpriteVariants(void) {
@@ -3252,6 +3293,7 @@ void MovingBlockMoverRodSpriteVariants(void) {
   MovingBlockMoverRodSpriteVariants_variant1:;
     /* data: db $76, OAM_GBC_PAL_1 | OAMF_PAL0 */;
     /* data: db $76, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    RenderMovingBlockMover(); return;
 }
 
 void RenderMovingBlockMover(void) {
@@ -3303,6 +3345,7 @@ void label_018_54BD(void) {
     jr_018_54DF(); return;
   label_018_54BD_jr_54DE:;
     gb.regs.e = alu_dec8(gb.regs.e);
+    jr_018_54DF(); return;
 }
 
 void jr_018_54DF(void) {
@@ -3446,6 +3489,7 @@ void WalrusWakingUpHandler(void) {
   WalrusWakingUpHandler_jr_55D8:;
     gb_write(gb.regs.hl, 8);
     /* jp_open_dialog Dialog1E4 */;
+    WalrusState2Handler(); return;
 }
 
 void WalrusState2Handler(void) {
@@ -3475,6 +3519,7 @@ void WalrusState2Handler(void) {
     if (GET_FLAG_Z()) { jr_018_5612(); return; };
   WalrusState2Handler_jr_5610:;
     gb.regs.e = 1;
+    jr_018_5612(); return;
 }
 
 void jr_018_5612(void) {
@@ -3538,6 +3583,7 @@ void WalrusState3Handler(void) {
     gb_write(gb.regs.hl, 0x27);
   WalrusState3Handler_jr_56CC:;
     gb.regs.a = 2;
+    jr_018_56CE(); return;
 }
 
 void jr_018_56CE(void) {
@@ -3602,6 +3648,7 @@ void WalrusState5Handler(void) {
     IncrementEntityState();
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 8);
+    func_018_572E(); return;
 }
 
 void func_018_572E(void) {
@@ -3877,6 +3924,7 @@ void func_018_596B(void) {
 
 void label_018_59AC(void) {
     gb.regs.a = 0;
+    func_018_59AE(); return;
 }
 
 void func_018_59AE(void) {
@@ -3923,6 +3971,7 @@ void MarinAsFollowerSpriteVariants(void) {
   MarinAsFollowerSpriteVariants_variant10:;
     /* data: db $52, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $50, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    Data_018_59E4(); return;
 }
 
 void Data_018_59E4(void) {
@@ -4004,6 +4053,7 @@ void jr_018_5A3F(void) {
     func_018_5A79();
     gb.regs.a = gb_read(0xFF9E);
     gb.regs.hl = 0xD3B5;
+    func_018_5A79(); return;
 }
 
 void func_018_5A79(void) {
@@ -4157,6 +4207,7 @@ void jr_018_5B55(void) {
     if (!GET_FLAG_Z()) { jr_018_5B61(); return; };
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
     /* call_open_dialog Dialog27B */;
+    jr_018_5B61(); return;
 }
 
 void jr_018_5B61(void) {
@@ -4310,6 +4361,7 @@ void func_018_5C39(void) {
     if (!GET_FLAG_Z()) goto func_018_5C39_loop_5C59;
     gb.regs.a = 2;
     gb.regs.hl = 0xD3B5;
+    func_018_5C63(); return;
 }
 
 void func_018_5C63(void) {
@@ -4399,6 +4451,7 @@ void label_018_5C6A(void) {
     gb.regs.hl = 0xC3D0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    jr_018_5CEF(); return;
 }
 
 void jr_018_5CEF(void) {
@@ -4489,6 +4542,7 @@ void jr_018_5D6F(void) {
     gb.regs.a = 0x24;
   jr_018_5D6F_jr_5D78:;
     gb_write(0xFFF2, gb.regs.a);
+    jr_018_5D7A(); return;
 }
 
 void jr_018_5D7A(void) {
@@ -4582,6 +4636,7 @@ void OwlStatueSpriteVariants(void) {
   OwlStatueSpriteVariants_variant0:;
     /* data: db $5E, OAM_GBC_PAL_1 | OAMF_PAL0 */;
     /* data: db $5E, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    Data_018_5DFB(); return;
 }
 
 void Data_018_5DFB(void) {
@@ -4630,6 +4685,7 @@ void func_018_5E43(void) {
     IncrementEntityState(); return;
   func_018_5E43_jr_5E58:;
     /* jp_open_dialog Dialog0E6 */;
+    func_018_5E5D(); return;
 }
 
 void func_018_5E5D(void) {
@@ -4708,6 +4764,7 @@ void MarinAtTalTalAndInStoreSpriteVariants(void) {
   MarinAtTalTalAndInStoreSpriteVariants_variant7:;
     /* data: db $6E, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $6C, OAM_GBC_PAL_1 | OAMF_PAL0 | OAMF_XFLIP */;
+    MarinAtTalTalHeightsEntityHandler(); return;
 }
 
 void MarinAtTalTalHeightsEntityHandler(void) {
@@ -4748,6 +4805,7 @@ void MarinAtTalTalHeightsEntityHandler(void) {
     gb.regs.hl = 0xC320;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.b);
+    jr_018_5F20(); return;
 }
 
 void jr_018_5F20(void) {
@@ -5032,6 +5090,7 @@ void MarinAtTalTal2SpriteVariants(void) {
   MarinAtTalTal2SpriteVariants_variant7:;
     /* data: db $5E, OAM_GBC_PAL_2 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $5C, OAM_GBC_PAL_2 | OAMF_PAL0 | OAMF_XFLIP */;
+    TarinAtTalTalHeights(); return;
 }
 
 void TarinAtTalTalHeights(void) {
@@ -5222,6 +5281,7 @@ void MarinAtTheShoreState3Handler(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xC167, gb.regs.a);
     /* jp_open_dialog Dialog1D6 */;
+    MarinAtTheShoreState4Handler(); return;
 }
 
 void MarinAtTheShoreState4Handler(void) {
@@ -5294,6 +5354,7 @@ void MazeSignpostDialogs(void) {
     /* db_dialog_low Dialog1AC */;
   MazeSignpostDialogs__D:;
     /* db_dialog_low Dialog1AE */;
+    MazeSignpostEntityHandler(); return;
 }
 
 void MazeSignpostEntityHandler(void) {
@@ -5494,6 +5555,7 @@ void ZombieEntityHandler(void) {
     gb.regs.hl = 0xC340;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, alu_res(6, gb_read(gb.regs.hl)));
+    ret_018_63F7(); return;
 }
 
 void ret_018_63F7(void) {
@@ -5516,6 +5578,7 @@ void ZombieSpriteVariants(void) {
   ZombieSpriteVariants_variant4:;
     /* data: db $64, OAM_GBC_PAL_2 | OAMF_PAL0 */;
     /* data: db $66, OAM_GBC_PAL_2 | OAMF_PAL0 */;
+    label_018_640C(); return;
 }
 
 void label_018_640C(void) {
@@ -5578,6 +5641,7 @@ void ZombieState2Handler(void) {
     gb.regs.hl = 0xC340;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, alu_set(6, gb_read(gb.regs.hl)));
+    jr_018_6475(); return;
 }
 
 void jr_018_6475(void) {
@@ -5675,6 +5739,7 @@ void BlainoEntityHandler(void) {
     gb.regs.a = 0x6A;
     gb_write(0xFF9D, gb.regs.a);
     func_018_69C5();
+    jr_018_650A(); return;
 }
 
 void jr_018_650A(void) {
@@ -5776,6 +5841,7 @@ void func_018_6596(void) {
     GetRandomByte();
     gb.regs.a = alu_and8(gb.regs.a, 3);
     gb.regs.a = alu_inc8(gb.regs.a);
+    label_018_65B8(); return;
 }
 
 void label_018_65B8(void) {
@@ -5790,6 +5856,7 @@ void label_018_65B8(void) {
     gb.regs.hl = 0xC3D0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 0);
+    ret_018_65CE(); return;
 }
 
 void ret_018_65CE(void) {
@@ -5886,6 +5953,7 @@ void func_018_6643(void) {
     gb_write(gb.regs.hl, gb.regs.e);
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 3);
+    ret_018_6678(); return;
 }
 
 void ret_018_6678(void) {
@@ -5920,6 +5988,7 @@ void func_018_66CD(void) {
     if (GET_FLAG_Z()) { jr_018_66E9(); return; };
   func_018_66CD_jr_66E8:;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    jr_018_66E9(); return;
 }
 
 void jr_018_66E9(void) {
@@ -5960,6 +6029,7 @@ void jr_018_66E9(void) {
   jr_018_66E9_jr_6724:;
     GetEntityTransitionCountdown();
     gb_write(gb.regs.hl, 3);
+    ret_018_6729(); return;
 }
 
 void ret_018_6729(void) {
@@ -6083,6 +6153,7 @@ void func_018_68EA(void) {
     SkipDisabledEntityDuringRoomTransition();
     gb.regs.a = gb_read(0xFFD7);
     gb.regs.c = gb.regs.a;
+    jr_018_693C(); return;
 }
 
 void jr_018_693C(void) {
@@ -6121,6 +6192,7 @@ void jr_018_693C(void) {
     gb.regs.a = alu_add8(gb.regs.a, 8);
   jr_018_693C_jr_696F:;
     gb_write(0xD581, gb.regs.a);
+    jr_018_6972(); return;
 }
 
 void jr_018_6972(void) {
@@ -6190,6 +6262,7 @@ void func_018_69C5(void) {
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     gb.regs.a = alu_add8(gb.regs.a, 4);
     gb.regs.a = alu_and8(gb.regs.a, 7);
+    func_018_69D8(); return;
 }
 
 void func_018_69D8(void) {
@@ -6398,6 +6471,7 @@ void VireState1Handler(void) {
     gb.regs.hl = 0xC320;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, gb.regs.e);
+    jr_018_6B30(); return;
 }
 
 void jr_018_6B30(void) {
@@ -6462,6 +6536,7 @@ void jr_018_6B30(void) {
 
 void jr_018_6B8F(void) {
     func_018_6E57();
+    label_018_6B92(); return;
 }
 
 void label_018_6B92(void) {
@@ -6595,6 +6670,7 @@ void VireState3Handler(void) {
   VireState3Handler_jr_6C61:;
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
+    jr_018_6C63(); return;
 }
 
 void jr_018_6C63(void) {
@@ -6805,6 +6881,7 @@ void func_018_6D98(void) {
     gb.regs.e = 0;
     func_018_6DB9();
     gb.regs.e = 1;
+    func_018_6DB9(); return;
 }
 
 void func_018_6DB9(void) {
@@ -6814,6 +6891,7 @@ void func_018_6DB9(void) {
     gb_write(0xFFE8, gb.regs.a);
     gb.regs.e = 0x0F;
     gb.regs.d = gb.regs.b;
+    jr_018_6DC3(); return;
 }
 
 void jr_018_6DC3(void) {
@@ -6913,6 +6991,7 @@ void func_018_6E3B(void) {
 
 void func_018_6E57(void) {
     gb.regs.e = 0x0F;
+    jr_018_6E59(); return;
 }
 
 void jr_018_6E59(void) {
@@ -6987,6 +7066,7 @@ void jr_018_6E59(void) {
     gb.regs.hl = 0xC2C0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 1);
+    jr_018_6ED0(); return;
 }
 
 void jr_018_6ED0(void) {
@@ -7030,6 +7110,7 @@ void Vire1SpriteVariants(void) {
   Vire1SpriteVariants_variant1:;
     /* data: db $1E, OAM_GBC_PAL_3 | OAMF_PAL0 | OAMF_YFLIP */;
     /* data: db $1E, OAM_GBC_PAL_3 | OAMF_PAL0 | OAMF_XFLIP */;
+    label_018_6F1F(); return;
 }
 
 void label_018_6F1F(void) {
@@ -7080,6 +7161,7 @@ void Vire2SpriteVariants(void) {
   Vire2SpriteVariants_variant1:;
     /* data: db $6E, OAM_GBC_PAL_0 | OAMF_PAL0 */;
     /* data: db $6E, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
+    label_018_6F70(); return;
 }
 
 void label_018_6F70(void) {
@@ -7102,6 +7184,7 @@ void label_018_6F70(void) {
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
   label_018_6F70_jr_6F94:;
     gb_write(gb.regs.hl, alu_dec8(gb_read(gb.regs.hl)));
+    jr_018_6F95(); return;
 }
 
 void jr_018_6F95(void) {
@@ -7235,6 +7318,7 @@ void GrimCreeperState2Handler(void) {
     gb_write(gb.regs.hl, alu_res(1, gb_read(gb.regs.hl)));
     gb.regs.e = 0x0F;
     gb.regs.d = gb.regs.b;
+    jr_018_7069(); return;
 }
 
 void jr_018_7069(void) {
@@ -7331,6 +7415,7 @@ void GrimCreeperState3Handler(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, alu_set(6, gb_read(gb.regs.hl)));
     gb.regs.bc = gb_pop16();
+    label_018_70FD(); return;
 }
 
 void label_018_70FD(void) {
@@ -7390,6 +7475,7 @@ void GrimCreeperState6Handler(void) {
   GrimCreeperState6Handler_jr_7152:;
     IncrementEntityState();
     gb_write(gb.regs.hl, 1);
+    jr_018_7157(); return;
 }
 
 void jr_018_7157(void) {
@@ -7429,6 +7515,7 @@ void GrimCreeperSpriteVariants(void) {
   GrimCreeperSpriteVariants_variant1:;
     /* data: db $6E, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_YFLIP */;
     /* data: db $6E, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP */;
+    label_018_71A3(); return;
 }
 
 void label_018_71A3(void) {
@@ -7514,6 +7601,7 @@ void func_018_721C(void) {
     gb.regs.hl = 0xD481;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
     IncrementEntityState();
+    jr_018_726D(); return;
 }
 
 void jr_018_726D(void) {
@@ -7521,10 +7609,12 @@ void jr_018_726D(void) {
     gb_write(0xFF99, gb.regs.a);
     gb.regs.af = gb_pop16(); gb.regs.f &= 0xF0;
     gb_write(0xFF98, gb.regs.a);
+    func_018_7273(); return;
 }
 
 void func_018_7273(void) {
     UpdateEntityPosWithSpeed_18();
+    label_018_7276(); return;
 }
 
 void label_018_7276(void) {
@@ -7695,6 +7785,7 @@ void jr_018_737E(void) {
     jr_018_7395(); return;
   jr_018_737E_jr_7392:;
     label_3B44();
+    jr_018_7395(); return;
 }
 
 void jr_018_7395(void) {
@@ -7841,6 +7932,7 @@ void TurtleRockHeadState3Handler(void) {
     if (GET_FLAG_Z()) { ret_018_7479(); return; };
     gb.regs.a = alu_inc8(gb.regs.a);
     gb_write(gb.regs.hl, gb.regs.a);
+    ret_018_7479(); return;
 }
 
 void ret_018_7479(void) {
@@ -7864,6 +7956,7 @@ void TurtleRockHeadState4Handler(void) {
     if (GET_FLAG_C()) { jr_018_7497(); return; };
   TurtleRockHeadState4Handler_jr_7496:;
     gb.regs.e = alu_inc8(gb.regs.e);
+    jr_018_7497(); return;
 }
 
 void jr_018_7497(void) {
@@ -7947,6 +8040,7 @@ void TurtleRockHeadState8Handler(void) {
     alu_cpl();
     gb.regs.a = alu_inc8(gb.regs.a);
     gb_write(gb.regs.hl, gb.regs.a);
+    ret_018_751E(); return;
 }
 
 void ret_018_751E(void) {
@@ -7981,6 +8075,7 @@ void TurtleRockHeadStateAHandler(void) {
     if (!GET_FLAG_Z()) { jr_018_7549(); return; };
   TurtleRockHeadStateAHandler_jr_7546:;
     IncrementEntityState();
+    jr_018_7549(); return;
 }
 
 void jr_018_7549(void) {
@@ -8043,6 +8138,7 @@ void TurtleRockHeadSpriteVariants(void) {
   TurtleRockHeadSpriteVariants_variant0:;
     /* data: db $76, OAM_GBC_PAL_7 | OAMF_PAL0 */;
     /* data: db $76, OAM_GBC_PAL_7 | OAMF_PAL0 | OAMF_XFLIP */;
+    func_018_766A(); return;
 }
 
 void func_018_766A(void) {
@@ -8099,6 +8195,7 @@ void func_018_766A(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xFFF1, gb.regs.a);
     gb.regs.hl = 0xFFE1;
+    jr_018_76C9(); return;
 }
 
 void jr_018_76C9(void) {
@@ -8143,6 +8240,7 @@ void jr_018_76C9(void) {
     gb_write(0xDC3C, gb.regs.a);
     gb.regs.a = 3;
     gb_write(0xFFF3, gb.regs.a);
+    jr_018_7717(); return;
 }
 
 void jr_018_7717(void) {
@@ -8189,6 +8287,7 @@ void BuzzBlobSpriteVariants(void) {
   BuzzBlobSpriteVariants_variant8:;
     /* data: db $6E, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
     /* data: db $6C, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
+    Data_018_774D(); return;
 }
 
 void Data_018_774D(void) {
@@ -8273,6 +8372,7 @@ void BuzzBlobState0Handler(void) {
     OpenDialogInTable2();
   BuzzBlobState0Handler_jr_77CC:;
     gb.regs.hl = 0x7755;
+    label_018_77CF(); return;
 }
 
 void label_018_77CF(void) {
@@ -8392,6 +8492,7 @@ void BomberState0Handler(void) {
     ApplyVectorTowardsLink_trampoline();
   BomberState0Handler_jr_78A3:;
     IncrementEntityState();
+    label_018_78A6(); return;
 }
 
 void label_018_78A6(void) {
@@ -8474,6 +8575,7 @@ void label_018_78A6(void) {
     return;
   label_018_78A6_jr_7935:;
     DefaultEnemyDamageCollisionHandler_trampoline();
+    label_018_7938(); return;
 }
 
 void label_018_7938(void) {
@@ -8984,6 +9086,7 @@ void HookshotChainSpriteVariants(void) {
   HookshotChainSpriteVariants_variant0:;
     /* data: db $36, OAM_GBC_PAL_0 | OAMF_PAL0 */;
     /* data: db $36, OAM_GBC_PAL_0 | OAMF_PAL0 | OAMF_XFLIP */;
+    RenderHookshotChain(); return;
 }
 
 void RenderHookshotChain(void) {
@@ -9086,6 +9189,7 @@ void EntityVariantForDirection_18(void) {
     /* data: db 2 */;
   EntityVariantForDirection_18_down:;
     /* data: db 0 */;
+    SetEntityVariantForDirection_18(); return;
 }
 
 void SetEntityVariantForDirection_18(void) {
@@ -9136,6 +9240,7 @@ void func_018_7D95(void) {
     gb.regs.a = alu_sub8(gb.regs.a, gb_read(gb.regs.hl));
     gb.regs.a = alu_add8(gb.regs.a, 0x14);
     alu_cp8(gb.regs.a, 0x28);
+    func_018_7DA0(); return;
 }
 
 void func_018_7DA0(void) {
@@ -9263,6 +9368,7 @@ void ApplyRecoilIfNeeded_18(void) {
 
 void UpdateEntityPosWithSpeed_18(void) {
     AddEntitySpeedToPos_18();
+    UpdateEntityYPosWithSpeed_18(); return;
 }
 
 void UpdateEntityYPosWithSpeed_18(void) {
@@ -9423,6 +9529,7 @@ void func_018_7F1B(void) {
     gb.regs.hl = 0xC420;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, 0xFF);
+    label_018_7F26(); return;
 }
 
 void label_018_7F26(void) {
@@ -9508,6 +9615,7 @@ void label_018_7F6F(void) {
     gb.regs.hl = 0xC310;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 8);
+    jr_018_7FB0(); return;
 }
 
 void jr_018_7FB0(void) {

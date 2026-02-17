@@ -469,6 +469,7 @@ void jr_017_40c1(void) {
     jr_017_40cb(); return;
   jr_017_40c1_jr_40c8:;
     gb.regs.hl = 0x40B1;
+    jr_017_40cb(); return;
 }
 
 void jr_017_40cb(void) {
@@ -602,6 +603,7 @@ void func_017_44FC(void) {
   func_017_44FC_jr_4514:;
     gb.regs.a = 0x0C;
     gb_write(0xD21E, gb.regs.a);
+    jr_017_4519(); return;
 }
 
 void jr_017_4519(void) {
@@ -670,6 +672,7 @@ void func_017_4594(void) {
     gb_write(0xD205, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xD200, gb.regs.a);
+    func_017_45B5(); return;
 }
 
 void func_017_45B5(void) {
@@ -702,6 +705,7 @@ void func_017_45BA(void) {
   func_017_45BA_jr_45E3:;
     gb.regs.a = gb_read(0xD20A);
     gb_write(0xFFE4, gb.regs.a);
+    jr_017_45E8(); return;
 }
 
 void jr_017_45E8(void) {
@@ -728,6 +732,7 @@ void jr_017_45F9(void) {
     gb.regs.a = gb_read(0xD20A);
     gb.regs.a = alu_inc8(gb.regs.a);
     gb_write(0xD20A, gb.regs.a);
+    jr_017_4612(); return;
 }
 
 void jr_017_4612(void) {
@@ -779,6 +784,7 @@ void func_017_4630(void) {
     jr_017_466B(); return;
   func_017_4630_jr_466A:;
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
+    jr_017_466B(); return;
 }
 
 void jr_017_466B(void) {
@@ -1023,6 +1029,7 @@ void LayoutStaffLetters(void) {
     gb.regs.de = 0xC048;
   LayoutStaffLetters_bottomOAMBufferEnd:;
     gb.regs.a = 0x5D;
+    LayoutRowOfStaffLetters(); return;
 }
 
 void LayoutRowOfStaffLetters(void) {
@@ -1183,6 +1190,7 @@ void func_017_488C(void) {
     gb.regs.c = alu_dec8(gb.regs.c);
     if (!GET_FLAG_Z()) goto func_017_488C_loop_48C6;
     gb_write(gb.regs.hl, gb.regs.c);
+    ret_017_48CC(); return;
 }
 
 void ret_017_48CC(void) {
@@ -1507,6 +1515,7 @@ void label_017_4C22(void) {
 void IncrementCreditsGameplaySubtype(void) {
     gb.regs.hl = 0xDC3E;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    IncrementCreditsGameplaySubtypeAndReturn(); return;
 }
 
 void IncrementCreditsGameplaySubtypeAndReturn(void) {
@@ -1584,6 +1593,7 @@ void CreditsStairsPrepare1Handler(void) {
 void IncrementCreditsSubscene(void) {
     gb.regs.hl = 0xD20E;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    IncrementCreditsSubsceneAndReturn(); return;
 }
 
 void IncrementCreditsSubsceneAndReturn(void) {
@@ -1664,6 +1674,7 @@ void CreditsStairsFadeInHandler(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC41, gb.regs.a);
+    CreditsStairsClimbingHandler(); return;
 }
 
 void CreditsStairsClimbingHandler(void) {
@@ -1684,6 +1695,7 @@ void CreditsStairsClimbingHandler(void) {
     alu_cp8(gb.regs.a, 0x90);
     if (!GET_FLAG_Z()) { ret_017_4DD0(); return; };
     IncrementCreditsSubscene();
+    ResetCreditsSceneVariables(); return;
 }
 
 void ResetCreditsSceneVariables(void) {
@@ -1702,6 +1714,7 @@ void ResetCreditsSceneVariables(void) {
     gb_write(0xD207, gb.regs.a);
     gb_write(0xD208, gb.regs.a);
     gb_write(0xD209, gb.regs.a);
+    ret_017_4DD0(); return;
 }
 
 void ret_017_4DD0(void) {
@@ -1976,6 +1989,7 @@ void CreditsWindFishApparitionHandler(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC3F, gb.regs.a);
+    jr_017_5160(); return;
 }
 
 void jr_017_5160(void) {
@@ -2087,6 +2101,7 @@ void WindfishPalettes(void) {
     /* rgb #000000, #000000, #000000, #000000 */;
     /* rgb #000000, #000000, #000000, #000000 */;
     /* rgb #000000, #000000, #000000, #000000 */;
+    func_017_53A7(); return;
 }
 
 void func_017_53A7(void) {
@@ -2101,6 +2116,7 @@ void func_017_53A7(void) {
     gb.regs.a = gb_read(0xD20A);
     gb.regs.a = alu_inc8(gb.regs.a);
     gb.regs.a = alu_inc8(gb.regs.a);
+    jr_017_53B8(); return;
 }
 
 void jr_017_53B8(void) {
@@ -2131,12 +2147,14 @@ void CreditsWindFishFloatingHandler(void) {
     if (!GET_FLAG_Z()) { ret_017_53F2(); return; };
     IncrementCreditsSubscene();
     /* ld_dialog_low a, Dialog0D0 */;
+    CreditsOpenWindFishDialog(); return;
 }
 
 void CreditsOpenWindFishDialog(void) {
     CreditsOpenDialog();
     gb.regs.a = 0x17;
     gb_write(0xFFF3, gb.regs.a);
+    ret_017_53F2(); return;
 }
 
 void ret_017_53F2(void) {
@@ -2192,6 +2210,7 @@ void CreditsWindFishDisapparitionHandler(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC3F, gb.regs.a);
+    jr_017_544D(); return;
 }
 
 void jr_017_544D(void) {
@@ -2352,6 +2371,7 @@ void CreditsLinkPreparesToPlayHandler(void) {
     gb_write(0xFF9D, gb.regs.a);
     gb.regs.a = 0x3F;
     gb_write(0xD368, gb.regs.a);
+    jr_017_557A(); return;
 }
 
 void jr_017_557A(void) {
@@ -2417,6 +2437,7 @@ void jr_017_557A(void) {
     gb.regs.a = 0xA0;
     gb_write(0xD206, gb.regs.a);
     IncrementCreditsSubscene();
+    ret_017_55E9(); return;
 }
 
 void ret_017_55E9(void) {
@@ -2560,6 +2581,7 @@ void MrsMeowMeowsHouseSceneHandler(void) {
   MrsMeowMeowsHouseSceneHandler_jr_56D7:;
     gb.regs.a = 0x20;
     gb_write(0xD7B4, gb.regs.a);
+    jr_017_56DC(); return;
 }
 
 void jr_017_56DC(void) {
@@ -2634,6 +2656,7 @@ void KidsSceneHandler(void) {
   KidsSceneHandler_jr_5755:;
     gb.regs.a = 0x1E;
     gb_write(0xD7B4, gb.regs.a);
+    jr_017_575A(); return;
 }
 
 void jr_017_575A(void) {
@@ -2695,6 +2718,7 @@ void BeachSceneHandler(void) {
   BeachSceneHandler_jr_57BA:;
     gb.regs.a = 0x22;
     gb_write(0xD7B4, gb.regs.a);
+    jr_017_57BF(); return;
 }
 
 void jr_017_57BF(void) {
@@ -2755,6 +2779,7 @@ void TarinSceneHandler(void) {
   TarinSceneHandler_jr_581F:;
     gb.regs.a = 0x21;
     gb_write(0xD7B4, gb.regs.a);
+    jr_017_5824(); return;
 }
 
 void jr_017_5824(void) {
@@ -2799,6 +2824,7 @@ void MarinSingingSceneHandler(void) {
   MarinSingingSceneHandler_jr_5862:;
     gb.regs.a = 0x1F;
     gb_write(0xD7B4, gb.regs.a);
+    jr_017_5867(); return;
 }
 
 void jr_017_5867(void) {
@@ -3046,12 +3072,14 @@ void jr_017_5A1B(void) {
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC3F, gb.regs.a);
     gb.regs.hl = 0x59ED;
+    jr_017_5A32(); return;
 }
 
 void jr_017_5A32(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC40, gb.regs.a);
+    jr_017_5A37(); return;
 }
 
 void jr_017_5A37(void) {
@@ -3221,6 +3249,7 @@ void func_017_5B37(void) {
     gb.regs.d = gb.regs.e;
     alu_rla();
     gb.regs.b = gb.regs.a;
+    Data_017_5B54(); return;
 }
 
 void Data_017_5B54(void) {
@@ -3823,6 +3852,7 @@ void CreditsLinkOnSeaCloseHandler(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
   CreditsLinkOnSeaCloseHandler_jr_626E:;
     gb_write(0xD20A, gb.regs.a);
+    jr_017_6271(); return;
 }
 
 void jr_017_6271(void) {
@@ -3986,6 +4016,7 @@ void func_017_63BC(void) {
 
 void jr_017_63EE(void) {
     func_017_67CA();
+    jr_017_63F1(); return;
 }
 
 void jr_017_63F1(void) {
@@ -4006,6 +4037,7 @@ void func_017_63FB(void) {
 void label_017_6401(void) {
     gb.regs.hl = 0xD201;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    ret_017_6405(); return;
 }
 
 void ret_017_6405(void) {
@@ -4349,6 +4381,7 @@ void func_017_67CA(void) {
     if (!GET_FLAG_Z()) goto func_017_67CA_loop_6800;
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(gb.regs.de, gb.regs.a);
+    ret_017_6808(); return;
 }
 
 void ret_017_6808(void) {
@@ -4766,6 +4799,7 @@ void LinkSeatedOnLog8Handler(void) {
     gb.regs.hl = 0xC2E0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 0x60);
+    ret_017_6D0A(); return;
 }
 
 void ret_017_6D0A(void) {
@@ -4838,6 +4872,7 @@ void CreditsLinkFaceCloseUp2Handler(void) {
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     if (!GET_FLAG_Z()) { func_017_6D7C(); return; };
     IncrementCreditsSubscene();
+    func_017_6D7C(); return;
 }
 
 void func_017_6D7C(void) {
@@ -4851,6 +4886,7 @@ void func_017_6D7C(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
   func_017_6D7C_jr_6D8B:;
     gb_write(0xD20F, gb.regs.a);
+    jr_017_6D8E(); return;
 }
 
 void jr_017_6D8E(void) {
@@ -4935,6 +4971,7 @@ void CreditsLinkFaceCloseUp4Handler(void) {
   CreditsLinkFaceCloseUp4Handler_jr_6E0F:;
     gb.regs.hl = 0xD203;
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    ret_017_6E13(); return;
 }
 
 void ret_017_6E13(void) {
@@ -5125,6 +5162,7 @@ void CreditsRoll3Handler(void) {
     gb.regs.hl = 0xC2B0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 0x0F);
+    ret_017_6F67(); return;
 }
 
 void ret_017_6F67(void) {
@@ -5279,12 +5317,14 @@ void Data_017_705D(void) {
     /* data: db $23, $24, $25, $99, $62, $0B, $26, $27, $28, $00, $29, $2A, $2B, $2C, $2D, $2E */;
     /* data: db $2F, $0F, $00 */;
   Data_017_705D_end:;
+    Data_017_70A0(); return;
 }
 
 void Data_017_70A0(void) {
     /* data: db $98, $A2, $4E, $01, $98, $E2, $4E, $01, $99, $22, $4B, $01, $99, $62, $4B, $01 */;
     /* data: db $00 */;
   Data_017_70A0_end:;
+    CreditsTheEnd5Handler(); return;
 }
 
 void CreditsTheEnd5Handler(void) {
@@ -5374,6 +5414,7 @@ void func_017_7171(void) {
     RenderActiveEntitySpritesRectUsingAllOAM();
     gb.regs.a = 0x0A;
     func_015_7964_trampoline();
+    jr_017_71AC(); return;
 }
 
 void jr_017_71AC(void) {
@@ -5525,6 +5566,7 @@ void func_017_7398(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
   func_017_7398_jr_73AC:;
     gb_write(0xD20F, gb.regs.a);
+    jr_017_73AF(); return;
 }
 
 void jr_017_73AF(void) {
@@ -5686,6 +5728,7 @@ void func_017_7545(void) {
     gb.regs.hl = 0xC3B0;
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.bc);
     gb_write(gb.regs.hl, alu_inc8(gb_read(gb.regs.hl)));
+    ret_017_7571(); return;
 }
 
 void ret_017_7571(void) {
@@ -5728,6 +5771,7 @@ void func_017_75AA(void) {
     IncrementEntityState();
     gb.regs.a = 0x17;
     gb_write(0xFFF3, gb.regs.a);
+    ret_017_75E0(); return;
 }
 
 void ret_017_75E0(void) {
@@ -5791,6 +5835,7 @@ void func_017_76DE(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
   func_017_76DE_jr_76FA:;
     gb_write(0xD20F, gb.regs.a);
+    jr_017_76FD(); return;
 }
 
 void jr_017_76FD(void) {
@@ -5875,6 +5920,7 @@ void func_017_7772(void) {
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
   func_017_7772_jr_7783:;
     gb_write(gb.regs.hl, gb.regs.a);
+    jr_017_7784(); return;
 }
 
 void jr_017_7784(void) {
@@ -6022,6 +6068,7 @@ void Unknow001SpriteVariants(void) {
   Unknow001SpriteVariants_variant2:;
     /* data: db $4E, OAM_GBC_PAL_4 */;
     /* data: db $7E, OAM_GBC_PAL_4 */;
+    func_017_7885(); return;
 }
 
 void func_017_7885(void) {
@@ -6034,6 +6081,7 @@ void func_017_7885(void) {
     alu_cp8(gb.regs.a, 2);
     if (GET_FLAG_Z()) { jr_017_78C4(); return; };
     gb.regs.a = gb_read(0xD20A);
+    jr_017_7898(); return;
 }
 
 void jr_017_7898(void) {
@@ -6043,6 +6091,7 @@ void jr_017_7898(void) {
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.a = alu_sub8(gb.regs.a, 4);
+    jr_017_78A1(); return;
 }
 
 void jr_017_78A1(void) {
@@ -6120,6 +6169,7 @@ void Unknown002SpriteVariants(void) {
   Unknown002SpriteVariants_variant5:;
     /* data: db $7C, OAMF_PAL0 */;
     /* data: db $7C, OAMF_PAL0 | OAMF_XFLIP */;
+    Data_017_7907(); return;
 }
 
 void Data_017_7907(void) {
@@ -6138,6 +6188,7 @@ void func_017_790D(void) {
   func_017_790D_jr_791D:;
     gb.regs.de = 0x709B;
     RenderActiveEntitySpritesPair();
+    jr_017_7923(); return;
 }
 
 void jr_017_7923(void) {
@@ -6160,6 +6211,7 @@ void jr_017_7923(void) {
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.hl = gb_pop16();
     gb_write(gb.regs.hl, gb.regs.a);
+    jr_017_793E(); return;
 }
 
 void jr_017_793E(void) {
@@ -6407,6 +6459,7 @@ void func_017_7AC1(void) {
   func_017_7AC1_jr_7AEB:;
     gb.regs.a = 0xFF;
     gb_write(0xFF9B, gb.regs.a);
+    func_017_7AEF(); return;
 }
 
 void func_017_7AEF(void) {
@@ -6417,6 +6470,7 @@ void func_017_7AEF(void) {
     gb.regs.a = alu_and8(gb.regs.a, 1);
     gb.regs.a = alu_add8(gb.regs.a, 0);
     gb_write(0xFF9D, gb.regs.a);
+    func_017_7AFA(); return;
 }
 
 void func_017_7AFA(void) {
@@ -6479,6 +6533,7 @@ void func_017_7B43(void) {
     alu_cp8(gb.regs.a, 5);
     if (!GET_FLAG_Z()) { func_017_7B5B(); return; };
     IncrementEntityState();
+    func_017_7B5B(); return;
 }
 
 void func_017_7B5B(void) {
@@ -6522,6 +6577,7 @@ void func_017_7B99(void) {
     gb.regs.a = gb_read(0xFFE7);
     gb.regs.a = alu_and8(gb.regs.a, 1);
     gb.regs.c = gb.regs.a;
+    jr_017_7BA2(); return;
 }
 
 void jr_017_7BA2(void) {
@@ -6641,6 +6697,7 @@ void func_017_7C7B(void) {
     gb.regs.a = 0x19;
     gb_write(0xC5AB, gb.regs.a);
     IncrementEntityState();
+    func_017_7C8D(); return;
 }
 
 void func_017_7C8D(void) {
@@ -6683,6 +6740,7 @@ void func_017_7CB7(void) {
 
 void jr_017_7CBF(void) {
     IncrementCreditsSubscene();
+    label_017_7CC2(); return;
 }
 
 void label_017_7CC2(void) {
@@ -6716,6 +6774,7 @@ void jr_017_7CC8(void) {
     if (!GET_FLAG_C()) { ret_017_7CEF(); return; };
     gb.regs.a = 0xFF;
     SetEntitySpriteVariant();
+    ret_017_7CEF(); return;
 }
 
 void ret_017_7CEF(void) {
@@ -6908,6 +6967,7 @@ void DrawDialogChoiceMarker(void) {
 
 void UpdateEntityPosWithSpeed_17(void) {
     AddEntitySpeedToPos_17();
+    UpdateEntityYPosWithSpeed_17(); return;
 }
 
 void UpdateEntityYPosWithSpeed_17(void) {
@@ -6988,6 +7048,7 @@ void CreditsBlendPalettes(void) {
     gb_write(0xFFDA, gb.regs.a);
     func_017_7EA4();
     gb.regs.a = 1;
+    jr_017_7EA0(); return;
 }
 
 void jr_017_7EA0(void) {
@@ -7013,6 +7074,7 @@ void func_017_7F30(void) {
     gb.regs.d = 0x40;
     func_017_7F57();
     gb.regs.a = 1;
+    jr_017_7F52(); return;
 }
 
 void jr_017_7F52(void) {

@@ -3277,10 +3277,12 @@ void IndoorsADFEntities(void) {
 
 void IndoorsAE0Entities(void) {
     IndoorsAE1Entities();
+    IndoorsAE1Entities(); return;
 }
 
 void IndoorsAE1Entities(void) {
     IndoorsAE2Entities();
+    IndoorsAE2Entities(); return;
 }
 
 void IndoorsAE2Entities(void) {
@@ -6632,38 +6634,47 @@ void ColorDungeon15Entities(void) {
 
 void ColorDungeon16Entities(void) {
     ColorDungeon17Entities();
+    ColorDungeon17Entities(); return;
 }
 
 void ColorDungeon17Entities(void) {
     ColorDungeon18Entities();
+    ColorDungeon18Entities(); return;
 }
 
 void ColorDungeon18Entities(void) {
     ColorDungeon19Entities();
+    ColorDungeon19Entities(); return;
 }
 
 void ColorDungeon19Entities(void) {
     ColorDungeon1AEntities();
+    ColorDungeon1AEntities(); return;
 }
 
 void ColorDungeon1AEntities(void) {
     ColorDungeon1BEntities();
+    ColorDungeon1BEntities(); return;
 }
 
 void ColorDungeon1BEntities(void) {
     ColorDungeon1CEntities();
+    ColorDungeon1CEntities(); return;
 }
 
 void ColorDungeon1CEntities(void) {
     ColorDungeon1DEntities();
+    ColorDungeon1DEntities(); return;
 }
 
 void ColorDungeon1DEntities(void) {
     ColorDungeon1EEntities();
+    ColorDungeon1EEntities(); return;
 }
 
 void ColorDungeon1EEntities(void) {
     ColorDungeon1FEntities();
+    ColorDungeon1FEntities(); return;
 }
 
 void ColorDungeon1FEntities(void) {
@@ -6825,6 +6836,7 @@ void Dialog0B7(void) {
 
 void Dialog0B8(void) {
     Dialog0B9();
+    Dialog0B9(); return;
 }
 
 void Dialog0B9(void) {
@@ -6849,6 +6861,7 @@ void Dialog0BA(void) {
 
 void Dialog0BB(void) {
     Dialog0BC();
+    Dialog0BC(); return;
 }
 
 void Dialog0BC(void) {
@@ -6876,10 +6889,12 @@ void Dialog0BD(void) {
 
 void Dialog0BE(void) {
     Dialog0BF();
+    Dialog0BF(); return;
 }
 
 void Dialog0BF(void) {
     Dialog0C0();
+    Dialog0C0(); return;
 }
 
 void Dialog0C0(void) {
@@ -7133,6 +7148,7 @@ void Dialog0CD(void) {
 
 void Dialog0CE(void) {
     Dialog0CF();
+    Dialog0CF(); return;
 }
 
 void Dialog0CF(void) {
@@ -7211,6 +7227,7 @@ void Dialog0D0(void) {
 
 void Dialog0D1(void) {
     Dialog0D2();
+    Dialog0D2(); return;
 }
 
 void Dialog0D2(void) {
@@ -7222,10 +7239,12 @@ void Dialog0D2(void) {
 
 void Dialog0D3(void) {
     Dialog0D4();
+    Dialog0D4(); return;
 }
 
 void Dialog0D4(void) {
     Dialog0D5();
+    Dialog0D5(); return;
 }
 
 void Dialog0D5(void) {
@@ -7234,6 +7253,7 @@ void Dialog0D5(void) {
 
 void Dialog0D6(void) {
     Dialog0D7();
+    Dialog0D7(); return;
 }
 
 void Dialog0D7(void) {
@@ -7438,10 +7458,12 @@ void Dialog0E9(void) {
 
 void Dialog0EA(void) {
     Dialog0EB();
+    Dialog0EB(); return;
 }
 
 void Dialog0EB(void) {
     Dialog0EC();
+    Dialog0EC(); return;
 }
 
 void Dialog0EC(void) {

@@ -639,6 +639,7 @@ void PlayMusicTrack_1B_EntryPoint(void) {
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     if (!GET_FLAG_Z()) { BeginMusicTrack_1B(); return; };
     func_01B_4037();
+    jr_01B_4028(); return;
 }
 
 void jr_01B_4028(void) {
@@ -696,6 +697,7 @@ void Data_01B_4065(void) {
 
 void label_01B_406A(void) {
     jr_01B_406A();
+    jr_01B_406A(); return;
 }
 
 void jr_01B_406A(void) {
@@ -810,6 +812,7 @@ void StopNoiseChannel_1B(void) {
 
 void func_01B_410F(void) {
     jr_01B_410F();
+    jr_01B_410F(); return;
 }
 
 void jr_01B_410F(void) {
@@ -1173,6 +1176,7 @@ void IncChannelDefinitionPointer(void) {
     gb.regs.a = gb_read(gb.regs.hl--);
     gb.regs.d = gb.regs.a;
     gb.regs.de++;
+    saveSoundPointer(); return;
 }
 
 void saveSoundPointer(void) {
@@ -1240,6 +1244,7 @@ void label_01B_442A(void) {
     gb_push16(gb.regs.hl);
     func_01B_4787();
     gb.regs.hl = gb_pop16();
+    UpdateNextMusicChannelAfterHlDecrement(); return;
 }
 
 void UpdateNextMusicChannelAfterHlDecrement(void) {
@@ -1309,6 +1314,7 @@ void soundOpcode9F(void) {
     IncChannelDefinitionPointer();
     ReadSoundPointerByte();
     gb_write(0xD300, gb.regs.a);
+    IncChannelDefinitonPointerAndParseNext(); return;
 }
 
 void IncChannelDefinitonPointerAndParseNext(void) {
@@ -1388,6 +1394,7 @@ void UpdateAllMusicChannels_1B(void) {
     gb.regs.a = 1;
     gb_write(0xD350, gb.regs.a);
     gb.regs.hl = 0xD310;
+    UpdateMusicChannel_1B(); return;
 }
 
 void UpdateMusicChannel_1B(void) {
@@ -1402,6 +1409,7 @@ void UpdateMusicChannel_1B(void) {
 void ParseSoundOpcodeAfterHlIncrement(void) {
     gb.regs.l = alu_inc8(gb.regs.l);
     gb.regs.l = alu_inc8(gb.regs.l);
+    ParseSoundOpcode(); return;
 }
 
 void ParseSoundOpcode(void) {
@@ -1492,6 +1500,7 @@ void ParseSoundOpcode(void) {
     gb_write(gb.regs.hl++, gb.regs.a);
     IncChannelDefinitionPointer();
     ReadSoundPointerByte();
+    HandleNote(); return;
 }
 
 void HandleNote(void) {
@@ -1680,6 +1689,7 @@ void WriteChannelRegisters(void) {
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.a = alu_or8(gb.regs.a, 0x80);
     gb_write(0xFF00 + gb.regs.c, gb.regs.a);
+    label_01B_46D9(); return;
 }
 
 void label_01B_46D9(void) {
@@ -1688,6 +1698,7 @@ void label_01B_46D9(void) {
     gb.regs.a = gb_read(gb.regs.hl--);
     gb_write(gb.regs.hl--, gb.regs.a);
     gb.regs.l = alu_dec8(gb.regs.l);
+    UpdateNextMusicChannel_1B(); return;
 }
 
 void UpdateNextMusicChannel_1B(void) {
@@ -1739,6 +1750,7 @@ void func_01B_46FE(void) {
 
 void label_01B_4720(void) {
     jr_01B_4720();
+    jr_01B_4720(); return;
 }
 
 void jr_01B_4720(void) {
@@ -1913,10 +1925,12 @@ void label_01B_4810(void) {
     if (!GET_FLAG_Z()) { label_01B_46FC(); return; };
     gb.regs.a = 2;
     gb_write(0xD39E, gb.regs.a);
+    label_01B_483D(); return;
 }
 
 void label_01B_483D(void) {
     jr_01B_483D();
+    jr_01B_483D(); return;
 }
 
 void jr_01B_483D(void) {
@@ -1959,6 +1973,7 @@ void label_01B_485E(void) {
     gb.regs.hl = gb_pop16();
     gb_push16(gb.regs.hl);
     func_01B_4879();
+    jr_01B_486A(); return;
 }
 
 void jr_01B_486A(void) {
@@ -2244,34 +2259,42 @@ void HardcodedData_1b_4b13(void) {
 
 void MusicMabeVillage_Channel3_rest_1C0(void) {
     MusicInsideBuilding_Channel3_rest_1C0();
+    MusicInsideBuilding_Channel3_rest_1C0(); return;
 }
 
 void MusicInsideBuilding_Channel3_rest_1C0(void) {
     MusicMrWriteHouse_Channel3_rest_1C0();
+    MusicMrWriteHouse_Channel3_rest_1C0(); return;
 }
 
 void MusicMrWriteHouse_Channel3_rest_1C0(void) {
     MusicUlrira_Channel3_rest_1C0();
+    MusicUlrira_Channel3_rest_1C0(); return;
 }
 
 void MusicUlrira_Channel3_rest_1C0(void) {
     MusicTarinBees_Channel1_rest_1C0();
+    MusicTarinBees_Channel1_rest_1C0(); return;
 }
 
 void MusicTarinBees_Channel1_rest_1C0(void) {
     MusicMonkeysBuildingBridge_Channel1_rest_1C0();
+    MusicMonkeysBuildingBridge_Channel1_rest_1C0(); return;
 }
 
 void MusicMonkeysBuildingBridge_Channel1_rest_1C0(void) {
     MusicTotakaUnused_Channel1_rest_1C0();
+    MusicTotakaUnused_Channel1_rest_1C0(); return;
 }
 
 void MusicTotakaUnused_Channel1_rest_1C0(void) {
     MusicTotakaUnused_Channel2_rest_1C0();
+    MusicTotakaUnused_Channel2_rest_1C0(); return;
 }
 
 void MusicTotakaUnused_Channel2_rest_1C0(void) {
     MusicFishermanUnderBridge_Channel1_rest_1C0();
+    MusicFishermanUnderBridge_Channel1_rest_1C0(); return;
 }
 
 void MusicFishermanUnderBridge_Channel1_rest_1C0(void) {
@@ -3008,6 +3031,7 @@ void label_01B_4E2C(void) {
     gb_write(0xFF21, gb.regs.a);
     gb.regs.a = 0x80;
     gb_write(0xFF23, gb.regs.a);
+    label_01B_4E4A(); return;
 }
 
 void label_01B_4E4A(void) {
@@ -3017,6 +3041,7 @@ void label_01B_4E4A(void) {
     gb_write(0xD355, gb.regs.a);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(0xD369, gb.regs.a);
+    StopSquareAndWaveChannels_1B(); return;
 }
 
 void StopSquareAndWaveChannels_1B(void) {
@@ -10915,62 +10940,77 @@ void ChannelDefinition_1b_70a3(void) {
 
 void MusicColorDungeon(void) {
     Music62();
+    Music62(); return;
 }
 
 void Music62(void) {
     Music63();
+    Music63(); return;
 }
 
 void Music63(void) {
     Music64();
+    Music64(); return;
 }
 
 void Music64(void) {
     Music65();
+    Music65(); return;
 }
 
 void Music65(void) {
     Music66();
+    Music66(); return;
 }
 
 void Music66(void) {
     Music67();
+    Music67(); return;
 }
 
 void Music67(void) {
     Music68();
+    Music68(); return;
 }
 
 void Music68(void) {
     Music69();
+    Music69(); return;
 }
 
 void Music69(void) {
     Music6a();
+    Music6a(); return;
 }
 
 void Music6a(void) {
     Music6b();
+    Music6b(); return;
 }
 
 void Music6b(void) {
     Music6c();
+    Music6c(); return;
 }
 
 void Music6c(void) {
     Music6d();
+    Music6d(); return;
 }
 
 void Music6d(void) {
     Music6e();
+    Music6e(); return;
 }
 
 void Music6e(void) {
     Music6f();
+    Music6f(); return;
 }
 
 void Music6f(void) {
     Music70();
+    Music70(); return;
 }
 
 void Music70(void) {

@@ -917,6 +917,7 @@ void CodepointToTileMap(void) {
 
 void CodepointToDiacritic(void) {
     DialogBankTable();
+    DialogBankTable(); return;
 }
 
 void DialogBankTable(void) {
@@ -1654,6 +1655,7 @@ void DialogOpenAnimationEnd(void) {
     alu_bit(7, gb.regs.c);
     if (GET_FLAG_Z()) { func_01C_4A3D(); return; };
     gb.regs.a = alu_add8(gb.regs.a, 5);
+    func_01C_4A3D(); return;
 }
 
 void func_01C_4A3D(void) {
@@ -1684,6 +1686,7 @@ void func_01C_4A3D(void) {
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     if (GET_FLAG_Z()) { func_01C_4A6C(); return; };
     func_01C_4A76();
+    func_01C_4A6C(); return;
 }
 
 void func_01C_4A6C(void) {
@@ -1738,6 +1741,7 @@ void DialogRestoreBGMapLocationTable(void) {
     /* data: db HIGH(vBGMap0 + $01A1) */;
     /* data: db HIGH(vBGMap0 + $0161) */;
     /* data: db HIGH(vBGMap0 + $0181) */;
+    DialogSavedBGMapOffsetTable(); return;
 }
 
 void DialogSavedBGMapOffsetTable(void) {
@@ -2641,6 +2645,7 @@ void Dialog157(void) {
 
 void Dialog158(void) {
     Dialog159();
+    Dialog159(); return;
 }
 
 void Dialog159(void) {
