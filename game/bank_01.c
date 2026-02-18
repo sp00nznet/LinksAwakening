@@ -1358,86 +1358,92 @@ void TransitionToFileMenu(void) {
 }
 
 void label_001_4555(void) {
+    /* SaveGame1: Name (5 bytes at $A454-$A458) */
     EnableSRAM();
-    gb.regs.a = gb_read(0x4447);
+    gb.regs.a = gb_read(0xA454);
     gb_write(0xDC28, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4448);
+    gb.regs.a = gb_read(0xA455);
     gb_write(0xDC29, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4449);
+    gb.regs.a = gb_read(0xA456);
     gb_write(0xDC2A, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444A);
+    gb.regs.a = gb_read(0xA457);
     gb_write(0xDC2B, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444B);
+    gb.regs.a = gb_read(0xA458);
     gb_write(0xDC2C, gb.regs.a);
+    /* SaveGame1: Health, MaxHearts, DeathCount */
     EnableSRAM();
-    gb.regs.a = gb_read(0x444E);
+    gb.regs.a = gb_read(0xA45F);
     gb_write(0xDCAE, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444F);
+    gb.regs.a = gb_read(0xA460);
     gb_write(0xDCB1, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444B);
+    gb.regs.a = gb_read(0xA45C);
     gb_write(0xDCA8, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444C);
+    gb.regs.a = gb_read(0xA45D);
     gb_write(0xDCA9, gb.regs.a);
+    /* SaveGame2: Name (5 bytes at $A801-$A805) */
     EnableSRAM();
-    gb.regs.a = gb_read(0x444C);
+    gb.regs.a = gb_read(0xA801);
     gb_write(0xDC2D, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444D);
+    gb.regs.a = gb_read(0xA802);
     gb_write(0xDC2E, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444E);
+    gb.regs.a = gb_read(0xA803);
     gb_write(0xDC2F, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x444F);
+    gb.regs.a = gb_read(0xA804);
     gb_write(0xDC30, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4450);
+    gb.regs.a = gb_read(0xA805);
     gb_write(0xDC31, gb.regs.a);
+    /* SaveGame2: Health, MaxHearts, DeathCount */
     EnableSRAM();
-    gb.regs.a = gb_read(0x4453);
+    gb.regs.a = gb_read(0xA80C);
     gb_write(0xDCAF, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4454);
+    gb.regs.a = gb_read(0xA80D);
     gb_write(0xDCB2, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4450);
+    gb.regs.a = gb_read(0xA809);
     gb_write(0xDCAA, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4451);
+    gb.regs.a = gb_read(0xA80A);
     gb_write(0xDCAB, gb.regs.a);
+    /* SaveGame3: Name (5 bytes at $ABAE-$ABB2) */
     EnableSRAM();
-    gb.regs.a = gb_read(0x4451);
+    gb.regs.a = gb_read(0xABAE);
     gb_write(0xDC32, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4452);
+    gb.regs.a = gb_read(0xABAF);
     gb_write(0xDC33, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4453);
+    gb.regs.a = gb_read(0xABB0);
     gb_write(0xDC34, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4454);
+    gb.regs.a = gb_read(0xABB1);
     gb_write(0xDC35, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4455);
+    gb.regs.a = gb_read(0xABB2);
     gb_write(0xDC36, gb.regs.a);
+    /* SaveGame3: Health, MaxHearts, DeathCount */
     EnableSRAM();
-    gb.regs.a = gb_read(0x4458);
+    gb.regs.a = gb_read(0xABB9);
     gb_write(0xDCB0, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4459);
+    gb.regs.a = gb_read(0xABBA);
     gb_write(0xDCB3, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4455);
+    gb.regs.a = gb_read(0xABB6);
     gb_write(0xDCAC, gb.regs.a);
     EnableSRAM();
-    gb.regs.a = gb_read(0x4456);
+    gb.regs.a = gb_read(0xABB7);
     gb_write(0xDCAD, gb.regs.a);
     gb.regs.a = 2;
     gb_write(0xDC3D, gb.regs.a);
@@ -1494,20 +1500,20 @@ void DebugSaveFileData(void) {
 }
 
 void InitSaveFiles(void) {
-    gb.regs.de = 0;
+    gb.regs.de = 0;          /* SaveGame1 - SaveGame1 = 0 */
     func_001_4794();
-    gb.regs.de = 5;
+    gb.regs.de = 0x03AD;     /* SaveGame2 - SaveGame1 = $03AD */
     func_001_4794();
-    gb.regs.de = 0x0A;
+    gb.regs.de = 0x075A;     /* SaveGame3 - SaveGame1 = $075A */
     func_001_4794();
     gb.regs.a = gb_read(3);
     gb.regs.a = alu_and8(gb.regs.a, gb.regs.a);
     if (GET_FLAG_Z()) goto InitSaveFiles_return;
     gb.regs.e = 0;
     gb.regs.d = 0;
-    gb.regs.bc = (0x4101 + (wInventoryItems_BButtonSlot - 0xD8B5));
+    gb.regs.bc = 0xA405; /* SaveGame1.main + wInventoryItems.BButtonSlot - wOverworldRoomStatus */
   InitSaveFiles_loop:;
-    gb.regs.hl = 0x453A;
+    gb.regs.hl = 0x4667; /* DebugSaveFileData */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl++);
     gb_write(gb.regs.bc, gb.regs.a);
@@ -1599,7 +1605,7 @@ void InitSaveFiles(void) {
 void func_001_4794(void) {
     gb.regs.c = 1;
     gb.regs.b = 5;
-    gb.regs.hl = 0x4100;
+    gb.regs.hl = 0xA100; /* SaveGame1 ($A100) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
   func_001_4794_loop_479C:;
     EnableSRAM();
@@ -1614,9 +1620,9 @@ void func_001_4794(void) {
   func_001_4794_jr_47AA:;
     /* TODO: :  */;
     gb_push16(gb.regs.de);
-    gb.regs.hl = 0x4101;
+    gb.regs.hl = 0xA105; /* SaveGame1.main ($A105) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
-    gb.regs.de = 4;
+    gb.regs.de = 0x03A8; /* SaveGame2 - SaveGame1.main */
   func_001_4794_loop_47B2:;
     EnableSRAM();
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
@@ -1626,7 +1632,7 @@ void func_001_4794(void) {
     gb.regs.a = alu_or8(gb.regs.a, gb.regs.d);
     if (!GET_FLAG_Z()) goto func_001_4794_loop_47B2;
     gb.regs.de = gb_pop16();
-    gb.regs.hl = 0x4100;
+    gb.regs.hl = 0xA100; /* SaveGame1 ($A100) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = 1;
   func_001_4794_loop_47C3:;
@@ -2137,7 +2143,7 @@ void WriteByteToSRAM(void) {
 }
 
 void label_4A47(void) {
-    gb.regs.bc = 0x453A;
+    gb.regs.bc = 0x4667; /* DebugSaveFileData */
     gb.regs.e = DEBUG_SAVE_FILE_SIZE;
     gb_push16(gb.regs.hl);
   label_4A47_loop_4A4D:;
@@ -2799,12 +2805,12 @@ void FileDeletionState11Handler(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x48AC;
+    gb.regs.hl = 0x49F8; /* SaveGameTable */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl++);
     gb.regs.h = gb_read(gb.regs.hl);
     gb.regs.l = gb.regs.a;
-    gb.regs.de = 4;
+    gb.regs.de = 0x03A8; /* SaveGame1.end - SaveGame1.main */
   FileDeletionState11Handler_loop_4E91:;
     /* TODO: :  */;
     EnableSRAM();
@@ -3440,7 +3446,7 @@ void FileCopyStateAHandler(void) {
     gb.regs.hl++;
     gb.regs.h = gb_read(gb.regs.hl);
     gb.regs.l = gb.regs.a;
-    gb.regs.de = 5;
+    gb.regs.de = 0x03AD; /* SaveGame2 - SaveGame1 */
   FileCopyStateAHandler_loop_5224:;
     EnableSRAM();
     gb.regs.a = gb_read(gb.regs.bc);
@@ -3541,7 +3547,7 @@ void LoadSavedFile(void) {
     gb.regs.a = gb_read(0xDC03);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x517B;
+    gb.regs.hl = 0x5295; /* MaxHeartsToStartingHealthTable */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC02, gb.regs.a);
@@ -3557,7 +3563,7 @@ void LoadSavedFile(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x48AC;
+    gb.regs.hl = 0x49F8; /* SaveGameTable */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.c = gb_read(gb.regs.hl);
     gb.regs.hl++;
@@ -5007,7 +5013,7 @@ void SaveGameToFile(void) {
     gb.regs.a = gb_read(0xDC03);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x517B;
+    gb.regs.hl = 0x5295; /* MaxHeartsToStartingHealthTable */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC02, gb.regs.a);
@@ -5017,7 +5023,7 @@ void SaveGameToFile(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x48AC;
+    gb.regs.hl = 0x49F8; /* SaveGameTable */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl++);
     gb.regs.h = gb_read(gb.regs.hl);
