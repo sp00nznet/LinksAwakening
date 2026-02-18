@@ -566,9 +566,10 @@ static inline void func_038_785A(void) { }
 #undef hDMARoutine
 #endif
 static inline void hDMARoutine(void) {
-    /* OAM DMA transfer - handled by our PPU implementation */
-    /* In the original GB, this copies OAM data from wOAMBuffer to OAM */
-    /* Our gb_write handles OAM DMA when writing to $FF46 */
+    /* OAM DMA: copy 160 bytes from wOAMBuffer ($C000) to OAM.
+       The original HRAM routine writes $C0 to $FF46.
+       We do the copy directly for efficiency. */
+    gb_write(0xFF46, 0xC0);
 }
 
 #endif /* FIXUPS_H */

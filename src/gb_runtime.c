@@ -105,6 +105,10 @@ uint8_t gb_read(uint16_t addr) {
         if (reg == 0x70) {
             return gb.wram_bank;  /* SVBK */
         }
+        if (reg == 0x68) return gb.bcps | 0x40;  /* BCPS */
+        if (reg == 0x69) return gb.bg_palette_data[gb.bcps & 0x3F];  /* BCPD */
+        if (reg == 0x6A) return gb.ocps | 0x40;  /* OCPS */
+        if (reg == 0x6B) return gb.obj_palette_data[gb.ocps & 0x3F];  /* OCPD */
         return gb.io[reg];
     } else if (addr < 0xFFFF) {
         /* HRAM */
@@ -141,6 +145,8 @@ void gb_write(uint16_t addr, uint8_t val) {
     } else if (addr < 0xA000) {
         /* VRAM (GBC: banked via FF4F) */
         gb.vram[(gb.vram_bank * 0x2000) + (addr - 0x8000)] = val;
+        gb.vram_write_count++;
+        gb.vram_last_write_addr = addr;
         return;
     } else if (addr < 0xC000) {
         /* SRAM (MBC5: banked) */
@@ -196,6 +202,20 @@ void gb_write(uint16_t addr, uint8_t val) {
                 case 2: gb.timer_freq = 64;   break;
                 case 3: gb.timer_freq = 256;  break;
             }
+        } else if (reg == 0x68) {
+            /* FF68: BCPS - BG palette specification */
+            gb.bcps = val;
+        } else if (reg == 0x69) {
+            /* FF69: BCPD - BG palette data (auto-increment) */
+            gb.bg_palette_data[gb.bcps & 0x3F] = val;
+            if (gb.bcps & 0x80) gb.bcps = 0x80 | ((gb.bcps + 1) & 0x3F);
+        } else if (reg == 0x6A) {
+            /* FF6A: OCPS - OBJ palette specification */
+            gb.ocps = val;
+        } else if (reg == 0x6B) {
+            /* FF6B: OCPD - OBJ palette data (auto-increment) */
+            gb.obj_palette_data[gb.ocps & 0x3F] = val;
+            if (gb.ocps & 0x80) gb.ocps = 0x80 | ((gb.ocps + 1) & 0x3F);
         } else if (reg == 0x4F) {
             /* FF4F: VBK - VRAM bank select (GBC) */
             gb.vram_bank = val & 1;
@@ -252,20 +272,45 @@ uint16_t gb_pop16(void) {
 
 void gb_halt(void) {
     /* In static recompilation, halt means "end of frame" */
-    /* Render all scanlines and mark frame ready */
-    ppu_render_frame();
-    gb.frame_ready = true;
     gb.frame_count++;
 
     /* Handle timer ticks for one frame (~70224 T-cycles) */
     gb_timer_tick(70224);
 
-    /* Call the game's VBlank interrupt handler.
-       This runs ExecuteDrawCommands, OAM DMA, and sets the $FFD1 flag
-       that the game polls for. On a real GB, this fires via the
-       interrupt vector at $0040. */
+    /* Call the game's VBlank interrupt handler FIRST.
+       This runs ExecuteDrawCommands, OAM DMA, palette updates, etc.
+       On a real GB: game code → VBlank → PPU renders next frame.
+       We must run VBlank before rendering so OAM/tiles are current. */
     if (gb.regs.ime || gb.initialized) {
         InterruptVBlank();
+    }
+
+    /* Now render the frame with up-to-date VRAM/OAM/palettes */
+    ppu_render_frame();
+    gb.frame_ready = true;
+
+    /* Debug: dump state */
+    if (gb.frame_count <= 10 || gb.frame_count % 100 == 0 || gb.frame_count == 30) {
+        FILE *dbg = fopen("ppu_debug.log", "a");
+        if (dbg) {
+            uint8_t c202 = gb.wram[0xC202 - 0xC000];
+            uint8_t dc3e = gb.wram[0xDC3E - 0xC000];
+            uint8_t ffe7 = gb.hram[0xFFE7 - 0xFF80];
+            /* Count non-zero OAM entries */
+            int oam_count = 0;
+            for (int i = 0; i < 40; i++) {
+                if (gb.oam[i*4] != 0 || gb.oam[i*4+1] != 0) oam_count++;
+            }
+            fprintf(dbg, "F%u: LCDC=$%02X BGP=$%02X OBP0=$%02X OBP1=$%02X SCX=$%02X "
+                         "DC3E=$%02X C202=$%02X OAM=%d vbank=%d "
+                         "OAM[0]=%02X,%02X,%02X,%02X OAM[1]=%02X,%02X,%02X,%02X\n",
+                gb.frame_count,
+                gb.io[0x40], gb.io[0x47], gb.io[0x48], gb.io[0x49], gb.io[0x43],
+                dc3e, c202, oam_count, gb.vram_bank,
+                gb.oam[0], gb.oam[1], gb.oam[2], gb.oam[3],
+                gb.oam[4], gb.oam[5], gb.oam[6], gb.oam[7]);
+            fclose(dbg);
+        }
     }
 
     /* longjmp back to main loop to yield the frame */

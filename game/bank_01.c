@@ -7685,7 +7685,7 @@ void RenderIntroFrame(void) {
     gb.regs.a = alu_and8(gb.regs.a, 3);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x6B7E;
+    gb.regs.hl = 0x6EDC; /* IntroSeaPaletteTable - DX V1.2 address */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb_write(0xDC3F, gb.regs.a);

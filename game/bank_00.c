@@ -785,7 +785,11 @@ void RenderLoop(void) {
     alu_cp8(gb.regs.a, 2);
     if (GET_FLAG_C()) goto RenderLoop_spritesEnd;
   RenderLoop_resetSpritesVisibility:;
-    gb_call_bank(1, HideAllSprites);
+    /* callsw: switch bank and call, do NOT restore bank.
+       Original asm leaves bank=1 so gameplay handler code
+       can read ROM data from its own bank. */
+    gb_switch_bank(1);
+    HideAllSprites();
   RenderLoop_spritesEnd:;
     ExecuteGameplayHandler();
     gb.regs.a = gb_read(0xFFFE);

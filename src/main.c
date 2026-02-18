@@ -249,6 +249,23 @@ int main(int argc, char *argv[]) {
                 }
             }
 
+            /* Debug: capture screenshots at key frames */
+            if (gb.frame_count == 30 || gb.frame_count == 200 ||
+                gb.frame_count == 500 || gb.frame_count == 700 ||
+                gb.frame_count == 900 || gb.frame_count == 950 ||
+                gb.frame_count == 1000 || gb.frame_count == 1100) {
+                SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
+                    ppu.framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
+                    32, SCREEN_WIDTH * 4,
+                    0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+                if (surf) {
+                    char fname[64];
+                    snprintf(fname, sizeof(fname), "frame%u.bmp", gb.frame_count);
+                    SDL_SaveBMP(surf, fname);
+                    SDL_FreeSurface(surf);
+                }
+            }
+
             /* Render frame to texture */
             SDL_UpdateTexture(texture, NULL, ppu.framebuffer,
                               SCREEN_WIDTH * sizeof(uint32_t));
