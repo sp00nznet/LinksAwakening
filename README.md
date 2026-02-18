@@ -1,12 +1,24 @@
 # Link's Awakening - Static Recompilation
 
-A static recompilation of *The Legend of Zelda: Link's Awakening* (Game Boy, US v1.2) into a native Windows application. The game logic runs as compiled C code — no emulator or ROM interpretation at runtime.
+A static recompilation of *The Legend of Zelda: Link's Awakening* (Game Boy) into a native Windows application. The game logic runs as compiled C code — no emulator or ROM interpretation at runtime. Supports both the original DMG ROM (US v1.2, 512KB) and the DX ROM (GBC, 1MB/64 banks).
+
+## Current Status
+
+**Work in progress.** The intro sequence renders and animates (sea scrolling, Nintendo logo). Title screen and gameplay are under active development. Key milestones completed:
+
+- 11,251 functions transpiled from SM83 assembly to C
+- 77 cross-function stubs bridging label references across functions
+- 1,575 assembly fallthroughs restored, 42 self-recursive loops fixed
+- 140 empty alias functions resolved, 253 jump table dispatches implemented
+- GBC DX ROM banking support (64 banks, VRAM/WRAM/SRAM bank switching)
+- GBC palette transfer (BCPS/BCPD, OCPS/OCPD) via CopyPalettesToVRAM
+- DMG palette rendering via scanline PPU
 
 ## How It Works
 
 The original Game Boy ROM is statically recompiled into C:
 
-1. **ROM Data Extraction** — The 512KB ROM is sliced into 32 × 16KB banks and embedded as C arrays
+1. **ROM Data Extraction** — The ROM is sliced into 16KB banks and embedded as C arrays (32 banks for DMG, 64 for DX)
 2. **Assembly Transpilation** — Using the [LADX Disassembly](https://github.com/zladx/LADX-Disassembly) as reference, each SM83 assembly instruction is translated to equivalent C code
 3. **GB Runtime** — A lightweight runtime provides CPU registers, memory mapping (WRAM/HRAM/VRAM/OAM), MBC5 bank switching, and I/O dispatch
 4. **Hardware Abstraction** — PPU (scanline renderer), APU (4-channel synthesis), and input are implemented on top of SDL2
@@ -44,7 +56,9 @@ pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-SDL2 ming
 
 ### Build Steps
 
-You need a copy of the original ROM: `Legend of Zelda, The - Link's Awakening (U) (V1.2) [!].gb` (512KB, CRC32: `3211B3A4`).
+You need a copy of one of the supported ROMs:
+- **DMG**: `Legend of Zelda, The - Link's Awakening (U) (V1.2) [!].gb` (512KB)
+- **DX**: `Legend of Zelda, The - Link's Awakening DX (U) (V1.0) [C][!].gbc` (1MB)
 
 ```bash
 # 1. Clone and enter the repo
@@ -98,10 +112,10 @@ Controls are configurable via the Config menu.
 ├── tools/
 │   ├── extract_rom.py       # ROM → C data arrays
 │   └── transpile.py         # RGBDS assembly → C transpiler
-├── game/                    # Generated (by tools)
-│   ├── bank_00.c..bank_1F.c # Transpiled game logic
-│   ├── cross_func_stubs.c   # Cross-function label stubs
-│   ├── fixups.h             # Compilation fixups
+├── game/                    # Generated (by tools) + manual fixes
+│   ├── bank_00.c..bank_1F.c # Transpiled game logic (32 banks, 11,251 functions)
+│   ├── cross_func_stubs.c   # Cross-function label stubs (77 stubs)
+│   ├── fixups.h             # Manual fixups for DX stubs, palette, ROM tables
 │   ├── rom_data.c/h         # Embedded ROM data
 │   └── game_labels.h        # Constants & declarations
 └── disasm/                  # LADX Disassembly (cloned)
@@ -109,12 +123,33 @@ Controls are configurable via the Config menu.
 
 ## Technical Details
 
-- **ROM**: 512KB, 32 banks, MBC5 mapper
+- **ROM**: DMG (512KB, 32 banks) or DX (1MB, 64 banks), MBC5 mapper
 - **CPU**: SM83 instructions transpiled to C function calls and inline helpers
 - **PPU**: Scanline-accurate renderer (background, window, sprites with priority)
 - **APU**: 2× pulse, 1× wave, 1× noise channels at 44.1kHz
 - **Display**: 160×144 scaled via SDL2 (configurable 2×–4×)
 - **Frame rate**: 59.7 FPS (original Game Boy timing)
+
+### Transpiler Fix Classes
+
+The assembly-to-C transpilation required systematic fixes for patterns that don't translate directly:
+
+| Fix Class | Count | Description |
+|-----------|-------|-------------|
+| Jump table dispatch | 253 | `jp hl` with data pointer tables → C switch statements |
+| Assembly fallthrough | 1,575 | Sequential function fallthrough → explicit tail calls |
+| Self-recursive loops | 42 | `jr`/`jp` backward branches → `goto` loops |
+| Empty alias functions | 140 | Same-address labels → forwarding calls |
+| Cross-function stubs | 77 | Local labels referenced from other functions → stub functions |
+| Cross-stub recursion | 2 | Mutual recursion between stub and parent → `goto` in parent |
+| Duplicate-body aliases | 6 | Redundant function copies → forwarding calls |
+
+### Known Limitations
+
+- PPU renders DMG palettes only (GBC color palettes written but not yet rendered)
+- Intro sea animation runs but may not yet transition to title screen
+- Gameplay not yet tested — entity systems, dialog, inventory may have issues
+- Some DX-only function stubs are no-ops and may need implementation
 
 ## Credits
 
