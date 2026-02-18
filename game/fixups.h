@@ -14,7 +14,34 @@ static inline void SuperGameBoyInit(void) { /* DMG: no SGB */ }
 
 /* GBC palette functions */
 static inline void ChangeBGColumnPalette(void) { /* GBC only */ }
-static inline void CopyPalettesToVRAM(void) { /* GBC only */ }
+static inline void CopyPalettesToVRAM(void) {
+    /* Bank $21 address $4000: copies BG/OBJ palette data from WRAM to hardware.
+       Reads wPaletteDataFlags ($DE79) to determine what to copy.
+       NOTE: Addresses are transpiled-ROM version (disasm+$A8 offset). */
+    uint8_t flags = gb_read(0xDE79);
+    if (flags == 0) return;
+
+    if (flags & 0x80) {
+        /* Partial copy mode. Simplified: do full copy. */
+        flags = (flags & 0x03) ? (flags & 0x03) : 0x03;
+    }
+
+    if (flags & 0x01) {
+        /* Copy 64 bytes from wBGPal1 ($DCB8) to BCPS/BCPD */
+        gb_write(0xFF68, 0x80); /* BCPS: index 0, auto-increment */
+        for (int i = 0; i < 64; i++) {
+            gb_write(0xFF69, gb_read(0xDCB8 + i)); /* BCPD */
+        }
+    }
+    if (flags & 0x02) {
+        /* Copy 64 bytes from wObjPal1 ($DCF8) to OCPS/OCPD */
+        gb_write(0xFF6A, 0x80); /* OCPS: index 0, auto-increment */
+        for (int i = 0; i < 64; i++) {
+            gb_write(0xFF6B, gb_read(0xDCF8 + i)); /* OCPD */
+        }
+    }
+    gb_write(0xDE79, 0); /* Clear flags */
+}
 static inline void CopyLinkTunicPalette(void) { /* GBC only */ }
 static inline void LoadBGMapAttributes(void) { /* GBC only */ }
 static inline void LoadPaletteForTilemap(void) { /* GBC only */ }
@@ -22,7 +49,14 @@ static inline void LoadRoomPalettes(void) { /* GBC only */ }
 static inline void LoadBGPalettes(void) { /* GBC only */ }
 static inline void ApplyFadeToWhite_GBC(void) { /* GBC only */ }
 static inline void FillBGMapAttributesWhite(void) { /* GBC only */ }
-static inline void UpdateIntroSeaBGPalettes(void) { /* GBC only */ }
+static inline void UpdateIntroSeaBGPalettes(void) {
+    /* Bank $20 address $6BA4: updates BG palette for intro sea sequence.
+       In DMG mode: just copy wBGPalette to BGP register.
+       In GBC mode: blend palettes from WRAM bank 2 → bank 0, set flags.
+       For now, use DMG fallback path (IgnorePaletteChange_DMG). */
+    uint8_t bgpal = gb_read(0xDC3F); /* wBGPalette */
+    gb_write(0xFF47, bgpal);          /* Write to BGP register */
+}
 static inline void MadBatterReplaceScenePalettes(void) { /* GBC only */ }
 static inline void cycleInstrumentItemColor(void) { /* GBC only */ }
 
@@ -90,57 +124,15 @@ static inline void GetTilesetHandlerAddress(void) {
     /* Now handled inline by _executeTilesetLoadHandler() dispatch */
 }
 static inline void GetBGCopyRequest(void) {
-    /* Reads wBGMapToLoad index and looks up draw command pointer from
-       TilemapsPointersTable (originally in bank $20). Sets DE = pointer. */
-    /* DMG ROM addresses (extracted from pointer table at bank 0:$0457) */
-    static const uint16_t TilemapsPointersTable[] = {
-        0x0000, /* 00: TILEMAP_NONE */
-        0x62A5, /* 01: CreditsIslandTilemap */
-        0x7313, /* 02: InventoryTilemap */
-        0x6F0F, /* 03: MenuFileSelectionTilemap */
-        0x6F01, /* 04: MenuFileSelectionCommandsTilemap */
-        0x701E, /* 05: MenuFileCreationTilemap */
-        0x7154, /* 06: MenuFileEraseTilemap */
-        0xD651, /* 07: wMinimapTilemap (WRAM) */
-        0x6EC2, /* 08: WorldMapTilemap */
-        0x7393, /* 09: EaglesTowerCloudsTilemap */
-        0x7559, /* 0A: GameOverTilemap */
-        0x74C0, /* 0B: InventoryDebugTilemap */
-        0x722B, /* 0C: MenuFileCopyTilemap */
-        0x7637, /* 0D: MenuFileSaveTilemap */
-        0x76B7, /* 0E: IntroSeaDMGTilemap */
-        0x7800, /* 0F: IntroLinkFaceTilemap */
-        0x7A0B, /* 10: IntroBeachTilemap */
-        0x7B8A, /* 11: TitleTilemap */
-        0x54AF, /* 12: PeachTilemap */
-        0x5670, /* 13: MarinBeachTilemap */
-        0x6E81, /* 14: MamuTilemap */
-        0x5310, /* 15: FaceShrineMuralTilemap */
-        0x6365, /* 16: CreditsStairsTilemap */
-        0x66CE, /* 17: CreditsLinkOnSeaLargeTilemap */
-        0x67A1, /* 18: CreditsSunAboveTilemap */
-        0x68E5, /* 19: CreditsLinkOnSeaCloseTilemap */
-        0x6A34, /* 1A: CreditsLinkSeatedOnLogTilemap */
-        0x6B20, /* 1B: CreditsLinkFaceCloseUpTilemap */
-        0x6BDD, /* 1C: CreditsRollTilemap */
-        0x6BDD, /* 1D: CreditsRollTilemap */
-        0x5A73, /* 1E: CreditsKidsTilemap */
-        0x5C29, /* 1F: CreditsMarinSingingTilemap */
-        0x5DC8, /* 20: CreditsMrsMeowMeowsHouseTilemap */
-        0x5F67, /* 21: CreditsTarinTilemap */
-        0x6106, /* 22: CreditsBeachTilemap */
-        0x580E, /* 23: SchulePaintingTilemap */
-        0x59AD, /* 24: EaglesTowerCollapseTilemap */
-        0xFEFA, /* 25: IntroSeaCGBTilemap (GBC only) */
-    };
+    /* Original: bank $20, address $4577.
+       Reads wBGMapToLoad index, looks up 16-bit pointer from
+       TilemapsPointersTable at $452B in bank $20, sets DE = pointer.
+       Pointers reference tilemap draw command data in bank $08 (BGTilemaps). */
     uint8_t idx = gb_read(0xD7B4); /* wBGMapToLoad */
-    if (idx < sizeof(TilemapsPointersTable)/sizeof(TilemapsPointersTable[0])) {
-        uint16_t ptr = TilemapsPointersTable[idx];
-        gb.regs.e = ptr & 0xFF;
-        gb.regs.d = (ptr >> 8) & 0xFF;
-    } else {
-        gb.regs.de = 0x0000;
-    }
+    /* Read pointer from ROM: TilemapsPointersTable is at $452B in current bank ($20) */
+    uint16_t table_addr = 0x452B + ((uint16_t)idx * 2);
+    gb.regs.e = gb_read(table_addr);
+    gb.regs.d = gb_read(table_addr + 1);
 }
 static inline void CheckOverworldObjectIgnoreList(void) { /* DX only */ }
 static inline void ExpandOverworldObjectMacro(void) { /* DX only */ }
@@ -172,7 +164,19 @@ static inline void func_020_563B(void) { }
 static inline void func_020_6352(void) { }
 static inline void func_020_6A30(void) { }
 static inline void func_020_6AC1(void) { }
-static inline void func_020_6BDC(void) { }
+static inline void func_020_6BDC(void) {
+    /* Bank $20 addr $6BDC: "ClearFileMenuBG" - fills BG+OBJ palette data with $FF (white).
+       Only runs in GBC mode. Sets wPaletteDataFlags to copy both.
+       NOTE: Addresses are transpiled-ROM version (disasm+$A8 offset). */
+    if (gb_read(0xFFFE) == 0) return; /* Not GBC */
+    /* Fill wBGPal1 ($DCB8, 64 bytes) and wObjPal1 ($DCF8, 64 bytes) with $FF */
+    for (int i = 0; i < 64; i++) {
+        gb_write(0xDCB8 + i, 0xFF);
+        gb_write(0xDCF8 + i, 0xFF);
+    }
+    gb_write(0xDE79, 0x03); /* wPaletteDataFlags: copy both BG and OBJ */
+    gb_write(0xDE7D, 0x01); /* wPaletteUnknownE */
+}
 static inline void func_020_6C4F(void) { }
 static inline void func_020_6C7A(void) { }
 static inline void func_020_6D0E(void) { }
