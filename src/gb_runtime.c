@@ -290,25 +290,21 @@ void gb_halt(void) {
     gb.frame_ready = true;
 
     /* Debug: dump state */
-    if (gb.frame_count <= 10 || gb.frame_count % 100 == 0 || gb.frame_count == 30) {
+    if (gb.frame_count <= 10 || gb.frame_count % 50 == 0 ||
+        (gb.frame_count >= 3250 && gb.frame_count <= 3500) ||
+        (gb.frame_count >= 3500 && gb.frame_count % 10 == 0)) {
         FILE *dbg = fopen("ppu_debug.log", "a");
         if (dbg) {
-            uint8_t c202 = gb.wram[0xC202 - 0xC000];
             uint8_t dc3e = gb.wram[0xDC3E - 0xC000];
-            uint8_t ffe7 = gb.hram[0xFFE7 - 0xFF80];
-            /* Count non-zero OAM entries */
-            int oam_count = 0;
-            for (int i = 0; i < 40; i++) {
-                if (gb.oam[i*4] != 0 || gb.oam[i*4+1] != 0) oam_count++;
-            }
-            fprintf(dbg, "F%u: LCDC=$%02X BGP=$%02X OBP0=$%02X OBP1=$%02X SCX=$%02X "
-                         "DC3E=$%02X C202=$%02X OAM=%d vbank=%d "
-                         "OAM[0]=%02X,%02X,%02X,%02X OAM[1]=%02X,%02X,%02X,%02X\n",
-                gb.frame_count,
-                gb.io[0x40], gb.io[0x47], gb.io[0x48], gb.io[0x49], gb.io[0x43],
-                dc3e, c202, oam_count, gb.vram_bank,
-                gb.oam[0], gb.oam[1], gb.oam[2], gb.oam[3],
-                gb.oam[4], gb.oam[5], gb.oam[6], gb.oam[7]);
+            uint8_t d20a = gb.wram[0xD20A - 0xC000];
+            uint8_t c17e = gb.wram[0xC17E - 0xC000];
+            /* Entity state for slot 0 and 1 */
+            uint8_t e1_type = gb.wram[0xC281 - 0xC000];
+            uint8_t e1_state = gb.wram[0xC291 - 0xC000];
+            fprintf(dbg, "F%u: DC3E=$%02X D20A=$%02X C17E=$%02X "
+                         "E1[t=%d s=%d]\n",
+                gb.frame_count, dc3e, d20a, c17e,
+                e1_type, e1_state);
             fclose(dbg);
         }
     }

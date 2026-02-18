@@ -251,9 +251,11 @@ int main(int argc, char *argv[]) {
 
             /* Debug: capture screenshots at key frames */
             if (gb.frame_count == 500 || gb.frame_count == 1000 ||
-                gb.frame_count == 1300 || gb.frame_count == 1500 ||
-                gb.frame_count == 1800 || gb.frame_count == 2000 ||
-                gb.frame_count == 2500 || gb.frame_count == 3000) {
+                gb.frame_count == 1500 || gb.frame_count == 2000 ||
+                gb.frame_count == 2500 || gb.frame_count == 3000 ||
+                gb.frame_count == 3400 || gb.frame_count == 3600 ||
+                gb.frame_count == 3800 || gb.frame_count == 4000 ||
+                gb.frame_count == 4500 || gb.frame_count == 5000) {
                 SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
                     ppu.framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
                     32, SCREEN_WIDTH * 4,

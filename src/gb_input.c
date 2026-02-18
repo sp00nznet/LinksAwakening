@@ -75,12 +75,12 @@ uint8_t input_read_joyp(void) {
     uint8_t result = input.joyp_select | 0xC0;
 
     if (!(input.joyp_select & 0x10)) {
-        /* P14 selected: buttons */
-        result |= (input.buttons & 0x0F);
+        /* P14 selected: direction keys */
+        result |= (input.dpad & 0x0F);
     }
     if (!(input.joyp_select & 0x20)) {
-        /* P15 selected: d-pad */
-        result |= (input.dpad & 0x0F);
+        /* P15 selected: action buttons (A, B, Select, Start) */
+        result |= (input.buttons & 0x0F);
     }
 
     /* If neither selected, all bits high */
