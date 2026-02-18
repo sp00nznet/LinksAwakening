@@ -349,9 +349,9 @@ void apu_audio_callback(void *userdata, uint8_t *stream, int len) {
         if (apu.channel_select & 0x04) right += s3;
         if (apu.channel_select & 0x08) right += s4;
 
-        /* Scale to int16 range */
-        left = (left * (apu.left_volume + 1)) * 64;
-        right = (right * (apu.right_volume + 1)) * 64;
+        /* Scale to int16 range (attenuated to ~25% for comfort) */
+        left = (left * (apu.left_volume + 1)) * 16;
+        right = (right * (apu.right_volume + 1)) * 16;
 
         buf[i * 2] = left;
         buf[i * 2 + 1] = right;

@@ -200,6 +200,9 @@ int main(int argc, char *argv[]) {
                 if (event.key.keysym.sym == SDLK_p) {
                     paused = !paused;
                 }
+                if (event.key.keysym.sym == SDLK_m) {
+                    apu.master_enable = !apu.master_enable;
+                }
                 break;
             }
         }
@@ -215,6 +218,17 @@ int main(int argc, char *argv[]) {
             const uint8_t *keyboard = SDL_GetKeyboardState(NULL);
             input_update(keyboard);
             input_update_controller();
+
+            /* Debug: auto-press Start on title screen, then skip to gameplay */
+            if (gb.frame_count >= 3500 && gb.frame_count <= 3505) {
+                input.buttons &= ~0x08; /* Start: title → file select */
+            }
+            if (gb.frame_count == 3600) {
+                /* Skip file select/creation: force game into WorldHandler */
+                /* Set gameplay mode to WorldHandler ($0B) with sub=$00 */
+                gb.wram[0xDC3D - 0xC000] = 0x0B; /* wGameplayType = WorldHandler */
+                gb.wram[0xDC3E - 0xC000] = 0x00; /* wGameplaySubtype = 0 (init) */
+            }
 
             /* Run one frame of game logic.
                gb_halt() longjmps back here when a frame is ready,
@@ -233,29 +247,26 @@ int main(int argc, char *argv[]) {
             }
             gb.halt_jmp_set = false;
 
-            /* Debug: log intro state progression (compact) */
-            if (gb.frame_count > 0 && gb.frame_count <= 6000
-                && (gb.frame_count <= 10 || gb.frame_count % 10 == 0)) {
+            /* Debug: log state progression (compact - every 50 frames) */
+            if (gb.frame_count > 0 && gb.frame_count <= 8000
+                && (gb.frame_count <= 5 || gb.frame_count % 50 == 0)) {
                 FILE *dbg = fopen("debug.log", "a");
                 if (dbg) {
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X C17E=$%02X D20A=$%02X D7B4=$%02X\n",
-                        gb.frame_count,
-                        gb.wram[0xDC3D - 0xC000],
-                        gb.wram[0xDC3E - 0xC000],
-                        gb.wram[0xC17E - 0xC000],
-                        gb.wram[0xD20A - 0xC000],
+                    uint8_t mode = gb.wram[0xDC3D - 0xC000];
+                    uint8_t sub = gb.wram[0xDC3E - 0xC000];
+                    uint8_t ffcc = gb.hram[0xFFCC - 0xFF80];
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X FFCC=$%02X D7B4=$%02X\n",
+                        gb.frame_count, mode, sub, ffcc,
                         gb.wram[0xD7B4 - 0xC000]);
                     fclose(dbg);
                 }
             }
 
             /* Debug: capture screenshots at key frames */
-            if (gb.frame_count == 500 || gb.frame_count == 1000 ||
-                gb.frame_count == 1500 || gb.frame_count == 2000 ||
-                gb.frame_count == 2500 || gb.frame_count == 3000 ||
-                gb.frame_count == 3400 || gb.frame_count == 3600 ||
-                gb.frame_count == 3800 || gb.frame_count == 4000 ||
-                gb.frame_count == 4500 || gb.frame_count == 5000) {
+            if (gb.frame_count == 3400 || gb.frame_count == 3700 ||
+                gb.frame_count == 3850 || gb.frame_count == 3900 ||
+                gb.frame_count == 4000 || gb.frame_count == 4500 ||
+                gb.frame_count == 5000 || gb.frame_count == 6000) {
                 SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
                     ppu.framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
                     32, SCREEN_WIDTH * 4,
