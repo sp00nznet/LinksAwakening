@@ -219,15 +219,25 @@ int main(int argc, char *argv[]) {
             input_update(keyboard);
             input_update_controller();
 
-            /* Debug: auto-press Start on title screen, then skip to gameplay */
+            /* Debug: auto-press buttons for testing game flow */
             if (gb.frame_count >= 3500 && gb.frame_count <= 3505) {
                 input.buttons &= ~0x08; /* Start: title → file select */
             }
-            if (gb.frame_count == 3600) {
-                /* Skip file select/creation: force game into WorldHandler */
-                /* Set gameplay mode to WorldHandler ($0B) with sub=$00 */
-                gb.wram[0xDC3D - 0xC000] = 0x0B; /* wGameplayType = WorldHandler */
-                gb.wram[0xDC3E - 0xC000] = 0x00; /* wGameplaySubtype = 0 (init) */
+            if (gb.frame_count >= 3600 && gb.frame_count <= 3605) {
+                input.buttons &= ~0x01; /* A: select slot 1 → name entry */
+            }
+            if (gb.frame_count == 3700) {
+                /* Write name directly to WRAM buffer for slot 0 */
+                gb.wram[0xDC28 - 0xC000] = 'L';
+                gb.wram[0xDC29 - 0xC000] = 'I';
+                gb.wram[0xDC2A - 0xC000] = 'N';
+                gb.wram[0xDC2B - 0xC000] = 'K';
+            }
+            if (gb.frame_count >= 3710 && gb.frame_count <= 3715) {
+                input.buttons &= ~0x08; /* Start: confirm name → back to file select */
+            }
+            if (gb.frame_count >= 3810 && gb.frame_count <= 3815) {
+                input.buttons &= ~0x01; /* A: load save file → start game */
             }
 
             /* Run one frame of game logic.

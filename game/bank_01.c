@@ -2195,7 +2195,7 @@ void FileCreationInteractiveHandler(void) {
     gb.regs.a = gb_read(0xDC4E);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x4946;
+    gb.regs.hl = 0x4A98; /* SaveSlotNameAddresses (was 0x4946) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.e = gb_read(gb.regs.hl);
     gb.regs.hl = 0xDC28;
@@ -2219,7 +2219,7 @@ void FileCreationInteractiveHandler(void) {
     gb.regs.h = gb_read(gb.regs.hl);
     gb.regs.l = gb.regs.a;
     gb_push16(gb.regs.hl);
-    gb.regs.de = (0xDBFB - wInventoryItems_BButtonSlot);
+    gb.regs.de = 0x004F; /* wName - wInventoryItems.BButtonSlot (was 0xDBFB - wInventoryItems_BButtonSlot) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_push16(gb.regs.hl);
     gb.regs.a = gb_read(0xDC4E);
@@ -2250,16 +2250,16 @@ void FileCreationInteractiveHandler(void) {
     if (!GET_FLAG_Z()) goto FileCreationInteractiveHandler_loop;
     gb.regs.hl = gb_pop16();
     gb_push16(gb.regs.hl);
-    gb.regs.de = (0xDC02 - wInventoryItems_BButtonSlot);
+    gb.regs.de = 0x005A; /* wHealth - wInventoryItems.BButtonSlot (was 0xDC02 - ...) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 0x18);
     gb.regs.hl = gb_pop16();
     gb_push16(gb.regs.hl);
-    gb.regs.de = (0xDC03 - wInventoryItems_BButtonSlot);
+    gb.regs.de = 0x005B; /* wMaxHearts - wInventoryItems.BButtonSlot (was 0xDC03 - ...) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_write(gb.regs.hl, 3);
     gb.regs.hl = gb_pop16();
-    gb.regs.de = (0xDBFF - wInventoryItems_BButtonSlot);
+    gb.regs.de = 0x0057; /* wDeathCount - wInventoryItems.BButtonSlot (was 0xDBFF - ...) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = alu_xor8(gb.regs.a, gb.regs.a);
     gb_write(gb.regs.hl++, gb.regs.a);
