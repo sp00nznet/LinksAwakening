@@ -2195,7 +2195,7 @@ void FileCreationInteractiveHandler(void) {
     gb.regs.a = gb_read(0xDC4E);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x4A98; /* SaveSlotNameAddresses (was 0x4946) */
+    gb.regs.hl = 0x4A9B; /* SaveSlotNameAddresses (was 0x4A98, +3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.e = gb_read(gb.regs.hl);
     gb.regs.hl = 0xDC28;
@@ -2213,13 +2213,13 @@ void FileCreationInteractiveHandler(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x49F2;
+    gb.regs.hl = 0x49F5; /* Data_001_49F2 BButtonSlot ptrs (was 0x49F2, +3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl++);
     gb.regs.h = gb_read(gb.regs.hl);
     gb.regs.l = gb.regs.a;
     gb_push16(gb.regs.hl);
-    gb.regs.de = 0x004F; /* wName - wInventoryItems.BButtonSlot (was 0xDBFB - wInventoryItems_BButtonSlot) */
+    gb.regs.de = 0x004F; /* wName - wInventoryItems.BButtonSlot */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb_push16(gb.regs.hl);
     gb.regs.a = gb_read(0xDC4E);
@@ -2805,7 +2805,7 @@ void FileDeletionState11Handler(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x49F8; /* SaveGameTable */
+    gb.regs.hl = 0x49FB; /* SaveGameTable (+3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl++);
     gb.regs.h = gb_read(gb.regs.hl);
@@ -3431,7 +3431,7 @@ void FileCopyStateAHandler(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x49FE;
+    gb.regs.hl = 0x4A01; /* Data_001_49FE save base ptrs (+3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.c = gb_read(gb.regs.hl);
     gb.regs.hl++;
@@ -3440,7 +3440,7 @@ void FileCopyStateAHandler(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x49FE;
+    gb.regs.hl = 0x4A01; /* Data_001_49FE save base ptrs (+3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl);
     gb.regs.hl++;
@@ -3563,7 +3563,7 @@ void LoadSavedFile(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x49F8; /* SaveGameTable */
+    gb.regs.hl = 0x49FB; /* SaveGameTable (+3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.c = gb_read(gb.regs.hl);
     gb.regs.hl++;
@@ -5023,7 +5023,7 @@ void SaveGameToFile(void) {
     gb.regs.a = alu_sla(gb.regs.a);
     gb.regs.e = gb.regs.a;
     gb.regs.d = 0;
-    gb.regs.hl = 0x49F8; /* SaveGameTable */
+    gb.regs.hl = 0x49FB; /* SaveGameTable (+3 ROM drift) */
     gb.regs.hl = alu_add16(gb.regs.hl, gb.regs.de);
     gb.regs.a = gb_read(gb.regs.hl++);
     gb.regs.h = gb_read(gb.regs.hl);

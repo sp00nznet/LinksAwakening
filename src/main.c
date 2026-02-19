@@ -219,24 +219,32 @@ int main(int argc, char *argv[]) {
             input_update(keyboard);
             input_update_controller();
 
-            /* Debug: auto-press buttons for testing game flow */
+            /* Debug: write save data to SRAM early, then auto-press to load */
+            if (gb.frame_count == 100) {
+                /* Write minimal save file to SRAM slot 0 (bank 0) */
+                /* Prefix validation: 01 03 05 07 09 at $A100 */
+                gb.sram[0x0100] = 0x01;
+                gb.sram[0x0101] = 0x03;
+                gb.sram[0x0102] = 0x05;
+                gb.sram[0x0103] = 0x07;
+                gb.sram[0x0104] = 0x09;
+                /* Name at $A454: 5 non-zero bytes (tile IDs for "LINK") */
+                gb.sram[0x0454] = 0x15; /* L */
+                gb.sram[0x0455] = 0x12; /* I */
+                gb.sram[0x0456] = 0x17; /* N */
+                gb.sram[0x0457] = 0x14; /* K */
+                gb.sram[0x0458] = 0x00; /* terminator */
+                /* Health at $A45F, MaxHearts at $A460 */
+                gb.sram[0x045F] = 0x18; /* 3 hearts */
+                gb.sram[0x0460] = 0x03; /* 3 max hearts */
+                /* Death count at $A45C-$A45D */
+                gb.sram[0x045C] = 0x00;
+                gb.sram[0x045D] = 0x00;
+            }
             if (gb.frame_count >= 3500 && gb.frame_count <= 3505) {
                 input.buttons &= ~0x08; /* Start: title → file select */
             }
             if (gb.frame_count >= 3600 && gb.frame_count <= 3605) {
-                input.buttons &= ~0x01; /* A: select slot 1 → name entry */
-            }
-            if (gb.frame_count == 3700) {
-                /* Write name directly to WRAM buffer for slot 0 */
-                gb.wram[0xDC28 - 0xC000] = 'L';
-                gb.wram[0xDC29 - 0xC000] = 'I';
-                gb.wram[0xDC2A - 0xC000] = 'N';
-                gb.wram[0xDC2B - 0xC000] = 'K';
-            }
-            if (gb.frame_count >= 3710 && gb.frame_count <= 3715) {
-                input.buttons &= ~0x08; /* Start: confirm name → back to file select */
-            }
-            if (gb.frame_count >= 3810 && gb.frame_count <= 3815) {
                 input.buttons &= ~0x01; /* A: load save file → start game */
             }
 
@@ -257,17 +265,20 @@ int main(int argc, char *argv[]) {
             }
             gb.halt_jmp_set = false;
 
-            /* Debug: log state progression (compact - every 50 frames) */
+            /* Debug: log state progression */
             if (gb.frame_count > 0 && gb.frame_count <= 8000
-                && (gb.frame_count <= 5 || gb.frame_count % 50 == 0)) {
+                && (gb.frame_count <= 5 || gb.frame_count % 50 == 0
+                    || (gb.frame_count >= 3490 && gb.frame_count <= 3700))) {
                 FILE *dbg = fopen("debug.log", "a");
                 if (dbg) {
                     uint8_t mode = gb.wram[0xDC3D - 0xC000];
                     uint8_t sub = gb.wram[0xDC3E - 0xC000];
                     uint8_t ffcc = gb.hram[0xFFCC - 0xFF80];
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X FFCC=$%02X D7B4=$%02X\n",
-                        gb.frame_count, mode, sub, ffcc,
-                        gb.wram[0xD7B4 - 0xC000]);
+                    uint8_t dc28 = gb.wram[0xDC28 - 0xC000];
+                    uint8_t dc4e = gb.wram[0xDC4E - 0xC000];
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X FFCC=$%02X DC28=$%02X DC4E=$%02X\n",
+                        gb.frame_count, mode, sub, ffcc, dc28, dc4e);
+                    fflush(dbg);
                     fclose(dbg);
                 }
             }
