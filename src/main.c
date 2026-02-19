@@ -241,10 +241,13 @@ int main(int argc, char *argv[]) {
                 gb.sram[0x045C] = 0x00;
                 gb.sram[0x045D] = 0x00;
             }
-            if (gb.frame_count >= 3500 && gb.frame_count <= 3505) {
-                input.buttons &= ~0x08; /* Start: title → file select */
+            if (gb.frame_count >= 1600 && gb.frame_count <= 1605) {
+                input.buttons &= ~0x08; /* Start: title animation start */
             }
-            if (gb.frame_count >= 3600 && gb.frame_count <= 3605) {
+            if (gb.frame_count >= 1650 && gb.frame_count <= 1655) {
+                input.buttons &= ~0x08; /* Start: sub=$0B → file select */
+            }
+            if (gb.frame_count >= 1800 && gb.frame_count <= 1805) {
                 input.buttons &= ~0x01; /* A: load save file → start game */
             }
 
@@ -268,26 +271,25 @@ int main(int argc, char *argv[]) {
             /* Debug: log state progression */
             if (gb.frame_count > 0 && gb.frame_count <= 8000
                 && (gb.frame_count <= 5 || gb.frame_count % 50 == 0
-                    || (gb.frame_count >= 3490 && gb.frame_count <= 3700))) {
+                    || (gb.frame_count >= 1590 && gb.frame_count <= 2000))) {
                 FILE *dbg = fopen("debug.log", "a");
                 if (dbg) {
                     uint8_t mode = gb.wram[0xDC3D - 0xC000];
                     uint8_t sub = gb.wram[0xDC3E - 0xC000];
-                    uint8_t ffcc = gb.hram[0xFFCC - 0xFF80];
-                    uint8_t dc28 = gb.wram[0xDC28 - 0xC000];
-                    uint8_t dc4e = gb.wram[0xDC4E - 0xC000];
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X FFCC=$%02X DC28=$%02X DC4E=$%02X\n",
-                        gb.frame_count, mode, sub, ffcc, dc28, dc4e);
+                    uint8_t bgpal0 = gb.bg_palette_data[0];
+                    uint8_t bgpal1 = gb.bg_palette_data[1];
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X bgp=%02X%02X\n",
+                        gb.frame_count, mode, sub, bgpal0, bgpal1);
                     fflush(dbg);
                     fclose(dbg);
                 }
             }
 
             /* Debug: capture screenshots at key frames */
-            if (gb.frame_count == 3400 || gb.frame_count == 3700 ||
-                gb.frame_count == 3850 || gb.frame_count == 3900 ||
-                gb.frame_count == 4000 || gb.frame_count == 4500 ||
-                gb.frame_count == 5000 || gb.frame_count == 6000) {
+            if (gb.frame_count == 1500 || gb.frame_count == 1650 ||
+                gb.frame_count == 1750 || gb.frame_count == 1850 ||
+                gb.frame_count == 2000 || gb.frame_count == 2500 ||
+                gb.frame_count == 3000 || gb.frame_count == 4000) {
                 SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
                     ppu.framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
                     32, SCREEN_WIDTH * 4,

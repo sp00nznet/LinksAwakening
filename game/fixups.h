@@ -4,6 +4,10 @@
 #define FIXUPS_H
 
 #include "gb_runtime.h"
+#include "rom_data.h"
+
+/* WRAM bank 2 is used for GBC palette data (wBGPal1, wObjPal1, wPaletteDataFlags).
+   All fixup functions that access palette WRAM must switch to bank 2. */
 
 /* ═══════════════════════════════════════════════════════════════════════
    DX-only functions - stubs (these exist in banks $20+ which are GBC-only)
@@ -17,9 +21,13 @@ static inline void ChangeBGColumnPalette(void) { /* GBC only */ }
 static inline void CopyPalettesToVRAM(void) {
     /* Bank $21 address $4000: copies BG/OBJ palette data from WRAM to hardware.
        Reads wPaletteDataFlags ($DE79) to determine what to copy.
-       NOTE: Addresses are transpiled-ROM version (disasm+$A8 offset). */
+       CRITICAL: Palette data (wBGPal1/wObjPal1) lives in WRAM bank 2.
+       wPaletteDataFlags is also in the banked region, accessed via bank 2. */
+    uint8_t saved_wram_bank = gb.wram_bank;
+    gb.wram_bank = 2;
+
     uint8_t flags = gb_read(0xDE79);
-    if (flags == 0) return;
+    if (flags == 0) { gb.wram_bank = saved_wram_bank; return; }
 
     if (flags & 0x80) {
         /* Partial copy mode. Simplified: do full copy. */
@@ -41,11 +49,105 @@ static inline void CopyPalettesToVRAM(void) {
         }
     }
     gb_write(0xDE79, 0); /* Clear flags */
+    gb.wram_bank = saved_wram_bank;
 }
 static inline void CopyLinkTunicPalette(void) { /* GBC only */ }
 static inline void LoadBGMapAttributes(void) { /* GBC only */ }
 static inline void LoadPaletteForTilemap(void) { /* GBC only */ }
-static inline void LoadRoomPalettes(void) { /* GBC only */ }
+static inline void LoadRoomPalettes(void) {
+    /* Implements bank $21 LoadRoomPalettes: loads GBC palette data from ROM
+       into WRAM palette buffers, then flags CopyPalettesToVRAM to push them
+       to hardware BCPS/BCPD registers.
+       CRITICAL: Palette data lives in WRAM bank 2. LoadRoom's zeroing loop
+       clears bank 1 at $DC5D-$DCFF, overlapping wBGPal1 in bank 1.
+       Transpiled WRAM addresses used (disasm + $A8 offset):
+         wIsIndoor=$DC4D, wBGPal1=$DCB8, wObjPal1=$DCF8,
+         wPaletteDataFlags=$DE79, wPaletteToLoadForTileMap=$DE7A
+       ROM data tables in bank $21 (offsets from $4000):
+         OverworldPaletteMap=$42EF, OverworldPalettes=$42B1,
+         ObjectPalettes=$5518, DungeonPalettesA=$43EF,
+         IndoorPaletteMaps=$4413, InteriorPalettes=$443F */
+
+    /* Save current WRAM bank and switch to bank 2 (where palette data lives).
+       Original game stores wBGPal1/wObjPal1 in WRAM bank 2.
+       LoadRoom's zeroing loop clears bank 1 at $DC5D-$DCFF, which overlaps
+       wBGPal1 ($DCB8) in bank 1 - so we MUST use bank 2. */
+    uint8_t saved_wram_bank = gb.wram_bank;
+    gb.wram_bank = 2;
+
+    /* Early return if palette flags already pending */
+    uint8_t flags = gb_read(0xDE79); /* wPaletteDataFlags */
+    uint8_t ptlm = gb_read(0xDE7A);  /* wPaletteToLoadForTileMap */
+    if ((flags | ptlm) != 0) {
+        gb.wram_bank = saved_wram_bank;
+        return;
+    }
+
+    /* Determine palette data pointer from ROM tables */
+    uint8_t isIndoor = gb_read(0xDC4D); /* wIsIndoor */
+    uint16_t pal_ptr = 0;
+
+    if (isIndoor == 0) {
+        /* Overworld: OverworldPaletteMap[hMapRoom] → index → OverworldPalettes[idx] */
+        uint8_t room = gb_read(0xFFF6); /* hMapRoom */
+        uint8_t pal_idx = rom_bank_21[0x42EF - 0x4000 + room];
+        uint16_t tbl_off = 0x42B1 - 0x4000 + (uint16_t)pal_idx * 2;
+        pal_ptr = rom_bank_21[tbl_off] | ((uint16_t)rom_bank_21[tbl_off + 1] << 8);
+    } else {
+        /* Indoor: only load palettes on room entry (direction $04) */
+        uint8_t dir = gb_read(0xC125); /* wRoomTransitionDirection */
+        if (dir != 0x04) {
+            gb.wram_bank = saved_wram_bank;
+            return;
+        }
+
+        uint8_t mapId = gb_read(0xFFF7); /* hMapId */
+        if (mapId < 0x0A) {
+            /* Dungeon */
+            uint16_t tbl_off = 0x43EF - 0x4000 + (uint16_t)mapId * 2;
+            pal_ptr = rom_bank_21[tbl_off] | ((uint16_t)rom_bank_21[tbl_off + 1] << 8);
+        } else {
+            /* Interior building */
+            uint16_t map_off = 0x4413 - 0x4000 + (uint16_t)(mapId - 0x0A) * 2;
+            uint16_t map_ptr = rom_bank_21[map_off] | ((uint16_t)rom_bank_21[map_off + 1] << 8);
+            if (map_ptr < 0x4000 || map_ptr >= 0x8000) {
+                gb.wram_bank = saved_wram_bank;
+                return;
+            }
+            uint8_t room = gb_read(0xFFF6); /* hMapRoom */
+            uint8_t pal_idx = rom_bank_21[map_ptr - 0x4000 + room];
+            uint16_t tbl_off = 0x443F - 0x4000 + (uint16_t)pal_idx * 2;
+            pal_ptr = rom_bank_21[tbl_off] | ((uint16_t)rom_bank_21[tbl_off + 1] << 8);
+        }
+    }
+
+    if (pal_ptr < 0x4000 || pal_ptr >= 0x8000) {
+        gb.wram_bank = saved_wram_bank;
+        return;
+    }
+    uint16_t rom_off = pal_ptr - 0x4000;
+
+    /* Copy 64 bytes BG palette data → wBGPal1 ($DCB8) */
+    for (int i = 0; i < 64; i++) {
+        gb_write(0xDCB8 + i, rom_bank_21[rom_off + i]);
+    }
+
+    /* Copy 48 bytes common OBJ palettes (ObjectPalettes $5518) → wObjPal1 ($DCF8) */
+    for (int i = 0; i < 48; i++) {
+        gb_write(0xDCF8 + i, rom_bank_21[0x5518 - 0x4000 + i]);
+    }
+
+    /* Copy 16 bytes room-specific OBJ palettes → wObjPal1+48 ($DD28) */
+    for (int i = 0; i < 16; i++) {
+        gb_write(0xDCF8 + 48 + i, rom_bank_21[rom_off + 64 + i]);
+    }
+
+    /* Set flags to trigger CopyPalettesToVRAM on next VBlank */
+    gb_write(0xDE79, 0x03); /* wPaletteDataFlags: copy both BG and OBJ */
+    gb_write(0xDE7A, 0x00); /* wPaletteToLoadForTileMap: clear */
+
+    gb.wram_bank = saved_wram_bank;
+}
 static inline void LoadBGPalettes(void) { /* GBC only */ }
 static inline void ApplyFadeToWhite_GBC(void) { /* GBC only */ }
 static inline void FillBGMapAttributesWhite(void) { /* GBC only */ }
@@ -167,8 +269,10 @@ static inline void func_020_6AC1(void) { }
 static inline void func_020_6BDC(void) {
     /* Bank $20 addr $6BDC: "ClearFileMenuBG" - fills BG+OBJ palette data with $FF (white).
        Only runs in GBC mode. Sets wPaletteDataFlags to copy both.
-       NOTE: Addresses are transpiled-ROM version (disasm+$A8 offset). */
+       CRITICAL: Palette data lives in WRAM bank 2. */
     if (gb_read(0xFFFE) == 0) return; /* Not GBC */
+    uint8_t saved_wram_bank = gb.wram_bank;
+    gb.wram_bank = 2;
     /* Fill wBGPal1 ($DCB8, 64 bytes) and wObjPal1 ($DCF8, 64 bytes) with $FF */
     for (int i = 0; i < 64; i++) {
         gb_write(0xDCB8 + i, 0xFF);
@@ -176,6 +280,7 @@ static inline void func_020_6BDC(void) {
     }
     gb_write(0xDE79, 0x03); /* wPaletteDataFlags: copy both BG and OBJ */
     gb_write(0xDE7D, 0x01); /* wPaletteUnknownE */
+    gb.wram_bank = saved_wram_bank;
 }
 static inline void func_020_6C4F(void) { }
 static inline void func_020_6C7A(void) { }
