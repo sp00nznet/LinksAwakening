@@ -2,17 +2,27 @@
 
 A static recompilation of *The Legend of Zelda: Link's Awakening* (Game Boy) into a native Windows application. The game logic runs as compiled C code — no emulator or ROM interpretation at runtime. Supports both the original DMG ROM (US v1.2, 512KB) and the DX ROM (GBC, 1MB/64 banks).
 
+## Screenshots
+
+| Intro | Title Screen | File Select | Gameplay |
+|-------|-------------|-------------|----------|
+| ![Intro](screenshots/intro_sea.png) | ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Gameplay](screenshots/gameplay.png) |
+
 ## Current Status
 
-**Work in progress.** The intro sequence renders and animates (sea scrolling, Nintendo logo). Title screen and gameplay are under active development. Key milestones completed:
+**Work in progress.** The full intro sequence, title screen, file select, and initial gameplay are running. Key milestones completed:
 
+- Full intro animation (sea, Link portrait, title screen) plays through
+- File select and file creation screens functional
+- Gameplay loads and renders the overworld with GBC color palettes
 - 11,251 functions transpiled from SM83 assembly to C
 - 77 cross-function stubs bridging label references across functions
 - 1,575 assembly fallthroughs restored, 42 self-recursive loops fixed
 - 140 empty alias functions resolved, 253 jump table dispatches implemented
 - GBC DX ROM banking support (64 banks, VRAM/WRAM/SRAM bank switching)
-- GBC palette transfer (BCPS/BCPD, OCPS/OCPD) via CopyPalettesToVRAM
-- DMG palette rendering via scanline PPU
+- GBC palette loading (BG/OBJ palettes from ROM) and BCPS/BCPD transfer
+- GBC BG map attributes (per-tile palette, flip, VRAM bank) via CopyBGMapFromBank
+- Scanline PPU with GBC palette rendering, H-flip, V-flip, and BG priority
 
 ## How It Works
 
@@ -146,10 +156,12 @@ The assembly-to-C transpilation required systematic fixes for patterns that don'
 
 ### Known Limitations
 
-- PPU renders DMG palettes only (GBC color palettes written but not yet rendered)
-- Intro sea animation runs but may not yet transition to title screen
-- Gameplay not yet tested — entity systems, dialog, inventory may have issues
-- Some DX-only function stubs are no-ops and may need implementation
+- Overworld renders with GBC palettes but some tile artifacts remain
+- Room scrolling/transitions between rooms not yet working (DX bank $20 stubs)
+- Entity rendering partially working (sprites visible but some missing)
+- Dialog, inventory, and menu systems untested
+- Some DX-only function stubs (bank $20+) are no-ops and need implementation
+- SRAM save/load WRAM alignment issues (non-uniform address offsets between disassembly and transpiled code)
 
 ## Credits
 

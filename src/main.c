@@ -270,26 +270,28 @@ int main(int argc, char *argv[]) {
 
             /* Debug: log state progression */
             if (gb.frame_count > 0 && gb.frame_count <= 8000
-                && (gb.frame_count <= 5 || gb.frame_count % 50 == 0
-                    || (gb.frame_count >= 1590 && gb.frame_count <= 2000))) {
+                && (gb.frame_count <= 5 || gb.frame_count % 100 == 0
+                    || (gb.frame_count >= 1595 && gb.frame_count <= 1660)
+                    || (gb.frame_count >= 1800 && gb.frame_count <= 1820))) {
                 FILE *dbg = fopen("debug.log", "a");
                 if (dbg) {
                     uint8_t mode = gb.wram[0xDC3D - 0xC000];
                     uint8_t sub = gb.wram[0xDC3E - 0xC000];
-                    uint8_t bgpal0 = gb.bg_palette_data[0];
-                    uint8_t bgpal1 = gb.bg_palette_data[1];
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X bgp=%02X%02X\n",
-                        gb.frame_count, mode, sub, bgpal0, bgpal1);
+                    uint8_t c124 = gb.wram[0xC124 - 0xC000];
+                    uint8_t ffcb = gb.hram[0xFFCB - 0xFF80];
+                    uint8_t ffcc = gb.hram[0xFFCC - 0xFF80];
+                    uint8_t ffb5 = gb.hram[0xFFB5 - 0xFF80];
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X c124=$%02X ffcb=$%02X ffcc=$%02X ffb5=$%02X btn=$%02X\n",
+                        gb.frame_count, mode, sub, c124, ffcb, ffcc, ffb5, input.buttons);
                     fflush(dbg);
                     fclose(dbg);
                 }
             }
 
             /* Debug: capture screenshots at key frames */
-            if (gb.frame_count == 1500 || gb.frame_count == 1650 ||
-                gb.frame_count == 1750 || gb.frame_count == 1850 ||
-                gb.frame_count == 2000 || gb.frame_count == 2500 ||
-                gb.frame_count == 3000 || gb.frame_count == 4000) {
+            if (gb.frame_count == 500 || gb.frame_count == 1000 ||
+                gb.frame_count == 1500 || gb.frame_count == 1650 ||
+                gb.frame_count == 1850 || gb.frame_count == 2000) {
                 SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
                     ppu.framebuffer, SCREEN_WIDTH, SCREEN_HEIGHT,
                     32, SCREEN_WIDTH * 4,

@@ -6,6 +6,9 @@
 #include "gb_runtime.h"
 #include "rom_data.h"
 
+/* Forward declarations for cross-function stubs used by fixups */
+extern void ExecuteDrawCommands_noRoomTransition(void);
+
 /* WRAM bank 2 is used for GBC palette data (wBGPal1, wObjPal1, wPaletteDataFlags).
    All fixup functions that access palette WRAM must switch to bank 2. */
 
@@ -52,7 +55,26 @@ static inline void CopyPalettesToVRAM(void) {
     gb.wram_bank = saved_wram_bank;
 }
 static inline void CopyLinkTunicPalette(void) { /* GBC only */ }
-static inline void LoadBGMapAttributes(void) { /* GBC only */ }
+static inline void LoadBGMapAttributes(void) {
+    /* Bank $24, address $5C2C: Load GBC BG map attributes to VRAM bank 1.
+       Called via gb_call_bank(36, ...) so ROM bank is already $24.
+       AttrmapsPointersTable at $5C4B: indexed by wBGMapToLoad. */
+    if (gb_read(0xFFFE) == 0) return; /* Not GBC */
+
+    uint8_t saved_vram_bank = gb.vram_bank;
+    gb.vram_bank = 1;
+
+    uint8_t idx = gb_read(0xD7B4); /* wBGMapToLoad (transpiled) */
+    uint16_t tbl_off = 0x5C4B + (uint16_t)idx * 2;
+    uint16_t attr_ptr = gb_read(tbl_off) | ((uint16_t)gb_read(tbl_off + 1) << 8);
+
+    if (attr_ptr != 0) {
+        gb.regs.de = attr_ptr;
+        ExecuteDrawCommands_noRoomTransition();
+    }
+
+    gb.vram_bank = 0;
+}
 static inline void LoadPaletteForTilemap(void) { /* GBC only */ }
 static inline void LoadRoomPalettes(void) {
     /* Implements bank $21 LoadRoomPalettes: loads GBC palette data from ROM
@@ -150,7 +172,17 @@ static inline void LoadRoomPalettes(void) {
 }
 static inline void LoadBGPalettes(void) { /* GBC only */ }
 static inline void ApplyFadeToWhite_GBC(void) { /* GBC only */ }
-static inline void FillBGMapAttributesWhite(void) { /* GBC only */ }
+static inline void FillBGMapAttributesWhite(void) {
+    /* Bank $24: fills entire VRAM bank 1 BG map with $00 (palette 0, no flip, bank 0).
+       Used during screen transitions to reset tile attributes. */
+    if (gb_read(0xFFFE) == 0) return; /* Not GBC */
+    uint8_t saved_vram_bank = gb.vram_bank;
+    gb.vram_bank = 1;
+    for (uint16_t addr = 0x9800; addr < 0x9C00; addr++) {
+        gb_write(addr, 0x00);
+    }
+    gb.vram_bank = saved_vram_bank;
+}
 static inline void UpdateIntroSeaBGPalettes(void) {
     /* Bank $20 address $6BA4: updates BG palette for intro sea sequence.
        In DMG mode: just copy wBGPalette to BGP register.
@@ -214,7 +246,57 @@ static inline void PlayBoomerangSfx(void) { /* DX only */ }
 /* Map/Room DX additions */
 static inline void LoadWorldMapBGMap(void) { /* DX only */ }
 static inline void LoadFileMenuBG(void) { /* DX only */ }
-static inline void LoadRoomObjectsAttributes(void) { /* DX only */ }
+static inline void LoadRoomObjectsAttributes(void) {
+    /* Bank $20, address $6DAF: Load GBC BG tile attributes for overworld rooms.
+       Reads per-room overlay data from ROM banks $26/$27, copies to WRAM bank 2
+       wRoomObjects, and expands to VRAM bank 1 BG map attributes. */
+    if (gb_read(0xFFFE) == 0) return; /* Not GBC */
+
+    uint8_t isIndoor = gb_read(0xDC4D); /* wIsIndoor (transpiled) */
+    if (isIndoor != 0) return; /* Overworld only */
+
+    uint8_t room = gb_read(0xFFF6); /* hMapRoom */
+    const uint8_t *rom_src = NULL;
+
+    /* Check 6 special rooms with alternate overlays (bank $27) when
+       OW_ROOM_STATUS_CHANGED ($10) is set in wOverworldRoomStatus */
+    if (room == 0x0E && (gb_read(0xD8C3) & 0x10))
+        rom_src = &rom_bank_27[0x5090 - 0x4000]; /* RoomGBCOverlay0EAlt */
+    else if (room == 0x8C && (gb_read(0xD941) & 0x10))
+        rom_src = &rom_bank_27[0x51D0 - 0x4000]; /* RoomGBCOverlay8CAlt */
+    else if (room == 0x79 && (gb_read(0xD92E) & 0x10))
+        rom_src = &rom_bank_27[0x5180 - 0x4000]; /* RoomGBCOverlay79Alt */
+    else if (room == 0x06 && (gb_read(0xD8BB) & 0x10))
+        rom_src = &rom_bank_27[0x5040 - 0x4000]; /* RoomGBCOverlay06Alt */
+    else if (room == 0x1B && (gb_read(0xD8E0) & 0x10))
+        rom_src = &rom_bank_27[0x50E0 - 0x4000]; /* RoomGBCOverlay1BAlt */
+    else if (room == 0x2B && (gb_read(0xD8E0) & 0x10))
+        rom_src = &rom_bank_27[0x5130 - 0x4000]; /* RoomGBCOverlay2BAlt */
+
+    if (rom_src == NULL) {
+        /* Standard overlay: RoomGBCOverlaysA in bank $26/$27 */
+        if (room < 0xCC)
+            rom_src = &rom_bank_26[(uint16_t)room * 0x50];
+        else
+            rom_src = &rom_bank_27[(uint16_t)(room - 0xCC) * 0x50];
+    }
+
+    /* Copy overlay data to WRAM bank 2 at wRoomObjects ($D7C6 transpiled).
+       8 rows × 10 cols, stride $10 per row in WRAM. */
+    uint8_t saved_wram_bank = gb.wram_bank;
+    gb.wram_bank = 2;
+    for (int row = 0; row < 8; row++) {
+        for (int col = 0; col < 10; col++) {
+            gb_write(0xD7C6 + row * 0x10 + col, rom_src[row * 10 + col]);
+        }
+    }
+    gb.wram_bank = saved_wram_bank;
+
+    /* Note: VRAM bank 1 per-tile attributes are written by CopyBGMapFromBank
+       (bank_00.c line 2003) which copies ROM-embedded attribute data alongside
+       tiles. The overlay data in WRAM bank 2 is used by ChangeBGColumnPalette
+       for scroll-based updates. */
+}
 static inline void ResetRoomVariables(void) { /* DX only */ }
 static inline void IsInteractiveMotionAllowed(void) { /* DX only */ }
 
