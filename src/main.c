@@ -228,18 +228,33 @@ int main(int argc, char *argv[]) {
                 gb.sram[0x0102] = 0x05;
                 gb.sram[0x0103] = 0x07;
                 gb.sram[0x0104] = 0x09;
-                /* Name at $A454: 5 non-zero bytes (tile IDs for "LINK") */
+
+                /* Name for file select display at $A454 (via SaveSlotNameAddresses ROM table).
+                   Note: name[3] at $A457 overlaps with wSpawnIsIndoor in the
+                   transpiled bulk copy mapping, so we only write 3 chars. */
                 gb.sram[0x0454] = 0x15; /* L */
                 gb.sram[0x0455] = 0x12; /* I */
                 gb.sram[0x0456] = 0x17; /* N */
-                gb.sram[0x0457] = 0x14; /* K */
-                gb.sram[0x0458] = 0x00; /* terminator */
-                /* Health at $A45F, MaxHearts at $A460 */
-                gb.sram[0x045F] = 0x18; /* 3 hearts */
-                gb.sram[0x0460] = 0x03; /* 3 max hearts */
-                /* Death count at $A45C-$A45D */
-                gb.sram[0x045C] = 0x00;
-                gb.sram[0x045D] = 0x00;
+
+                /* Save data within .main region ($A105 + offset → WRAM $D8B5 + offset).
+                   These offsets are based on the transpiled WRAM layout. */
+                /* wHealth at .main[$34D] = $A452 → WRAM $DC02 */
+                gb.sram[0x0452] = 0x18; /* 3 hearts */
+                /* wMaxHearts at .main[$34E] = $A453 → WRAM $DC03 */
+                gb.sram[0x0453] = 0x03;
+
+                /* Spawn location data - MUST have wSpawnX non-zero or
+                   LoadSavedFile falls through to initNewGame */
+                /* wSpawnIsIndoor at .main[$352] = $A457 → WRAM $DC07 */
+                gb.sram[0x0457] = 0x01; /* indoor (Marin's house) */
+                /* wSpawnMapId at .main[$353] = $A458 → WRAM $DC08 */
+                gb.sram[0x0458] = 0x10;
+                /* wSpawnRoom at .main[$354] = $A459 → WRAM $DC09 */
+                gb.sram[0x0459] = 0xA3; /* Marin's house */
+                /* wSpawnX at .main[$355] = $A45A → WRAM $DC0A */
+                gb.sram[0x045A] = 0x50;
+                /* wSpawnY at .main[$356] = $A45B → WRAM $DC0B */
+                gb.sram[0x045B] = 0x60;
             }
             if (gb.frame_count >= 1600 && gb.frame_count <= 1605) {
                 input.buttons &= ~0x08; /* Start: title animation start */
@@ -281,8 +296,11 @@ int main(int argc, char *argv[]) {
                     uint8_t ffcb = gb.hram[0xFFCB - 0xFF80];
                     uint8_t ffcc = gb.hram[0xFFCC - 0xFF80];
                     uint8_t ffb5 = gb.hram[0xFFB5 - 0xFF80];
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X c124=$%02X ffcb=$%02X ffcc=$%02X ffb5=$%02X btn=$%02X\n",
-                        gb.frame_count, mode, sub, c124, ffcb, ffcc, ffb5, input.buttons);
+                    uint8_t indoor = gb.wram[0xDC4D - 0xC000];
+                    uint8_t room = gb.hram[0xFFF6 - 0xFF80];
+                    uint8_t mapcat = gb.hram[0xFFF7 - 0xFF80];
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X indoor=$%02X room=$%02X map=$%02X ffcb=$%02X ffcc=$%02X btn=$%02X\n",
+                        gb.frame_count, mode, sub, indoor, room, mapcat, ffcb, ffcc, input.buttons);
                     fflush(dbg);
                     fclose(dbg);
                 }
