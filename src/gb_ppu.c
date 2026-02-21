@@ -2,6 +2,9 @@
 #include "gb_runtime.h"
 #include <string.h>
 
+/* STAT interrupt handler from transpiled game code */
+extern void InterruptLCDStatus(void);
+
 ppu_state_t ppu;
 
 static const uint32_t dmg_palette[4] = {
@@ -276,6 +279,14 @@ void ppu_render_scanline(uint8_t line) {
 
 void ppu_render_frame(void) {
     for (int line = 0; line < SCREEN_HEIGHT; line++) {
+        /* Update LY to current scanline */
+        gb.io[IO_LY] = line;
+
+        /* Check for STAT LYC=LY interrupt (bit 6 of STAT register) */
+        if (line == gb.io[IO_LYC] && (gb.io[IO_STAT] & 0x40) && gb.regs.ime) {
+            InterruptLCDStatus();
+        }
+
         ppu_render_scanline(line);
     }
 }

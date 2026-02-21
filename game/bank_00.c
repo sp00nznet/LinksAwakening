@@ -3,6 +3,7 @@
 #include "gb_cpu.h"
 #include "rom_data.h"
 #include "game_labels.h"
+#include "entity_dispatch.h"
 
 void LoadPieceOfHeartMeterTiles1(void);
 void LoadPieceOfHeartMeterTiles2(void);
@@ -9408,6 +9409,7 @@ void AnimateEntities(void) {
     gb.regs.b = 0;
     gb.regs.c = 0x0F;
   AnimateEntities_loop:;
+    gb_push16(gb.regs.bc);  /* save loop counter (transpiler missed push bc) */
     gb.regs.a = gb.regs.c;
     gb_write(0xC123, gb.regs.a);
     gb.regs.hl = 0xC280;
@@ -9418,6 +9420,7 @@ void AnimateEntities(void) {
     gb_write(0xFFEA, gb.regs.a);
     AnimateEntity();
   AnimateEntities_AnimateEntityEnd:;
+    gb.regs.bc = gb_pop16();  /* restore loop counter (transpiler missed pop bc) */
     gb.regs.c = alu_dec8(gb.regs.c);
     gb.regs.a = gb.regs.c;
     alu_cp8(gb.regs.a, 0xFF);
@@ -9517,8 +9520,9 @@ void ExecuteActiveEntityHandler(void) {
     gb.regs.h = gb.regs.d;
     gb_write(0xDC57, gb.regs.a);
     gb_write(0x2100, gb.regs.a);
-    /* jp hl - dynamic dispatch */;
-    HitboxPositions(); return;
+    /* jp hl - dynamic dispatch to entity handler based on behavior ID */
+    dispatch_entity_handler(gb.hram[0xFFEB - 0xFF80]);
+    return;
 }
 
 void HitboxPositions(void) {

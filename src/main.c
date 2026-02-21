@@ -287,37 +287,18 @@ int main(int argc, char *argv[]) {
             if (gb.frame_count > 0 && gb.frame_count <= 8000
                 && (gb.frame_count <= 5 || gb.frame_count % 100 == 0
                     || (gb.frame_count >= 1595 && gb.frame_count <= 1660)
-                    || (gb.frame_count >= 1800 && gb.frame_count <= 1820))) {
+                    || (gb.frame_count >= 1800 && gb.frame_count <= 1830))) {
                 FILE *dbg = fopen("debug.log", "a");
                 if (dbg) {
                     uint8_t mode = gb.wram[0xDC3D - 0xC000];
                     uint8_t sub = gb.wram[0xDC3E - 0xC000];
-                    uint8_t c124 = gb.wram[0xC124 - 0xC000];
-                    uint8_t ffcb = gb.hram[0xFFCB - 0xFF80];
-                    uint8_t ffcc = gb.hram[0xFFCC - 0xFF80];
-                    uint8_t ffb5 = gb.hram[0xFFB5 - 0xFF80];
-                    uint8_t indoor = gb.wram[0xDC4D - 0xC000];
-                    uint8_t room = gb.hram[0xFFF6 - 0xFF80];
-                    uint8_t mapcat = gb.hram[0xFFF7 - 0xFF80];
                     uint8_t d7b3 = gb.wram[0xD7B3 - 0xC000];
-                    uint8_t d7b4 = gb.wram[0xD7B4 - 0xC000];
-                    uint8_t ff90 = gb.hram[0xFF90 - 0xFF80];
-                    uint8_t ff98 = gb.hram[0xFF98 - 0xFF80];
-                    uint8_t ff99 = gb.hram[0xFF99 - 0xFF80];
-                    uint8_t ffa2 = gb.hram[0xFFA2 - 0xFF80];
                     uint8_t c145 = gb.wram[0xC145 - 0xC000];
-                    uint8_t c13b = gb.wram[0xC13B - 0xC000];
                     uint8_t ff9d = gb.hram[0xFF9D - 0xFF80];
-                    uint8_t dc45 = gb.wram[0xDC45 - 0xC000];
-                    uint8_t dc46 = gb.wram[0xDC46 - 0xC000];
-                    uint8_t c17f = gb.wram[0xC17F - 0xC000];
-                    uint8_t c19f = gb.wram[0xC19F - 0xC000];
-                    uint8_t c1a9 = gb.wram[0xC1A9 - 0xC000];
-                    uint8_t c125 = gb.wram[0xC125 - 0xC000];
                     uint8_t dc4d = gb.wram[0xDC4D - 0xC000];
                     uint8_t fff6 = gb.hram[0xFFF6 - 0xFF80];
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X d7b3=$%02X c145=$%02X c124=$%02X c125=$%02X dc4d=$%02X room=$%02X ff9d=$%02X c17f=$%02X\n",
-                        gb.frame_count, mode, sub, d7b3, c145, c124, c125, dc4d, fff6, ff9d, c17f);
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X d7b3=$%02X c145=$%02X dc4d=$%02X room=$%02X ff9d=$%02X SCY=$%02X SCX=$%02X LCDC=$%02X\n",
+                        gb.frame_count, mode, sub, d7b3, c145, dc4d, fff6, ff9d, gb.io[0x42], gb.io[0x43], gb.io[0x40]);
                     fflush(dbg);
                     fclose(dbg);
                 }
@@ -339,57 +320,6 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            /* Debug: VRAM state analysis at multiple points */
-            if (gb.frame_count == 1810 || gb.frame_count == 1815 || gb.frame_count == 1820 || gb.frame_count == 2000) {
-                char vlog[64];
-                snprintf(vlog, sizeof(vlog), "vram_f%u.log", gb.frame_count);
-                FILE *dbg = fopen(vlog, "w");
-                if (dbg) {
-                    fprintf(dbg, "=== Frame %u VRAM Analysis ===\n", gb.frame_count);
-                    fprintf(dbg, "SCX=$%02X SCY=$%02X WX=$%02X WY=$%02X LCDC=$%02X\n",
-                        gb.io[0x43], gb.io[0x42], gb.io[0x4B], gb.io[0x4A], gb.io[0x40]);
-                    fprintf(dbg, "DC42(WY src)=$%02X FF4A(WY)=$%02X\n",
-                        gb.wram[0xDC42 - 0xC000], gb.io[0x4A]);
-                    /* BG map */
-                    fprintf(dbg, "\nBG Map ($9800) 20x18:\n");
-                    for (int ty = 0; ty < 18; ty++) {
-                        for (int tx = 0; tx < 20; tx++)
-                            fprintf(dbg, "%02X ", gb.vram[0x1800 + ty * 32 + tx]);
-                        fprintf(dbg, "\n");
-                    }
-                    /* Window map */
-                    fprintf(dbg, "\nWindow Map ($9C00) 20x18:\n");
-                    for (int ty = 0; ty < 18; ty++) {
-                        for (int tx = 0; tx < 20; tx++)
-                            fprintf(dbg, "%02X ", gb.vram[0x1C00 + ty * 32 + tx]);
-                        fprintf(dbg, "\n");
-                    }
-                    /* OAM sprites */
-                    fprintf(dbg, "\nOAM (non-zero):\n");
-                    for (int i = 0; i < 40; i++) {
-                        uint8_t y = gb.oam[i*4];
-                        uint8_t x = gb.oam[i*4+1];
-                        uint8_t tile = gb.oam[i*4+2];
-                        uint8_t attr = gb.oam[i*4+3];
-                        if (y != 0 || x != 0)
-                            fprintf(dbg, "  [%02d] Y=%3d X=%3d T=$%02X A=$%02X\n", i, y, x, tile, attr);
-                    }
-                    int nz = 0;
-                    for (int i = 0; i < 0x1800; i++) if (gb.vram[i]) nz++;
-                    fprintf(dbg, "\nVRAM bank0 tile data: %d/6144 non-zero bytes\n", nz);
-                    nz = 0;
-                    for (int i = 0x2000; i < 0x3800; i++) if (gb.vram[i]) nz++;
-                    fprintf(dbg, "VRAM bank1 attr data: %d/6144 non-zero bytes\n", nz);
-                    /* Room data buffer at D7C6 (10x8 object grid, 16-byte rows) */
-                    fprintf(dbg, "\nRoom data ($D7C6) 10x8:\n");
-                    for (int ry = 0; ry < 8; ry++) {
-                        for (int rx = 0; rx < 10; rx++)
-                            fprintf(dbg, "%02X ", gb.wram[0xD7C6 - 0xC000 + ry * 16 + rx]);
-                        fprintf(dbg, "\n");
-                    }
-                    fclose(dbg);
-                }
-            }
 
             /* Render frame to texture */
             SDL_UpdateTexture(texture, NULL, ppu.framebuffer,
