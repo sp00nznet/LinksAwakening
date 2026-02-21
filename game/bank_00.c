@@ -2513,6 +2513,11 @@ void ExecuteGameplayHandler(void) {
     gb.regs.a = gb_read(0xDC3E);
     alu_cp8(gb.regs.a, 7);
     if (!GET_FLAG_Z()) { jumpToGameplayHandler(); return; };
+    /* BUG FIX: Original code returns here for mode=$0B sub=$07,
+       but WorldInteractiveHandler needs to run every frame.
+       The jr nz check above only calls the handler when sub != 7.
+       For sub == 7, we must still call the handler. */
+    jumpToGameplayHandler(); return;
 }
 
 void presentSaveScreenIfNeeded(void) {
