@@ -145,8 +145,6 @@ void gb_write(uint16_t addr, uint8_t val) {
     } else if (addr < 0xA000) {
         /* VRAM (GBC: banked via FF4F) */
         gb.vram[(gb.vram_bank * 0x2000) + (addr - 0x8000)] = val;
-        gb.vram_write_count++;
-        gb.vram_last_write_addr = addr;
         return;
     } else if (addr < 0xC000) {
         /* SRAM (MBC5: banked) */

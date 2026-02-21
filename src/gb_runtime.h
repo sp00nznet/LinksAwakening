@@ -156,9 +156,6 @@ typedef struct {
     uint8_t bcps;                   /* FF68: BG palette spec (index + auto-increment) */
     uint8_t ocps;                   /* FF6A: OBJ palette spec (index + auto-increment) */
 
-    /* Debug: VRAM write tracking */
-    uint32_t vram_write_count;
-    uint16_t vram_last_write_addr;
 } gb_state_t;
 
 extern gb_state_t gb;

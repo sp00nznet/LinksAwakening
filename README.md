@@ -10,12 +10,13 @@ A static recompilation of *The Legend of Zelda: Link's Awakening* (Game Boy) int
 
 ## Current Status
 
-**Work in progress.** The full intro sequence, title screen, file select, and gameplay are running. Link is visible and positioned correctly on the overworld. Key milestones completed:
+**Work in progress.** The full intro sequence, title screen, file select, and gameplay are running. Link is visible and the room BG tilemap renders fully. Key milestones completed:
 
 - Full intro animation (sea, Link portrait, title screen) plays through
 - File select and file creation screens functional
-- Gameplay loads and renders the overworld with GBC color palettes
+- Gameplay loads and renders the indoor room with GBC color palettes
 - **Link sprite visible** at correct screen position (C145 screen Y coordinate fixed)
+- **Full BG tilemap rendering** (all 8 metatile rows populate correctly)
 - **WorldInteractiveHandler** runs every frame during gameplay (game logic, entity animation, item handling)
 - 11,251 functions transpiled from SM83 assembly to C
 - 77 cross-function stubs bridging label references across functions
@@ -158,8 +159,7 @@ The assembly-to-C transpilation required systematic fixes for patterns that don'
 
 ### Known Limitations
 
-- BG tilemap only half populated (upper 8 of 16 tile rows render; lower half is blank)
-- VRAM bank 1 attributes empty during gameplay (GBC per-tile attributes not applied)
+- VRAM bank 1 attributes empty during gameplay (GBC per-tile attributes not applied to BG tiles)
 - InterruptLCDStatus not triggered (PPU doesn't fire STAT interrupts for mid-frame effects)
 - Room scrolling/transitions between rooms not yet working (DX bank $20 stubs)
 - Entity rendering partially working (Link visible, other sprites limited)

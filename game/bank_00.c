@@ -7946,6 +7946,10 @@ void LoadRoomTilemap(void) {
     gb.regs.a = alu_and8(gb.regs.a, 0xF0);
     gb.regs.a = alu_add8(gb.regs.a, 0x11);
     gb.regs.l = gb.regs.a;
+    /* FIX: WRAM offset moved room data to $D7C6 (L=$C6), causing 8-bit
+       overflow in L register at row 3. Original code at $D711 (L=$11)
+       never overflowed. Propagate carry to H for correct addressing. */
+    if (GET_FLAG_C()) gb.regs.h++;
   LoadRoomTilemap_lEnd:;
     gb.regs.a = gb.regs.e;
     gb.regs.a = alu_add8(gb.regs.a, 2);

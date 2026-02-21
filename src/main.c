@@ -313,12 +313,11 @@ int main(int argc, char *argv[]) {
                     uint8_t c17f = gb.wram[0xC17F - 0xC000];
                     uint8_t c19f = gb.wram[0xC19F - 0xC000];
                     uint8_t c1a9 = gb.wram[0xC1A9 - 0xC000];
-                    uint8_t ff91 = gb.hram[0xFF91 - 0xFF80];
-                    uint8_t c10e = gb.wram[0xC10E - 0xC000];
-                    uint8_t fffd = gb.hram[0xFFFD - 0xFF80];
-                    uint8_t d7b1 = gb.wram[0xD7B1 - 0xC000];
-                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X d7b3=$%02X c145=$%02X ff90=$%02X ff91=$%02X c10e=$%02X fffd=$%02X d7b1=$%02X ff9d=$%02X c17f=$%02X\n",
-                        gb.frame_count, mode, sub, d7b3, c145, ff90, ff91, c10e, fffd, d7b1, ff9d, c17f);
+                    uint8_t c125 = gb.wram[0xC125 - 0xC000];
+                    uint8_t dc4d = gb.wram[0xDC4D - 0xC000];
+                    uint8_t fff6 = gb.hram[0xFFF6 - 0xFF80];
+                    fprintf(dbg, "F%u: mode=$%02X sub=$%02X d7b3=$%02X c145=$%02X c124=$%02X c125=$%02X dc4d=$%02X room=$%02X ff9d=$%02X c17f=$%02X\n",
+                        gb.frame_count, mode, sub, d7b3, c145, c124, c125, dc4d, fff6, ff9d, c17f);
                     fflush(dbg);
                     fclose(dbg);
                 }
@@ -340,11 +339,13 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            /* Debug: VRAM state analysis at gameplay frame */
-            if (gb.frame_count == 2000) {
-                FILE *dbg = fopen("vram_debug.log", "w");
+            /* Debug: VRAM state analysis at multiple points */
+            if (gb.frame_count == 1810 || gb.frame_count == 1815 || gb.frame_count == 1820 || gb.frame_count == 2000) {
+                char vlog[64];
+                snprintf(vlog, sizeof(vlog), "vram_f%u.log", gb.frame_count);
+                FILE *dbg = fopen(vlog, "w");
                 if (dbg) {
-                    fprintf(dbg, "=== Frame 2000 VRAM Analysis ===\n");
+                    fprintf(dbg, "=== Frame %u VRAM Analysis ===\n", gb.frame_count);
                     fprintf(dbg, "SCX=$%02X SCY=$%02X WX=$%02X WY=$%02X LCDC=$%02X\n",
                         gb.io[0x43], gb.io[0x42], gb.io[0x4B], gb.io[0x4A], gb.io[0x40]);
                     fprintf(dbg, "DC42(WY src)=$%02X FF4A(WY)=$%02X\n",
@@ -379,6 +380,13 @@ int main(int argc, char *argv[]) {
                     nz = 0;
                     for (int i = 0x2000; i < 0x3800; i++) if (gb.vram[i]) nz++;
                     fprintf(dbg, "VRAM bank1 attr data: %d/6144 non-zero bytes\n", nz);
+                    /* Room data buffer at D7C6 (10x8 object grid, 16-byte rows) */
+                    fprintf(dbg, "\nRoom data ($D7C6) 10x8:\n");
+                    for (int ry = 0; ry < 8; ry++) {
+                        for (int rx = 0; rx < 10; rx++)
+                            fprintf(dbg, "%02X ", gb.wram[0xD7C6 - 0xC000 + ry * 16 + rx]);
+                        fprintf(dbg, "\n");
+                    }
                     fclose(dbg);
                 }
             }
