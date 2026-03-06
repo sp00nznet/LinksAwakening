@@ -36,3 +36,12 @@ __pycache__/
 # Test artifacts
 test.c
 test.o
+
+# gb-recompiled generated files (too large for git)
+gbrecomp/recompiled/
+gbrecomp/runtime/third_party/
+
+# Debug output
+*.bmp
+*.log
+*.ppm
