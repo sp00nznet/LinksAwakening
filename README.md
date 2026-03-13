@@ -4,13 +4,13 @@ A static recompilation of *The Legend of Zelda: Link's Awakening DX* (Game Boy C
 
 ## Screenshots
 
-| Title Screen | File Select | Owl Dialogue | Mysterious Forest |
-|-------------|-------------|--------------|-------------------|
-| ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Owl](screenshots/owl.png) | ![Forest](screenshots/forest.png) |
+| Title Screen | File Select | Owl Dialogue |
+|-------------|-------------|--------------|
+| ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Owl](screenshots/owl.png) |
 
-| Intro | Marin's House | Side-Scrolling |
-|-------|---------------|----------------|
-| ![Intro](screenshots/intro_sea.png) | ![Marin's House](screenshots/marin_house.png) | ![Side-Scrolling](screenshots/sidescroller.png) |
+| Mysterious Forest | Tail Cave | Side-Scrolling |
+|-------------------|-----------|----------------|
+| ![Forest](screenshots/forest.png) | ![Tail Cave](screenshots/tail_cave.png) | ![Side-Scrolling](screenshots/sidescrolling.png) |
 
 ## Current Status
 
