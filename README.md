@@ -1,51 +1,55 @@
-# Link's Awakening - Static Recompilation
+# Link's Awakening DX - Static Recompilation
 
 A static recompilation of *The Legend of Zelda: Link's Awakening DX* (Game Boy Color) into a native Windows application. The game logic runs as compiled C code — no emulator or ROM interpretation at runtime.
 
 ## Screenshots
 
-| Intro | Title Screen | File Select | Gameplay |
-|-------|-------------|-------------|----------|
-| ![Intro](screenshots/intro_sea.png) | ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Gameplay](screenshots/gameplay.png) |
+| Intro | Title Screen | File Select | Name Entry | Gameplay |
+|-------|-------------|-------------|------------|----------|
+| ![Intro](screenshots/intro_sea.png) | ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Gameplay](screenshots/gameplay.png) | ![Marin's House](screenshots/marin_house.png) |
 
 ## Current Status
 
-**Work in progress.** Two build paths exist — the original custom transpilation (this repo) and a newer gb-recompiled integration (see below).
-
-### gb-recompiled Build (Primary — `D:/la-dx-recompiled/`)
+**Playable through early game.** The full intro sequence, title screen, file select, name entry, save/load, and opening gameplay (Marin's house dialogue) all work.
 
 Uses [gb-recompiled](https://github.com/arcanite24/gb-recompiled) to statically recompile the LA DX ROM into 4.2M lines of C with 17,805 functions. Full runtime with PPU, APU, and interpreter fallback.
 
-**Recent milestones:**
-- Full GBC color support — CGB detection (A=0x11), palette RAM (BCPS/BCPD/OCPS/OCPD), VRAM bank switching, HDMA
+### Working Features
+
+- Full GBC color support — CGB detection, palette RAM, VRAM bank switching, HDMA
 - PPU renders with CGB tile attributes: per-tile palette, VRAM bank, X/Y flip, BG priority
 - CGB sprite rendering with OAM palette and VRAM bank selection
-- 4-channel audio with APU synthesis
+- CGB double-speed mode (KEY1 toggle)
+- 4-channel audio with APU synthesis (pulse x2, wave, noise)
 - Rain intro renders in full color with animated ocean waves
+- File select with name entry — saves persist to SRAM
+- Game loads into Marin's house with dialogue working
 - 222 unresolved JP HL instructions handled by interpreter fallback
 
-**Debug tracing infrastructure:**
-- SameBoy-based headless reference tracer captures per-scanline PPU state, CGB palettes, VRAM/OAM checksums
+### Critical Recompiler Bugs Fixed
+
+Three codegen bugs in gb-recompiled were found and fixed during this project:
+
+1. **(HL) ALU codegen** — All ALU ops with `(HL)` operand (OR/AND/XOR/CP/ADD/ADC/SUB/SBC) emitted register B instead of `gb_read8(ctx, ctx->hl)`. ~5000 wrong instructions across the ROM.
+2. **STORE8 union aliasing** — Immediate store instructions (`LD (HL),$xx`) could misidentify the source as a register due to union aliasing between `imm8` and `reg8` fields. Caused bank corruption and VRAM crashes.
+3. **MBC5 bank range clamping** — Added `new_bank % max_bank` to prevent out-of-bounds ROM reads from invalid bank values.
+
+### Debug Tracing Infrastructure
+
+- SameBoy-based headless reference tracer captures per-scanline PPU state
 - Matching trace output from recompiled build via `--hw-trace` flag
 - Python comparison tool diffs traces to find exact divergence points
-- First comparison identified: palette init timing (~16 frame lag), STAT register mode differences, OBP0/OBP1 init values (fixed)
-
-### Original Custom Transpilation (This Repo)
-
-- 11,251 functions transpiled from SM83 assembly to C across 32 bank files
-- Full intro sequence, title screen, file select, and gameplay running
-- Entity handler dispatch — 230+ entity behavior handlers
-- STAT interrupt support for mid-frame scroll register changes
-- See commit history for detailed bug fixes
+- Dispatch trace ring buffer for crash diagnosis
 
 ## How It Works
 
 The original Game Boy ROM is statically recompiled into C:
 
-1. **ROM Data Extraction** — The ROM is sliced into 16KB banks and embedded as C arrays
-2. **Assembly Transpilation** — SM83 assembly instructions translated to equivalent C code
-3. **GB Runtime** — Lightweight runtime provides CPU registers, memory mapping, MBC5 bank switching
-4. **Hardware Abstraction** — PPU (scanline renderer with CGB support), APU (4-channel audio), input via SDL2
+1. **ROM Analysis** — The recompiler disassembles the ROM, identifies functions, and builds a call graph
+2. **Code Generation** — SM83 assembly instructions translated to equivalent C code (17,805 functions)
+3. **GB Runtime** — Lightweight runtime provides CPU registers, memory mapping, MBC5 bank switching, CGB hardware
+4. **Interpreter Fallback** — Unresolved indirect jumps (JP HL) fall back to a cycle-accurate interpreter
+5. **Hardware Abstraction** — PPU (scanline renderer with CGB support), APU (4-channel audio), input via SDL2
 
 ```
 ┌──────────────────────────────────────┐
@@ -61,22 +65,16 @@ The original Game Boy ROM is statically recompiled into C:
 ├──────────────────────────────────────┤
 │       Hardware Abstraction           │
 │   PPU/SDL2 │ APU/SDL2 │ Input/SDL2  │
-├──────────────────────────────────────┤
-│       Debug Tracing Tools            │
-│ SameBoy Ref │ HW Trace │ Comparator │
 └──────────────────────────────────────┘
 ```
 
 ## Building
 
-### gb-recompiled Build (Recommended)
-
 Prerequisites: MSYS2 with MinGW64, CMake 3.16+, SDL2, Ninja
 
 ```bash
-# Build the recompiled game
-cd D:/la-dx-recompiled
-PATH="/c/msys64/mingw64/bin:$PATH" ninja -C build
+# Build
+PATH="/c/msys64/mingw64/bin:$PATH" cmake --build build
 
 # Run
 PATH="/c/msys64/mingw64/bin:$PATH" ./build/rom.exe
@@ -89,25 +87,18 @@ PATH="/c/msys64/mingw64/bin:$PATH" ./build/rom.exe
 
 ```bash
 # Build SameBoy reference tracer
-cd D:/la-dx-recompiled/tools
+cd tools
 PATH="/c/msys64/mingw64/bin:$PATH" cmake -G Ninja -B build && ninja -C build
 
 # Capture reference trace (300 frames)
 ./build/sb_tracer.exe --rom game.gbc --trace ref.log --frames 300
 
 # Capture recompiled trace
-cd D:/la-dx-recompiled
+cd ..
 ./build/rom.exe --hw-trace recomp.log --limit 10000000
 
 # Compare
-python3 tools/compare_hw_trace.py ref.log recomp.log
-```
-
-### Original Custom Build
-
-```bash
-cd D:/linksawakening-win
-PATH="/c/msys64/mingw64/bin:$PATH" cmake --build build
+py tools/compare_hw_trace.py ref.log recomp.log
 ```
 
 ### Controls
@@ -123,27 +114,18 @@ PATH="/c/msys64/mingw64/bin:$PATH" cmake --build build
 ## Project Structure
 
 ```
-D:/linksawakening-win/         # Original custom transpilation
-├── src/                       # Core engine (gb_runtime, gb_ppu, gb_apu, etc.)
-├── game/                      # Transpiled game code (32 banks, 11,251 functions)
-└── tools/                     # Transpiler scripts
-
-D:/la-dx-recompiled/           # gb-recompiled output
-├── rom.c                      # 4.2M lines recompiled game code
-├── rom_main.c                 # Entry point with --hw-trace support
-└── tools/                     # Debug tracing tools
-    ├── sb_tracer.c            # SameBoy headless reference tracer
-    ├── compare_hw_trace.py    # Trace comparison tool
-    └── README.md              # Tool documentation
-
-D:/gb-recompiled/              # Recompiler + runtime (fork of arcanite24/gb-recompiled)
-└── runtime/
-    ├── src/gbrt.c             # Core runtime (CGB register routing, memory access)
-    ├── src/ppu.c              # PPU with full CGB support
-    ├── src/hwtrace.c          # Hardware trace output module
-    ├── src/audio.c            # APU synthesis
-    └── include/               # Headers (gbrt.h, ppu.h, hwtrace.h)
+├── rom.c                  # 4.2M lines recompiled game code (Git LFS)
+├── rom.h                  # Generated function declarations
+├── rom_rom.c              # ROM data as C array
+├── rom_main.c             # Entry point with --hw-trace support
+├── CMakeLists.txt         # Build configuration
+└── tools/                 # Debug tracing tools
+    ├── sb_tracer.c        # SameBoy headless reference tracer
+    ├── compare_hw_trace.py # Trace comparison tool
+    └── README.md          # Tool documentation
 ```
+
+The [gb-recompiled](https://github.com/sp00nznet/gb-recompiled) runtime lives in a separate repo and provides the core GB hardware emulation (PPU, APU, memory, CGB registers, interpreter fallback).
 
 ## Technical Details
 
@@ -168,12 +150,10 @@ D:/gb-recompiled/              # Recompiler + runtime (fork of arcanite24/gb-rec
 | BG Map Attributes | VRAM bank 1 | Working |
 | OBJ VRAM Bank | OAM bit 3 | Working |
 | OBJ CGB Palette | OAM bits 0-2 | Working |
-| Double Speed | FF4D KEY1 | Not yet |
+| Double Speed | FF4D KEY1 | Working |
 
 ### Known Limitations
 
-- Game initialization ~16 frames behind reference emulator (timing difference)
-- CGB double-speed mode not implemented
 - 222 JP HL instructions fall through to interpreter (functional but slower)
 - Audio has minor crackling (APU timing or buffer underrun)
 
