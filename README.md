@@ -4,13 +4,17 @@ A static recompilation of *The Legend of Zelda: Link's Awakening DX* (Game Boy C
 
 ## Screenshots
 
-| Intro | Title Screen | File Select | Name Entry | Gameplay |
-|-------|-------------|-------------|------------|----------|
-| ![Intro](screenshots/intro_sea.png) | ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Gameplay](screenshots/gameplay.png) | ![Marin's House](screenshots/marin_house.png) |
+| Title Screen | File Select | Owl Dialogue | Mysterious Forest |
+|-------------|-------------|--------------|-------------------|
+| ![Title](screenshots/title_dmg.png) | ![File Select](screenshots/file_select_menu.png) | ![Owl](screenshots/owl.png) | ![Forest](screenshots/forest.png) |
+
+| Tail Cave Entrance | Tail Cave Interior | Side-Scrolling | Marin's House |
+|-------------------|-------------------|----------------|---------------|
+| ![Tail Cave](screenshots/tailcave.png) | ![Platformer](screenshots/sidescroller.png) | ![Marin](screenshots/marin_house.png) | ![Intro](screenshots/intro_sea.png) |
 
 ## Current Status
 
-**Playable through early game.** The full intro sequence, title screen, file select, name entry, save/load, and opening gameplay (Marin's house dialogue) all work.
+**Completely playable.** Tested through the first dungeon (Tail Cave) with no game-breaking issues. Full intro sequence, title screen, file select, name entry, save/load, overworld exploration, NPC dialogue, and dungeon crawling all work.
 
 Uses [gb-recompiled](https://github.com/arcanite24/gb-recompiled) to statically recompile the LA DX ROM into 4.2M lines of C with 17,805 functions. Full runtime with PPU, APU, and interpreter fallback.
 
