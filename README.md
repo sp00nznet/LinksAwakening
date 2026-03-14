@@ -109,11 +109,15 @@ py tools/compare_hw_trace.py ref.log recomp.log
 
 | Game Boy | Keyboard | Xbox Controller |
 |----------|----------|-----------------|
-| D-pad    | Arrow keys | D-pad / Left stick |
-| A        | Z        | A               |
-| B        | X        | B               |
-| Start    | Enter    | Start           |
-| Select   | Right Shift | Back         |
+| D-pad    | Arrow keys / WASD | D-pad / Left stick |
+| A        | Z / J    | A               |
+| B        | X / K    | B               |
+| Start    | Enter    | Start / Y       |
+| Select   | Right Shift / Backspace | Back / X |
+
+**Saving:** The game saves with A+B+Start+Select (the original Game Boy combo). On a controller, press **A+B+X+Y** instead — X and Y are mapped to Select and Start by default.
+
+All keyboard and gamepad bindings can be customized from the **Controller > Controller Settings** menu. Bindings persist to `bindings.cfg` next to the executable.
 
 ## Project Structure
 
