@@ -45,3 +45,6 @@ gbrecomp/runtime/third_party/
 *.bmp
 *.log
 *.ppm
+
+# Launch scripts
+*.bat
