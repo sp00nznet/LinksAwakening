@@ -6,6 +6,18 @@ lines of native C code running at full speed on your CPU — **no emulator or RO
 interpretation at runtime**, only a small fallback interpreter for the handful of
 unresolved indirect jumps the recompiler can't statically resolve.
 
+## Screenshots
+
+| Title Screen | File Select | Owl Dialogue |
+|--------------|-------------|--------------|
+| ![Title](screenshots/title_screen.png) | ![File Select](screenshots/file_select.png) | ![Owl](screenshots/owl.png) |
+
+| Mysterious Forest | Tail Cave | Side-Scrolling |
+|-------------------|-----------|----------------|
+| ![Forest](screenshots/forest.png) | ![Tail Cave](screenshots/tail_cave.png) | ![Side-Scrolling](screenshots/sidescrolling.png) |
+
+> *Some screenshots predate the current ImGui menu bar, but the in-game rendering is the same.*
+
 ## Status
 
 **Completely playable.** Tested from boot through dungeons. Full GBC color (palette
