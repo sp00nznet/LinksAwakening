@@ -114,24 +114,26 @@ All bindings are rebindable from the **Controller** menu and persist to
 
 ## Multiplayer
 
-This repo is the single-player distribution. For 4-player co-op + voice chat +
-item trading + PvP arena, see **[sp00nznet/la-mp](https://github.com/sp00nznet/la-mp)** —
-it's a plugin that drops its `mp_*.cpp` sources and ENet into the gbrecomp submodule.
-Build here with `-DLA_MULTIPLAYER=ON` after copying la-mp's sources in:
+The 4-player co-op overlay is **built in by default** — `platform_sdl.cpp` and
+`menu_gui.cpp` in the runtime call the multiplayer hooks (`mp_session_init`,
+`mp_menu_init`, player indicator compositing, etc.) unconditionally, so the
+overlay is effectively part of the runtime. The actual `mp_*.cpp` sources live
+in `gbrecomp/runtime/src/multiplayer/` and ship with the gb-recompiled submodule
+(synced from [sp00nznet/la-mp](https://github.com/sp00nznet/la-mp), which is the
+upstream source of truth for the overlay code if you want to fork or update it).
 
-```bash
-cp -r ../la-mp/multiplayer  gbrecomp/runtime/src/multiplayer
-cp -r ../la-mp/third_party/enet  gbrecomp/runtime/third_party/enet
-cmake -S . -B build -G Ninja -DLA_MULTIPLAYER=ON
-cmake --build build
-```
+To open the multiplayer menu, use the in-game ImGui menu bar:
+**Multiplayer → Host Game / Join Game / Settings**. ENet defaults to UDP 21384.
+
+Building with `-DLA_MULTIPLAYER=OFF` is not currently supported — it requires
+upstream patches to gate the unconditional multiplayer calls in the runtime.
 
 ## Repository layout
 
 ```
 .
 ├── README.md
-├── CMakeLists.txt          # Single-player build by default; LA_MULTIPLAYER=ON for co-op
+├── CMakeLists.txt          # LA_MULTIPLAYER on by default (the runtime hard-wires it)
 ├── rom_main.c              # 100-line entrypoint
 ├── rom.h                   # Generated function declarations (regenerate from your ROM)
 ├── rom.c                   # gitignored — recompiler output, ~115 MB

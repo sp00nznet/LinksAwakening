@@ -11,11 +11,13 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(-O3)
 endif()
 
-# Multiplayer overlay (sp00nznet/la-mp) is off by default in this public
-# distribution. Building with -DLA_MULTIPLAYER=ON requires also dropping
-# la-mp's multiplayer/ sources into gbrecomp/runtime/src/multiplayer/ per
-# https://github.com/sp00nznet/la-mp
-option(LA_MULTIPLAYER "Build with ENet + multiplayer overlay (requires la-mp sources)" OFF)
+# Multiplayer overlay is on by default — the gb-recompiled runtime calls
+# mp_session_init / mp_session_update / mp_menu_init / mp_indicators_render
+# unconditionally from platform_sdl.cpp and menu_gui.cpp, so the overlay
+# is effectively part of the runtime. The sources live in
+# gbrecomp/runtime/src/multiplayer/ (synced from sp00nznet/la-mp).
+# Turning this OFF requires upstream patches to gate those runtime calls.
+option(LA_MULTIPLAYER "Build with ENet + multiplayer overlay" ON)
 
 # Runtime lives in the gbrecomp/ submodule (sp00nznet/gb-recompiled).
 set(GBRT_DIR "${CMAKE_SOURCE_DIR}/gbrecomp/runtime")
@@ -50,11 +52,6 @@ target_sources(gbrt PRIVATE
 )
 
 if(LA_MULTIPLAYER)
-    if(NOT EXISTS "${GBRT_DIR}/src/multiplayer/mp_session.cpp")
-        message(FATAL_ERROR
-            "LA_MULTIPLAYER=ON but multiplayer sources are missing. "
-            "See https://github.com/sp00nznet/la-mp for setup.")
-    endif()
     target_sources(gbrt PRIVATE
         ${GBRT_DIR}/third_party/enet/callbacks.c
         ${GBRT_DIR}/third_party/enet/compress.c
