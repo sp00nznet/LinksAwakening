@@ -1,0 +1,51 @@
+# Build artifacts
+build/
+build-*/
+*.o
+*.obj
+*.a
+*.lib
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Recompiler output — regenerate locally from your ROM via gbrecomp/recompiler/
+rom.c
+rom_rom.c
+
+# ROM (never commit; supply your own legally obtained copy)
+*.gb
+*.gbc
+
+# Save data, save states, runtime config
+*.sav
+savestate.bin
+bindings.cfg
+*.ini
+
+# Debug / capture output
+*.log
+*.trace
+*.bmp
+*.ppm
+*.png
+!docs/**/*.png
+!screenshots/**/*.png
+!assets/**/*.png
+
+# Editor / IDE / agent state
+.vscode/
+.vs/
+.idea/
+.claude/
+.agent/
+*.swp
+*.swo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Local launch scripts
+*.bat

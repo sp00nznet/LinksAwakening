@@ -1,0 +1,3 @@
+[submodule "gbrecomp"]
+	path = gbrecomp
+	url = https://github.com/sp00nznet/gb-recompiled.git
