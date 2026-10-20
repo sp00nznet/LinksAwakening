@@ -29,8 +29,9 @@ All notable changes to this project are documented here. The format follows
   root, and the executable is `linksawakening.exe` (was `rom.exe`).
 - SDL2.dll is copied next to the exe on build; libgcc/libstdc++ are linked
   statically.
-- gbrecomp submodule bumped to sp00nznet/gb-recompiled `main` (`29251d0`),
-  which adds the Dreamcast/GameCube/PS2/PSP/Vita backends (gb-recompiled#1).
+- gbrecomp submodule bumped to sp00nznet/gb-recompiled `main` (`cd1b342`):
+  adds the Dreamcast/GameCube/PS2/PSP/Vita backends (gb-recompiled#1) and
+  fixes the SDL2 backend on older SDL2 and strict libc++ (gb-recompiled#2).
 - `LICENSE` is plain MIT again so GitHub detects it; the scope note moved to
   the README.
 
