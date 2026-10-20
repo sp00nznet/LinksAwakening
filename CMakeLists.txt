@@ -33,6 +33,9 @@ endif()
 add_executable(linksawakening rom_main.c ${GEN_DIR}/rom.c ${GEN_DIR}/rom_rom.c)
 target_include_directories(linksawakening PRIVATE ${GEN_DIR})
 target_link_libraries(linksawakening PRIVATE gbrt)
+if(NOT ANDROID AND NOT EMSCRIPTEN)
+    target_compile_definitions(linksawakening PRIVATE LA_DESKTOP)  # --headless / --record
+endif()
 
 if(MINGW)
     # libgcc/libstdc++ go in the exe; winpthread stays a DLL, copied below.
