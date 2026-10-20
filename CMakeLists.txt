@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
-project(rom C CXX)
+cmake_minimum_required(VERSION 3.21)
+project(linksawakening C CXX)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -7,96 +7,44 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
-if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    add_compile_options(-O3)
-endif()
 
-# Multiplayer overlay is on by default — the gb-recompiled runtime calls
-# mp_session_init / mp_session_update / mp_menu_init / mp_indicators_render
-# unconditionally from platform_sdl.cpp and menu_gui.cpp, so the overlay
-# is effectively part of the runtime. The sources live in
-# gbrecomp/runtime/src/multiplayer/ (synced from sp00nznet/la-mp).
-# Turning this OFF requires upstream patches to gate those runtime calls.
-option(LA_MULTIPLAYER "Build with ENet + multiplayer overlay" ON)
+# Multiplayer is not part of this game repo: it lives in sp00nznet/la-mp.
+# The runtime gates every multiplayer call behind LA_HAS_MULTIPLAYER, so
+# forcing it off builds a clean single-player game with no ENet.
+set(LA_HAS_MULTIPLAYER OFF CACHE BOOL "Multiplayer lives in sp00nznet/la-mp" FORCE)
 
-# Runtime lives in the gbrecomp/ submodule (sp00nznet/gb-recompiled).
 set(GBRT_DIR "${CMAKE_SOURCE_DIR}/gbrecomp/runtime")
+if(NOT EXISTS "${GBRT_DIR}/CMakeLists.txt")
+    message(FATAL_ERROR "gbrecomp/ submodule is empty. Run:\n  git submodule update --init --recursive")
+endif()
+add_subdirectory(${GBRT_DIR} gbrt)
+target_compile_definitions(gbrt PRIVATE "GBRT_WINDOW_TITLE=\"Link's Awakening DX Recompiled\"")
 
-if(NOT EXISTS "${GBRT_DIR}/include/platform_sdl.h")
+# gen/ holds recompiler output, generated locally from the user's own ROM and
+# never committed (see docs/architecture.md).
+set(GEN_DIR "${CMAKE_SOURCE_DIR}/gen")
+if(NOT EXISTS "${GEN_DIR}/rom.c")
     message(FATAL_ERROR
-        "gbrecomp/ submodule is empty. Run:\n"
-        "  git submodule update --init --recursive")
+        "gen/rom.c is missing. Generate it from your own ROM first:\n"
+        "  gbrecomp/build/bin/gbrecomp rom.gbc -o gen\n"
+        "or run Setup.cmd, which does every step.")
 endif()
 
-find_package(SDL2 REQUIRED)
+add_executable(linksawakening rom_main.c ${GEN_DIR}/rom.c ${GEN_DIR}/rom_rom.c)
+target_include_directories(linksawakening PRIVATE ${GEN_DIR})
+target_link_libraries(linksawakening PRIVATE gbrt)
 
-add_library(gbrt STATIC
-    ${GBRT_DIR}/src/gbrt.c
-    ${GBRT_DIR}/src/ppu.c
-    ${GBRT_DIR}/src/audio.c
-    ${GBRT_DIR}/src/interpreter.c
-    ${GBRT_DIR}/src/hwtrace.c
-    ${GBRT_DIR}/src/platform_sdl.cpp
-    ${GBRT_DIR}/src/menu_gui.cpp
-    ${GBRT_DIR}/src/asset_viewer.cpp
-)
-
-target_sources(gbrt PRIVATE
-    ${GBRT_DIR}/third_party/imgui/imgui.cpp
-    ${GBRT_DIR}/third_party/imgui/imgui_draw.cpp
-    ${GBRT_DIR}/third_party/imgui/imgui_tables.cpp
-    ${GBRT_DIR}/third_party/imgui/imgui_widgets.cpp
-    ${GBRT_DIR}/third_party/imgui/imgui_demo.cpp
-    ${GBRT_DIR}/third_party/imgui/backends/imgui_impl_sdl2.cpp
-    ${GBRT_DIR}/third_party/imgui/backends/imgui_impl_sdlrenderer2.cpp
-)
-
-if(LA_MULTIPLAYER)
-    target_sources(gbrt PRIVATE
-        ${GBRT_DIR}/third_party/enet/callbacks.c
-        ${GBRT_DIR}/third_party/enet/compress.c
-        ${GBRT_DIR}/third_party/enet/host.c
-        ${GBRT_DIR}/third_party/enet/list.c
-        ${GBRT_DIR}/third_party/enet/packet.c
-        ${GBRT_DIR}/third_party/enet/peer.c
-        ${GBRT_DIR}/third_party/enet/protocol.c
-        ${GBRT_DIR}/third_party/enet/win32.c
-
-        ${GBRT_DIR}/src/multiplayer/mp_net.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_session.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_menu.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_color.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_worldsync.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_indicators.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_delta.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_trade.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_voice.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_pvp.cpp
-        ${GBRT_DIR}/src/multiplayer/mp_sprites.cpp
-    )
-    target_compile_definitions(gbrt PUBLIC LA_HAS_MULTIPLAYER)
+if(MINGW)
+    # libgcc/libstdc++ go in the exe; winpthread stays a DLL, copied below.
+    target_link_options(linksawakening PRIVATE -static-libgcc -static-libstdc++)
+    get_filename_component(MINGW_BIN "${CMAKE_C_COMPILER}" DIRECTORY)
+    add_custom_command(TARGET linksawakening POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${MINGW_BIN}/libwinpthread-1.dll" $<TARGET_FILE_DIR:linksawakening>)
 endif()
 
-target_include_directories(gbrt PUBLIC
-    ${GBRT_DIR}/include
-    ${GBRT_DIR}/third_party/imgui
-    ${GBRT_DIR}/third_party/enet/include
-    ${GBRT_DIR}/src
-)
-
-target_link_libraries(gbrt PUBLIC SDL2::SDL2)
-if(WIN32 AND LA_MULTIPLAYER)
-    target_link_libraries(gbrt PUBLIC ws2_32 winmm)
+# Put SDL2.dll next to the exe so build/linksawakening.exe runs as-is.
+if(WIN32)
+    add_custom_command(TARGET linksawakening POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:linksawakening> $<TARGET_FILE_DIR:linksawakening>
+        COMMAND_EXPAND_LISTS)
 endif()
-target_compile_definitions(gbrt PUBLIC GB_HAS_SDL2)
-
-# rom.c and rom_rom.c are recompiler output. They are gitignored. Generate
-# them locally by running gbrecomp/recompiler/ against your own legally
-# obtained Link's Awakening DX ROM.
-add_executable(rom
-    rom_main.c
-    rom.c
-    rom_rom.c
-)
-
-target_link_libraries(rom gbrt)

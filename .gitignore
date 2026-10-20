@@ -10,9 +10,9 @@ build-*/
 *.so
 *.dylib
 
-# Recompiler output — regenerate locally from your ROM via gbrecomp/recompiler/
-rom.c
-rom_rom.c
+# Recompiler output, generated locally from your own ROM. Never committed.
+gen/
+build-farm/
 
 # ROM (never commit; supply your own legally obtained copy)
 *.gb
@@ -47,5 +47,6 @@ bindings.cfg
 .DS_Store
 Thumbs.db
 
-# Local launch scripts
-*.bat
+# Setup.cmd's log and the shortcut it makes
+setup.log
+*.lnk

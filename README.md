@@ -1,10 +1,33 @@
 # Link's Awakening DX — Static Recompilation
 
-A static recompilation of *The Legend of Zelda: Link's Awakening DX* (Game Boy Color,
-1998) into a native Windows application. The entire ROM is decompiled to ~4.2 million
-lines of native C code running at full speed on your CPU — **no emulator or ROM
-interpretation at runtime**, only a small fallback interpreter for the handful of
-unresolved indirect jumps the recompiler can't statically resolve.
+*The Legend of Zelda: Link's Awakening DX* (Game Boy Color, 1998), recompiled
+from the ROM into native C and built as a Windows program. There's no emulator:
+the game's code runs as compiled C, with a small interpreter for the few jumps
+the recompiler can't resolve ahead of time. You supply your own ROM; no game
+code is distributed here.
+
+Part of the sp00nznet recomp projects, built on the
+[gb-recompiled](https://github.com/sp00nznet/gb-recompiled) toolkit and following
+the same house style as the other recomp repos (generated code is never
+committed, `--headless --record` on every port).
+
+## Status
+
+**v0.0.1, usable.** Plays from boot through dungeons on Windows. Single-player
+only; the co-op overlay lives in [la-mp](https://github.com/sp00nznet/la-mp).
+
+| Area | State |
+|---|---|
+| CPU, banking (MBC5), interrupts | Working |
+| PPU: CGB palettes, VRAM/WRAM banking, HDMA, double speed | Working |
+| Audio (2× pulse, wave, noise) | Working |
+| Battery save (SRAM) and save states | Working |
+| Keyboard and gamepad, rebindable | Working |
+| Headless run and MP4 recording | Working |
+| Conformance harness | Not yet (see [ROADMAP.md](ROADMAP.md)) |
+
+Tested ROM: *Legend of Zelda, The - Link's Awakening DX (USA, Europe) (Rev 2)*,
+SHA-1 `1c091225688d966928cc74336dbef2e07d12a47c`. Other revisions are untested.
 
 ## Screenshots
 
@@ -16,182 +39,136 @@ unresolved indirect jumps the recompiler can't statically resolve.
 |-------------------|-----------|----------------|
 | ![Forest](screenshots/forest.png) | ![Tail Cave](screenshots/tail_cave.png) | ![Side-Scrolling](screenshots/sidescrolling.png) |
 
-> *Some screenshots predate the current ImGui menu bar, but the in-game rendering is the same.*
+## Getting Started
 
-## Status
+You need Windows 10 or 11 and your own Link's Awakening DX ROM (`.gbc`, or a
+`.zip` containing one).
 
-**Completely playable.** Tested from boot through dungeons. Full GBC color (palette
-RAM, VRAM banking, HDMA), CGB double-speed, 4-channel audio, save/load to SRAM, save
-states, gamepad + keyboard with rebinding, ImGui debug overlay + asset viewer.
+### Quick start
 
-## How it works
+1. Download this repo: **Code → Download ZIP**, and unzip it anywhere.
+2. Double-click **`Setup.cmd`**.
+3. Answer its questions. It installs MSYS2 and the compiler packages if they're
+   missing (it asks first), looks for your ROM in Downloads, Desktop and
+   Documents (or asks for the path), recompiles it, and builds the game.
+   The first build takes 5–15 minutes.
+4. Double-click **Link's Awakening DX** in the folder.
 
-This project is the **game-specific glue**. The heavy lifting lives in two other repos:
+If it stops, it prints one line saying what to do, and the details are in
+`setup.log`. Rerun `Setup.cmd` after fixing it; finished steps are skipped.
 
-- **[`sp00nznet/gb-recompiled`](https://github.com/sp00nznet/gb-recompiled)** (fork of
-  [`arcanite24/gb-recompiled`](https://github.com/arcanite24/gb-recompiled)) — the
-  runtime engine. Provides the SM83 CPU model, scanline PPU with full CGB support,
-  4-channel APU, interpreter fallback, ImGui menu, asset viewer, hwtrace debugger,
-  and the SDL2 platform layer. Lives at `gbrecomp/` as a git submodule.
-- **The recompiler itself** lives inside that same submodule at `gbrecomp/recompiler/`.
-  Point it at your ROM, get `rom.c` and `rom_rom.c` out.
-- **This repo** holds `rom_main.c` (40-line entrypoint), `rom.h` (function declarations),
-  `CMakeLists.txt`, and debug tools.
+### Step by step
 
-```
-your ROM (rom.gbc)
-        |
-        v
-gbrecomp/recompiler/        →  rom.c          (~115 MB of C, gitignored)
-                            →  rom_rom.c      (~6 MB ROM bytes as C array, gitignored)
-                            →  rom.h          (committed)
-        |
-        v
-CMakeLists.txt links rom.c + rom_main.c against libgbrt (built from gbrecomp/runtime/)
-        |
-        v
-rom.exe — runs at native speed
-```
+These are the same commands `Setup.cmd` runs.
 
-## Building
+1. **Install MSYS2** from <https://www.msys2.org> (or `winget install -e --id MSYS2.MSYS2`)
+   to `C:\msys64`.
+2. **Install the packages** from any terminal:
+   ```
+   C:\msys64\usr\bin\pacman.exe -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-SDL2 git
+   ```
+3. **Open a terminal with the MinGW tools first on PATH.** In PowerShell:
+   ```powershell
+   $env:PATH = "C:\msys64\mingw64\bin;C:\msys64\usr\bin;$env:PATH"
+   ```
+   Trip-up: if `cmake --version` doesn't say it came from `C:\msys64`, another
+   CMake is earlier on PATH; open a new window and run the line above again.
+4. **Get the source:**
+   ```
+   git clone --recurse-submodules https://github.com/sp00nznet/LinksAwakening.git
+   cd LinksAwakening
+   ```
+   (Already cloned without submodules? `git submodule update --init --recursive`.)
+5. **Copy your ROM** into the folder as `rom.gbc`.
+6. **Build the recompiler:**
+   ```
+   cmake -S gbrecomp -B gbrecomp/build -G Ninja
+   cmake --build gbrecomp/build --target gbrecomp
+   ```
+7. **Recompile the ROM to C** (about 5 seconds):
+   ```
+   gbrecomp\build\bin\gbrecomp.exe rom.gbc -o gen
+   ```
+   This writes `gen/rom.c` (~109 MB), `gen/rom_rom.c` and `gen/rom.h`.
+8. **Build the game** (5–15 minutes the first time; `rom.c` is one huge file):
+   ```
+   cmake -S . -B build -G Ninja
+   cmake --build build
+   ```
+9. **Run it:** `build\linksawakening.exe`
 
-### Prerequisites
-
-- Windows 10/11
-- MSYS2 with MinGW64 (`pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-SDL2`)
-- A legally obtained Link's Awakening DX ROM (`*.gbc`)
-
-### One-time setup
-
-```bash
-git clone --recurse-submodules https://github.com/sp00nznet/LinksAwakening.git
-cd LinksAwakening
-```
-
-If you forgot `--recurse-submodules`:
-
-```bash
-git submodule update --init --recursive
-```
-
-### Generate rom.c + rom_rom.c from your ROM
-
-See the [gb-recompiled README](https://github.com/sp00nznet/gb-recompiled) for the
-recompiler invocation. It produces `rom.c`, `rom.h`, and `rom_rom.c`; drop them at
-the root of this repo. (The `rom.h` shipped here is a baseline; the recompiler may
-overwrite it with a more complete version.)
-
-### Build and run
-
-```bash
-PATH="/c/msys64/mingw64/bin:$PATH"
-cmake -S . -B build -G Ninja
-cmake --build build
-./build/rom.exe
-```
-
-## CLI flags
+## Usage
 
 ```
-rom.exe [--trace] [--trace-entries FILE] [--limit N] [--input SCRIPT]
-        [--dump-frames DIR] [--screenshot-prefix PFX] [--hw-trace FILE]
-        [--frames N]
+linksawakening.exe [--headless] [--record OUT.mp4] [--frames N]
+                   [--input SCRIPT] [--dump-frames DIR] [--screenshot-prefix P]
+                   [--trace] [--trace-entries FILE] [--limit N] [--hw-trace FILE]
 ```
 
-| Flag                    | Purpose                                                       |
-| ----------------------- | ------------------------------------------------------------- |
-| `--trace`               | Enable runtime instruction trace                              |
-| `--trace-entries FILE`  | Write per-function trace to FILE                              |
-| `--limit N`             | Halt after N instructions (for crash bisection)               |
-| `--input SCRIPT`        | Replay a deterministic input script                           |
-| `--dump-frames DIR`     | Write every frame as a PNG into DIR                           |
-| `--screenshot-prefix P` | Prefix for any screenshots captured at runtime                |
-| `--hw-trace FILE`       | Write per-scanline PPU state to FILE (compare with SameBoy)   |
-| `--frames N`            | Exit after rendering N frames                                 |
+| Flag | Purpose |
+|---|---|
+| `--headless` | No window and no audio device (safe over RDP); runs at normal speed |
+| `--record OUT.mp4` | Pipe every frame to ffmpeg (needs `ffmpeg` on PATH) |
+| `--frames N` | Exit after N frames |
+| `--input SCRIPT` | Replay a deterministic input script |
+| `--dump-frames DIR` | Write every frame as an image into DIR |
+| `--screenshot-prefix P` | Prefix for screenshots taken at runtime |
+| `--trace` | Runtime instruction trace |
+| `--trace-entries FILE` | Per-function trace to FILE |
+| `--limit N` | Stop after N instructions (crash bisection) |
+| `--hw-trace FILE` | Per-scanline PPU state, to compare against SameBoy ([tools/](tools/README.md)) |
 
-## Controls
+Record the first 30 seconds without opening a window:
 
-| Game Boy | Keyboard            | Gamepad           |
-| -------- | ------------------- | ----------------- |
-| D-pad    | Arrows / WASD       | D-pad / left stick|
-| A        | Z / J               | A / Cross         |
-| B        | X / K               | B / Circle        |
-| Start    | Enter               | Start             |
-| Select   | Right Shift         | Back / Select     |
+```
+build\linksawakening.exe --headless --frames 1800 --record intro.mp4
+```
 
-Save combo (Game Boy A+B+Start+Select) → on gamepad: **A+B+X+Y**.
+### Controls
 
-All bindings are rebindable from the **Controller** menu and persist to
-`bindings.cfg` next to the executable.
+| Game Boy | Keyboard | Gamepad |
+|---|---|---|
+| D-pad | Arrows / WASD | D-pad / left stick |
+| A | Z / J | A / Cross |
+| B | X / K | B / Circle |
+| Start | Enter | Start |
+| Select | Right Shift | Back / Select |
 
-## Multiplayer
+Save-and-quit combo (A+B+Start+Select) on a gamepad: **A+B+X+Y**. Bindings are
+rebindable from the **Controller** menu and saved to `bindings.cfg` next to the
+exe. The SRAM save is written next to the exe too.
 
-The 4-player co-op overlay is **built in by default** — `platform_sdl.cpp` and
-`menu_gui.cpp` in the runtime call the multiplayer hooks (`mp_session_init`,
-`mp_menu_init`, player indicator compositing, etc.) unconditionally, so the
-overlay is effectively part of the runtime. The actual `mp_*.cpp` sources live
-in `gbrecomp/runtime/src/multiplayer/` and ship with the gb-recompiled submodule
-(synced from [sp00nznet/la-mp](https://github.com/sp00nznet/la-mp), which is the
-upstream source of truth for the overlay code if you want to fork or update it).
+## Building from source
 
-To open the multiplayer menu, use the in-game ImGui menu bar:
-**Multiplayer → Host Game / Join Game / Settings**. ENet defaults to UDP 21384.
-
-Building with `-DLA_MULTIPLAYER=OFF` is not currently supported — it requires
-upstream patches to gate the unconditional multiplayer calls in the runtime.
-
-## Repository layout
+Step by step above is the build. How the pieces fit together, and why the
+generated C never enters the repo, is in [docs/architecture.md](docs/architecture.md).
+The SameBoy comparison tools are described in [tools/README.md](tools/README.md).
 
 ```
 .
-├── README.md
-├── CMakeLists.txt          # LA_MULTIPLAYER on by default (the runtime hard-wires it)
-├── rom_main.c              # 100-line entrypoint
-├── rom.h                   # Generated function declarations (regenerate from your ROM)
-├── rom.c                   # gitignored — recompiler output, ~115 MB
-├── rom_rom.c               # gitignored — ROM bytes as C array, ~6 MB
-├── gbrecomp/               # submodule → sp00nznet/gb-recompiled
-│   ├── runtime/            #   the actual runtime engine
-│   ├── recompiler/         #   the tool that produces rom.c from a ROM
-│   └── tools/
-└── tools/                  # Debug tools (SameBoy reference tracer + comparator)
+├── rom_main.c        entry point and CLI flags
+├── CMakeLists.txt    builds gbrecomp/runtime + gen/ into linksawakening.exe
+├── Setup.cmd         quick start (runs tools/setup.ps1)
+├── gbrecomp/         submodule: sp00nznet/gb-recompiled (recompiler + runtime)
+├── gen/              gitignored: recompiler output from your ROM
+├── docs/             architecture
+└── tools/            setup script, SameBoy tracer, trace comparator
 ```
-
-## Hardware features implemented
-
-| Feature                      | Notes                                                |
-| ---------------------------- | ---------------------------------------------------- |
-| SM83 CPU                     | All instructions; interpreter fallback for JP HL etc.|
-| MBC5 mapper                  | Full ROM/RAM banking with bounds clamping            |
-| Scanline PPU                 | BG + window + sprites, 8×8 / 8×16, DMG and CGB       |
-| CGB BG palette RAM           | FF68 BCPS, FF69 BCPD                                 |
-| CGB OBJ palette RAM          | FF6A OCPS, FF6B OCPD                                 |
-| VRAM bank switching          | FF4F VBK                                             |
-| WRAM bank switching          | FF70 SVBK                                            |
-| General-purpose DMA          | FF51-FF55                                            |
-| HBlank DMA                   | FF55 bit 7                                           |
-| BG map tile attributes       | VRAM bank 1                                          |
-| OBJ VRAM bank + palette      | OAM bits 0-3                                         |
-| Double-speed mode            | FF4D KEY1                                            |
-| APU                          | Pulse ×2, wave, noise — 44.1 kHz output              |
-| OAM DMA                      | FF46                                                 |
-| Joypad                       | FF00                                                 |
-| Save SRAM                    | Persists to `<rom>.sav` next to the exe              |
-| Save states                  | Full snapshot to `savestate.bin`                     |
 
 ## Credits
 
-- Game: Nintendo / Grezzo (Link's Awakening DX, 1998)
-- Recompiler: [arcanite24/gb-recompiled](https://github.com/arcanite24/gb-recompiled)
-  (with fixes upstreamed and additional runtime features in
-  [sp00nznet/gb-recompiled](https://github.com/sp00nznet/gb-recompiled))
-- Disassembly: [LADX-Disassembly](https://github.com/zladx/LADX-Disassembly) contributors
-- Reference emulator: [SameBoy](https://github.com/LIJI32/SameBoy) by LIJI32
-- Multiplayer overlay: [sp00nznet/la-mp](https://github.com/sp00nznet/la-mp)
+- Recompiler and runtime: [arcanite24/gb-recompiled](https://github.com/arcanite24/gb-recompiled),
+  with our changes in [sp00nznet/gb-recompiled](https://github.com/sp00nznet/gb-recompiled)
+- Reference emulator for hardware traces: [SameBoy](https://github.com/LIJI32/SameBoy) by LIJI32 (MIT)
+- Game knowledge: the [LADX-Disassembly](https://github.com/zladx/LADX-Disassembly) contributors
 
 ## License
 
-The code in this repository (`rom_main.c`, `CMakeLists.txt`, build glue) is MIT.
-The recompiled `rom.c` / `rom_rom.c` are derived from the original ROM and are
-**not distributed** — generate them locally from your own legally obtained copy.
-This project is for educational and preservation purposes.
+The code in this repository is [MIT](LICENSE).
+
+That covers the tools, build files and documentation. It does not and cannot
+cover *The Legend of Zelda: Link's Awakening DX* itself: the game's code, art,
+audio and data belong to their rights holders, are not distributed here, and
+you need your own legitimate copy. The C that the recompiler generates from
+your ROM is a derivative of the game, is outside the MIT grant for the same
+reason, and is deliberately never committed.
