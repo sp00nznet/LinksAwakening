@@ -13,6 +13,8 @@ All notable changes to this project are documented here. The format follows
 - `--headless` (no window, no audio device) and `--record out.mp4` (pipes
   frames to ffmpeg).
 - `CHANGELOG.md`, `ROADMAP.md`, `CONTRIBUTING.md`, `docs/architecture.md`.
+- CI on push: builds the recompiler and the runtime with multiplayer off
+  (no ROM in CI, so not the game itself).
 
 ### Changed
 - Multiplayer is no longer built into this repo. The game builds single-player

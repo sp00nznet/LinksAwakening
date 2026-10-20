@@ -1,0 +1,29 @@
+# CI has no ROM, so it can't build the game. It builds what this repo
+# depends on, the way Setup.cmd does: the recompiler, and the runtime with
+# multiplayer off. That catches a broken submodule bump or a runtime that no
+# longer builds without MP.
+name: build
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: >-
+            mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja mingw-w64-x86_64-SDL2
+      - run: cmake -S gbrecomp -B gbrecomp/build -G Ninja -DLA_HAS_MULTIPLAYER=OFF
+      - run: cmake --build gbrecomp/build
+      - run: test ! -e gbrecomp/build/runtime/CMakeFiles/gbrt.dir/src/multiplayer
