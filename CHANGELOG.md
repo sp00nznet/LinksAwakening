@@ -7,9 +7,17 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- Windows installer built by [recomp-launcher](https://github.com/sp00nznet/recomp-launcher)
+  from `launcher/launcher.json`: pick the folder with your ROM, press Build,
+  press Play. CI builds it on every push and attaches it to `v*` releases.
+- `tools/setup.ps1 -Yes -Game <folder or file>` runs without questions, and
+  picks the tested ROM revision by SHA-1 when a folder has several (inside
+  zips too). Steps print as `[n/7]`; the Play launcher is
+  `Link's Awakening DX (recomp).cmd`.
+- CI checks that `launcher.json`'s pinned toolkit commits match the submodules.
 - `Setup.cmd` quick start: checks for MSYS2 and the compiler packages, asks
   before installing them, finds or asks for your ROM, recompiles it, builds the
-  game and leaves a shortcut in the repo folder. Reruns skip finished steps.
+  game and leaves a launcher in the repo folder. Reruns skip finished steps.
 - `--headless` (no window, no audio device) and `--record out.mp4` (pipes
   frames to ffmpeg).
 - `rom_main.c` is now the entry point for every target, including the

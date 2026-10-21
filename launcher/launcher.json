@@ -1,0 +1,20 @@
+{
+  "title": "Link's Awakening DX",
+  "repo": "sp00nznet/LinksAwakening",
+  "accent": "#3f9b4f",
+  "note": {
+    "default": "Point it at the folder holding your Link's Awakening DX ROM (a .gbc, or a .zip with one in it). The first build takes 5 to 15 minutes and about 1.5 GB. MSYS2 (the compiler, about 500 MB) is installed if it's missing."
+  },
+  "game": {
+    "name": "Link's Awakening DX ROM",
+    "files": ["*.gbc|*.zip"]
+  },
+  "sources": [
+    { "repo": "sp00nznet/gb-recompiled", "ref": "c50ca3c1bdebc36f156548e75a075932b2daa31d", "dir": "LinksAwakening/gbrecomp" },
+    { "repo": "ocornut/imgui", "ref": "ba84d2d37253c89b17b2cb7b357e130093b79ef5", "dir": "LinksAwakening/gbrecomp/runtime/third_party/imgui" }
+  ],
+  "setup": {
+    "windows": ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "tools\\setup.ps1", "-Yes", "-Game", "{game}"]
+  },
+  "play": "* (recomp).*"
+}

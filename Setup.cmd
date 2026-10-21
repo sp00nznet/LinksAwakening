@@ -1,5 +1,5 @@
 @echo off
 rem Quick start: checks prerequisites, asks for your ROM, builds the game and
-rem makes a shortcut. Safe to rerun; finished steps are skipped.
+rem leaves "Link's Awakening DX (recomp).cmd" to play. Safe to rerun.
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\setup.ps1" %*
-pause
+if not defined RECOMP_LAUNCHER pause

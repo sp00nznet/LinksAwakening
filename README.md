@@ -44,6 +44,21 @@ SHA-1 `1c091225688d966928cc74336dbef2e07d12a47c`. Other revisions are untested.
 You need Windows 10 or 11 and your own Link's Awakening DX ROM (`.gbc`, or a
 `.zip` containing one).
 
+### Installer (easiest)
+
+1. Download **`LinksAwakening-Recomp-Installer-windows-x64.exe`** from the
+   [latest release](https://github.com/sp00nznet/LinksAwakening/releases/latest).
+2. Run it and choose the folder your ROM is in (the `.gbc`, or a `.zip` with
+   it inside). Windows SmartScreen asks first, because the installer isn't
+   signed: **More info**, then **Run anyway**.
+3. Press **Build**. It downloads this repo and the toolkit, installs MSYS2 if
+   it's missing, recompiles your ROM and builds the game (5–15 minutes the
+   first time), then shows a **Play** button.
+
+The installer is [recomp-launcher](https://github.com/sp00nznet/recomp-launcher)
+with [launcher/launcher.json](launcher/launcher.json); all it does is run
+`Setup.cmd`'s script with `-Yes -Game <your folder>`.
+
 ### Quick start
 
 1. Download this repo: **Code → Download ZIP**, and unzip it anywhere.
@@ -52,10 +67,11 @@ You need Windows 10 or 11 and your own Link's Awakening DX ROM (`.gbc`, or a
    missing (it asks first), looks for your ROM in Downloads, Desktop and
    Documents (or asks for the path), recompiles it, and builds the game.
    The first build takes 5–15 minutes.
-4. Double-click **Link's Awakening DX** in the folder.
+4. Double-click **Link's Awakening DX (recomp)** in the folder.
 
 If it stops, it prints one line saying what to do, and the details are in
 `setup.log`. Rerun `Setup.cmd` after fixing it; finished steps are skipped.
+`tools\setup.ps1 -Yes -Game <folder or file>` runs it without questions.
 
 ### Step by step
 
@@ -83,7 +99,7 @@ These are the same commands `Setup.cmd` runs.
 5. **Copy your ROM** into the folder as `rom.gbc`.
 6. **Build the recompiler:**
    ```
-   cmake -S gbrecomp -B gbrecomp/build -G Ninja
+   cmake -S gbrecomp -B gbrecomp/build -G Ninja -DLA_HAS_MULTIPLAYER=OFF
    cmake --build gbrecomp/build --target gbrecomp
    ```
 7. **Recompile the ROM to C** (about 5 seconds):

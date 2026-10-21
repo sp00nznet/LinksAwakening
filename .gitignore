@@ -51,3 +51,4 @@ Thumbs.db
 # Setup.cmd's log and the shortcut it makes
 setup.log
 *.lnk
+* (recomp).cmd

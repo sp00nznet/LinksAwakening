@@ -27,3 +27,7 @@ jobs:
       - run: cmake -S gbrecomp -B gbrecomp/build -G Ninja -DLA_HAS_MULTIPLAYER=OFF
       - run: cmake --build gbrecomp/build
       - run: test ! -e gbrecomp/build/runtime/CMakeFiles/gbrt.dir/src/multiplayer
+      # The installer downloads zips, so launcher.json pins the submodules by
+      # hand; this fails if a submodule bump left them behind.
+      - run: python tools/check_launcher_pins.py
+        shell: pwsh
