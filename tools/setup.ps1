@@ -38,9 +38,12 @@ function Fail($msg) {
 function Step($n, $msg) { Write-Host ''; Write-Host "[$n/$Steps] $msg" -ForegroundColor Cyan }
 function Ask($q) { if ($Yes) { Write-Host "$q yes"; return $true }; (Read-Host "$q [y/N]") -match '^(y|yes)$' }
 function Run($exe) {
-    # Native command wrapper: echo it, run it, fail on a non-zero exit.
-    Write-Host "> $exe $($args -join ' ')"
-    & $exe @args
+    # Native command wrapper: echo it, run it, fail on a non-zero exit. Its
+    # output is indented so a tool's own "[3/20] ..." lines (ninja) aren't
+    # taken for this script's steps by the launcher's progress bar.
+    Write-Host "  > $exe $($args -join ' ')"
+    $ErrorActionPreference = 'Continue'   # stderr lines are output here, not errors
+    & $exe @args 2>&1 | ForEach-Object { Write-Host "  $_" }
     if ($LASTEXITCODE -ne 0) { Fail "'$exe' exited with code $LASTEXITCODE." }
 }
 
