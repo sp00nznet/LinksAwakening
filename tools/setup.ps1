@@ -63,7 +63,8 @@ if (-not (Test-Path 'gbrecomp\runtime\CMakeLists.txt')) {
         Run git fetch -q --depth 1 origin main
         Run git reset -q FETCH_HEAD
     }
-    Run git submodule update --init --recursive
+    # longpaths: nested submodule metadata can pass Windows' 260-char limit.
+    Run git -c core.longpaths=true submodule update --init --recursive
 }
 
 # 4. ROM

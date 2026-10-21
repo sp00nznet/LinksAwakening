@@ -78,7 +78,8 @@ These are the same commands `Setup.cmd` runs.
    git clone --recurse-submodules https://github.com/sp00nznet/LinksAwakening.git
    cd LinksAwakening
    ```
-   (Already cloned without submodules? `git submodule update --init --recursive`.)
+   (Already cloned without submodules? `git submodule update --init --recursive`.
+   `Filename too long`? Run `git config --global core.longpaths true` first.)
 5. **Copy your ROM** into the folder as `rom.gbc`.
 6. **Build the recompiler:**
    ```
