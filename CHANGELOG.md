@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-20
+
 ### Added
 - Windows installer built by [recomp-launcher](https://github.com/sp00nznet/recomp-launcher)
   from `launcher/launcher.json`: pick the folder with your ROM, press Build,

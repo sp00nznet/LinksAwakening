@@ -13,7 +13,7 @@ committed, `--headless --record` on every port).
 
 ## Status
 
-**v0.0.1, usable.** Plays from boot through dungeons on Windows. Single-player
+**v0.1.0, usable.** Plays from boot through dungeons on Windows. Single-player
 only; the co-op overlay lives in [la-mp](https://github.com/sp00nznet/la-mp).
 
 | Area | State |
