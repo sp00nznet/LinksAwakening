@@ -3,6 +3,7 @@ build/
 build-*/
 *.o
 *.obj
+*.d
 *.a
 *.lib
 *.exe

@@ -11,16 +11,14 @@
    console backends, multiplayer gate, menu/asset viewer on upstream's
    vendored imgui). Lands as toolkit PRs. Every port's `gen/` must be
    regenerated afterwards, and `gb_platform_vsync()` gains a cycles argument.
-2. **linksawakening-portable builds against this repo and the fork**, instead
-   of a vendored copy of the runtime.
-3. **Conformance harness** (section 9 of the house rules): a fixed set of
+2. **Conformance harness** (section 9 of the house rules): a fixed set of
    input scripts replayed headless, with per-frame hardware-state checksums
    (`--hw-trace`) compared against SameBoy references from `tools/sb_tracer.c`.
    Reports a pass count per frame window and fails on regression. The ROM
    stays outside the repo; the harness skips with a message when it's absent.
-4. **netlab recipe** (`projects/linksawakening.env`) so builds run on the farm.
-5. **Release v0.1.0**: GitHub Release with the build tools only (no game code).
-6. **recomp launcher integration**, following the Red Alert 2 port's launcher.
+3. **netlab recipe** (`projects/linksawakening.env`) so builds run on the farm.
+4. **Release v0.1.0**: GitHub Release with the build tools only (no game code).
+5. **recomp launcher integration**, following the Red Alert 2 port's launcher.
 
 ## Deferred
 
